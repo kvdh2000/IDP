@@ -1,24 +1,25 @@
 
+from picamera.array import PiRGBArray
 from picamera import PiCamera
-from collections import deque
-from imutils.video import VideoStream
+from time import sleep
 import numpy as np
-import argparse
 import cv2
-import imutils
 import time
 import math
 
 camera = PiCamera()
-camera.start_preview()
+
+time.sleep(1)
 
 while True:
-        _, frame = camera.read()
-
+        rawCapture = PiRGBArray(camera)
+        camera.capture(rawCapture, format="bgr")
+        frame = rawCapture.array
+    
         gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
         gray = cv2.GaussianBlur(gray, (5, 5), 0)
         ret, th = cv2.threshold(gray, 183, 255, cv2.THRESH_BINARY)
-        contours, hierarchy = cv2.findContours(th, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        image, contours, hierarchy = cv2.findContours(th, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         cnt = contours[0]
         for cnt in contours:
