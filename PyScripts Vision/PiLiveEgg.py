@@ -13,7 +13,7 @@ camera = PiCamera()
 camera.start_preview()
 
 while True:
-        _, frame = camera
+        _, frame = camera.read()
 
         gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
         gray = cv2.GaussianBlur(gray, (5, 5), 0)
