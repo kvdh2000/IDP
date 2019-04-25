@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import math
 
-img = cv2.imread('C:\Users\kisha\Desktop\egg.jpg')
+img = cv2.imread("egg_pics\\egg.jpg")
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray = cv2.GaussianBlur(gray, (5, 5), 0)
