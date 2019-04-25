@@ -1,4 +1,5 @@
 
+from picamera import PiCamera
 from collections import deque
 from imutils.video import VideoStream
 import numpy as np
@@ -8,26 +9,14 @@ import imutils
 import time
 import math
 
-ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video",
-        help="path to the (optional) video file")
-ap.add_argument("-b", "--buffer", type=int, default=64,
-        help="max buffer size")
-args = vars(ap.parse_args())
+camera = PiCamera()
 
-greenLower = (0, 0,50)
-greenUpper = (0, 0, 255)
-pts = deque(maxlen=args["buffer"])
-
-if not args.get("video", False):
-        vs = VideoStream(src=0).start()
-else:
-        vs = cv2.VideoCapture(args["video"])
+camera.start_preview()
 
 time.sleep(2.0)
 
 while True:
-        frame = vs.read()
+        frame = vs
 
         frame = frame[1] if args.get("video", False) else frame
         if frame is None:
