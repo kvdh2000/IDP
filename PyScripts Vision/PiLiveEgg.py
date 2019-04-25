@@ -16,12 +16,12 @@ camera.start_preview()
 time.sleep(2.0)
 
 while True:
-        frame = vs
+        frame = camera
 
         frame = frame[1] if args.get("video", False) else frame
         if frame is None:
                 break
-            
+
         frame = imutils.resize(frame, width=600)
 
         gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
@@ -38,7 +38,7 @@ while True:
                 if factor < 0.6:# and factor > 0.4:
                     img = cv2.drawContours(frame, [cnt], -1, (0, 255, 255), 3)
                     print("egg")
-        
+
         cv2.imshow("Frame", frame)
         key = cv2.waitKey(1) & 0xFF
 
