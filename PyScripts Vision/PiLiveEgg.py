@@ -1,5 +1,6 @@
 
 from picamera import PiCamera
+from io import BytesIO
 from collections import deque
 from imutils.video import VideoStream
 import numpy as np
@@ -9,8 +10,11 @@ import imutils
 import time
 import math
 
+stream = BytesIO()
 camera = PiCamera()
-camera.start_preview()
+camera.resolution = (640, 480)
+camera.start_recording(stream, format='h264', quality=23)
+camera.wait_recording(3)
 
 time.sleep(2.0)
 
@@ -37,4 +41,5 @@ while True:
 
 cv2.imshow("Frame", frame)
 key = cv2.waitKey(0)
+camera.stop_recording()
 cv2.destroyAllWindows()
