@@ -9,13 +9,6 @@ import imutils
 import time
 import math
 
-ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video",
-        help="path to the (optional) video file")
-ap.add_argument("-b", "--buffer", type=int, default=64,
-        help="max buffer size")
-args = vars(ap.parse_args())
-
 camera = PiCamera()
 camera.start_preview()
 
@@ -24,10 +17,7 @@ time.sleep(2.0)
 while True:
         frame = camera
 
-        frame = frame[1] if args.get("video", False) else frame
-        if frame is None:
-                break
-
+        frame = frame[1]
         frame = imutils.resize(frame, width=600)
 
         gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
@@ -45,15 +35,6 @@ while True:
                     img = cv2.drawContours(frame, [cnt], -1, (0, 255, 255), 3)
                     print("egg")
 
-        cv2.imshow("Frame", frame)
-        key = cv2.waitKey(1) & 0xFF
-
-        if key == ord("q"):
-                break
-
-if not args.get("video", False):
-        vs.stop()
-else:
-        vs.release()
-
+cv2.imshow("Frame", frame)
+key = cv2.waitKey(0)
 cv2.destroyAllWindows()
