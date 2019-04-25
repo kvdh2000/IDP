@@ -29,7 +29,7 @@ while True:
                 if factor < 0.6:# and factor > 0.4:
                     img = cv2.drawContours(frame, [cnt], -1, (0, 255, 255), 3)
                     print("egg")
+        cv2.imshow("Frame", frame)
 
-cv2.imshow("Frame", frame)
 key = cv2.waitKey(0)
 cv2.destroyAllWindows()
