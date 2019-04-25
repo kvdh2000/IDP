@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 import math
+
 cap = cv.VideoCapture(0)
 while(1):
     _, frame = cap.read()
@@ -15,7 +16,7 @@ while(1):
         if perimeter > 100:
             factor = 4 * math.pi * area / perimeter**2
             if factor > 0.70:
-                print factor
+                print(factor)
                 cv.drawContours(frame, [cnt], -1, (255,0,0), 3)
     cv.imshow('test',frame)
     
