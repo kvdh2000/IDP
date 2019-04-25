@@ -17,7 +17,7 @@ for cnt in contours:
     if area > 100:#> 10000 and area < 60000:
         factor = 4 * math.pi * area / perimeter**2
         if factor < 0.4:# and factor > 0.4:
-            cv2.drawContours(img, [cnt], -1, (0, 255, 255), 3)
+            img = cv2.drawContours(img, [cnt], -1, (0, 255, 255), 3)
             print("egg")
 
 cv2.imshow('img', img)
