@@ -29,9 +29,9 @@ while(1):
             if factor > 0.77:
                 count += 1
                 currentcontour = cnt
-    
-    img = cv.drawContours(frame, [currentcontour], -1, (255,0,0), 3)
-    
+    if count == 1:
+        img = cv.drawContours(frame, [currentcontour], -1, (255,0,0), 3)
+
     cv.imshow('test',frame)
     
     k = cv.waitKey(5) & 0xFF
