@@ -17,7 +17,7 @@ while(1):
     frame = rawCapture.array
 
     processing = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
-    processing = cv.GaussianBlur(processing,(5,5),0)
+    #processing = cv.GaussianBlur(processing,(5,5),0)
     ret,th = cv.threshold(processing,183,255,cv.THRESH_BINARY)
     image, contours,hierarchy = cv.findContours(th,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
     for cnr in range(len(contours)):
