@@ -30,5 +30,5 @@ while(1):
                 img = cv.drawContours(frame, [cnt], -1, (0, 255, 255), 3)
                 print("egg")
         cv.imshow("Frame", frame)
-    key = cv.waitKey(0)
+key = cv.waitKey(0)
 cv.destroyAllWindows()
