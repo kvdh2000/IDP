@@ -25,7 +25,7 @@ while(1):
         cnt = contours[cnr]
         area = cv.contourArea(cnt)
         perimeter = cv.arcLength(cnt, True)
-        if perimeter > 100:
+        if perimeter > 1000:
             factor = 4 * math.pi * area / perimeter**2
             if factor > 0.77:
                 count += 1
