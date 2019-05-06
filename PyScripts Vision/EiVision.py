@@ -30,7 +30,7 @@ while(1):
         threshold -= 10
     cv.imshow('test',frame)
     #time.sleep(0.01)
-    print threshold
+    print(threshold)
     
     k = cv.waitKey(5) & 0xFF
     if k == ord('p'):
