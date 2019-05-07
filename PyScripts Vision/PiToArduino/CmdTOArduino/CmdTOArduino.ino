@@ -3,7 +3,7 @@
 #include "MegunoLink.h"
 
 //Define variables
-String val;
+String readString;
 
 CommandHandler<> SerialCommandHandler;
 
@@ -18,8 +18,21 @@ void setup(){
 //Loop everything
 void loop(){
   SerialCommandHandler.Process();
-  val = Serial.read();
-  Serial.println(val);
+  while (!Serial.available()) {} // wait for data to arrive
+  // serial read section
+  while (Serial.available())
+  {
+    // continue as before
+    char c = Serial.read();  //gets one byte from serial buffer
+    readString += c;
+    Serial.println(readString);
+    Serial.println(Serial.read());
+  }
+  char ard_sends = '1';
+  Serial.print("Arduino sends: ");
+  Serial.println(ard_sends);
+  Serial.print("\n");
+  Serial.flush();
 }
 
 //Functions to be executed by the commandhandler
