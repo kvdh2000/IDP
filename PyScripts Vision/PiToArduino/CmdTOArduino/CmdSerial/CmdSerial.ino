@@ -1,10 +1,13 @@
+#include "Servo.h"
 String readString;
 String Text = "No text found";
+Servo serv;
 
 void setup()
 {
   Serial.begin(9600); 
-}// initialize serial communications at 9600 bps\
+  serv.attach(12);
+  serv.write(90);
 }
 
 void loop(){

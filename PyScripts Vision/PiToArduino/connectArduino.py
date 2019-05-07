@@ -1,7 +1,7 @@
 import serial
 import time
 
-port = 'COM3'
+port = '/dev/ttyACM0'
 command = None
 
 ard = serial.Serial(port,9600,timeout=5)
@@ -20,7 +20,5 @@ while sendCommand:
 
     msg = ard.read(ard.inWaiting())
     if(msg != None):
-        print (msg.decode('utf-8'))
-
-        
+        print (msg.decode('utf-8'))        
 exit()
