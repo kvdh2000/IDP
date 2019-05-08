@@ -1,13 +1,13 @@
 #include "Servo.h"
+
+//Define variables to be used
 String readString;
-String Text = "No text found";
-Servo serv;
+String Text = "No text";
 
 void setup()
 {
-  Serial.begin(9600); 
+  Serial.begin(9600);
   serv.attach(12);
-  serv.write(90);
 }
 
 void loop(){
@@ -38,18 +38,30 @@ void getCommand(String command){
     moveRobot(command);
    } else if(command == "dance"){
     dance();
+   } else if(command == "blink"){
+     blinkLed();
    }
 }
 
 void moveRobot(String direction){
   Text = "Move robot towards: " + direction;
-  
+  serv.write(90);
 }
 
 void dance(){
   Text = "Dance";
 }
 
+void blinkLed(){
+  int i = 0;
+  while(i < 3){
+    pinMode(13, HIGH);
+    delay(1000);
+    pinMode(13, LOW);
+    delay(1000);
+    i++;
+  }
+}
 
 void SendBack(){
   Serial.print("Arduino sends: ");
