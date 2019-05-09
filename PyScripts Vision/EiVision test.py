@@ -47,7 +47,7 @@ for f in stream:
         cx = int(center['m10']/center['m00'])
         cy = int(center['m01']/center['m00'])
         #if len(frame[1])
-        print len(frame[1])
+        print (len(frame[1]))
         #print (cx, " ", cy)
     elif threshold < 15:
         threshold = 255
