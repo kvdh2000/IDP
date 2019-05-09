@@ -24,7 +24,7 @@ frame = None
 stopped = False
 
     
-for f in stream
+for f in stream:
     count = 0
 
     frame = f.array
