@@ -19,7 +19,7 @@ threshold = 255
 
 rawCapture = PiRGBArray(camera, size = res)
 stream = camera.capture_continuous(rawCapture, format="bgr", use_vedio_port=True)
-   
+frame = None
 for f in stream:
     count = 0
 
