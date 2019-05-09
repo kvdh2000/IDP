@@ -4,7 +4,7 @@ from tkinter import *
 import asyncio
 
 #port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
-port = 'COM5'
+port = 'COM6'
 
 ard = serial.Serial(port,9600,timeout=5)
 time.sleep(2) # wait for Arduino
