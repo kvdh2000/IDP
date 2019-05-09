@@ -5,17 +5,29 @@ import cv2 as cv
 import numpy as np
 import time
 import math
+import timeit
+import imutils
+
+res = (480, 360)
+fr = 2
 
 camera = PiCamera()
+camera.resolution = res
+camera.framerate = fr
 
 time.sleep(1)
 threshold = 255
 
-while(1):
+rawCapture = PiRGBArray(camera, size = res)
+stream = camera.capture_continuous(rawCapture, format="bgr", use_vedio_port=True)
+frame = None
+stopped = False
+    
+for f in stream:
     count = 0
-    rawCapture = PiRGBArray(camera)
-    camera.capture(rawCapture, format="bgr")
-    frame = rawCapture.array
+
+    frame = f.array
+    rawCapture.truncate(0)
 
     processing = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
     processing = cv.GaussianBlur(processing,(25,25),0)
@@ -37,7 +49,6 @@ while(1):
     else:
         threshold -= 10
     cv.imshow('test',frame)
-    #time.sleep(0.01)
     print (threshold)
     
     k = cv.waitKey(5) & 0xFF
