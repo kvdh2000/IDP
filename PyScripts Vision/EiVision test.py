@@ -9,6 +9,7 @@ import imutils
 
 res = (640, 480)
 fr = 24
+maxoffcenter = 10
 
 camera = PiCamera()
 camera.resolution = res
@@ -45,7 +46,9 @@ for f in stream:
         center = cv.moments(cnt)
         cx = int(center['m10']/center['m00'])
         cy = int(center['m01']/center['m00'])
-        print (cx, " ", cy)
+        #if len(frame[1])
+        print len(frame[1])
+        #print (cx, " ", cy)
     elif threshold < 15:
         threshold = 255
         print ("tyfus")
