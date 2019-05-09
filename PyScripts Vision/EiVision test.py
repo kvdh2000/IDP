@@ -7,8 +7,8 @@ import time
 import math
 import imutils
 
-res = (480, 360)
-fr = 2
+res = (640, 480)
+fr = 10
 
 camera = PiCamera()
 camera.resolution = res
