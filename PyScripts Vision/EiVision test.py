@@ -7,8 +7,8 @@ import time
 import math
 import imutils
 
-res = (640, 480)
-fr = 10
+res = (1280, 720)
+fr = 20
 
 camera = PiCamera()
 camera.resolution = res
@@ -34,7 +34,7 @@ for f in stream:
         cnt = contours[cnr]
         area = cv.contourArea(cnt)
         perimeter = cv.arcLength(cnt, True)
-        if perimeter > len(frame) / 8:
+        if perimeter > len(frame) / 6:
             factor = 4 * math.pi * area / perimeter**2
             if factor > 0.77:
                 count += 1
