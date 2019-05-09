@@ -5,6 +5,7 @@ import cv2 as cv
 import numpy as np
 import time
 import math
+import timeit
 
 camera = PiCamera()
 
@@ -13,6 +14,9 @@ threshold = 255
 
 while(1):
     count = 0
+    print ("eerste")
+    print (timeit.timeit())
+    
     rawCapture = PiRGBArray(camera)
     camera.capture(rawCapture, format="bgr")
     frame = rawCapture.array
@@ -37,8 +41,9 @@ while(1):
     else:
         threshold -= 10
     cv.imshow('test',frame)
-    #time.sleep(0.01)
-    print (threshold)
+    #print (threshold)
+
+    print (timeit.timeit())
     
     k = cv.waitKey(5) & 0xFF
     if k == ord('p'):
