@@ -46,9 +46,9 @@ for f in stream:
         center = cv.moments(cnt)
         cx = int(center['m10']/center['m00'])
         cy = int(center['m01']/center['m00'])
-        if cx < ((len(frame[1]) / 2) - (len(frame[1]) * maxoffcenter * 0.005))):
+        if cx < ((len(frame[1]) / 2) - (len(frame[1]) * maxoffcenter * 0.005)):
             print ("Go right")
-        elif cx > ((len(frame[1]) / 2) + (len(frame[1]) * maxoffcenter * 0.005))):
+        elif cx > ((len(frame[1]) / 2) + (len(frame[1]) * maxoffcenter * 0.005)):
             print ("Go left")
         else:
             print ("Good enough")
