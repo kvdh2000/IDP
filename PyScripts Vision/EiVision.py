@@ -11,7 +11,7 @@ camera = PiCamera()
 
 time.sleep(1)
 threshold = 255
-rawCapture = PiRGBArray(camera)
+
 while(1):
     count = 0
     print ("eerste")
@@ -24,7 +24,7 @@ while(1):
     end = time.time()
     print (end - start)
     
-    processing = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    processing = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
     processing = cv.GaussianBlur(processing,(25,25),0)
     ret,th = cv.threshold(processing,threshold,255,cv.THRESH_BINARY)
     image, contours,hierarchy = cv.findContours(th,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
