@@ -19,7 +19,7 @@ time.sleep(1)
 threshold = 255
 
 rawCapture = PiRGBArray(camera, size = res)
-stream = camera.capture_continiuous(rawCapture, format="bgr", use_vedio_port=True)
+stream = camera.capture_continuous(rawCapture, format="bgr", use_vedio_port=True)
 frame = None
 stopped = False
     
