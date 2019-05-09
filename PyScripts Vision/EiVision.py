@@ -23,7 +23,7 @@ stream = camera.capture_continiuous(rawCapture, format="bgr", use_vedio_port=Tru
 frame = None
 stopped = False
     
-for f in stream
+for f in stream:
     count = 0
 
     frame = f.array
