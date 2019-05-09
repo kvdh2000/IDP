@@ -48,10 +48,10 @@ for f in stream:
         print (cx, " ", cy)
     elif threshold < 15:
         threshold = 255
-        print "tyfus"
+        print ("tyfus")
     else:
         threshold -= 10
-        print "tyfus"
+        print ("tyfus")
     #cv.imshow('test',frame)
 
     #print (threshold)

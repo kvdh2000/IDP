@@ -8,8 +8,8 @@ import math
 import timeit
 import imutils
 
-res = (480, 360)
-fr = 2
+res = (640, 480)
+fr = 10
 
 camera = PiCamera()
 camera.resolution = res
@@ -19,7 +19,7 @@ time.sleep(1)
 threshold = 255
 
 rawCapture = PiRGBArray(camera, size = res)
-stream = camera.capture_continuous(rawCapture, format="bgr", use_vedio_port=True)
+stream = camera.capture_continuous(rawCapture, format="bgr", use_video_port=True)
 frame = None
 stopped = False
 
@@ -30,9 +30,6 @@ for f in stream:
     frame = f.array
     rawCapture.truncate(0)
 
-    end = time.time()
-    print (end - start)
-    
     processing = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
     processing = cv.GaussianBlur(processing,(25,25),0)
     ret,th = cv.threshold(processing,threshold,255,cv.THRESH_BINARY)
@@ -41,7 +38,7 @@ for f in stream:
         cnt = contours[cnr]
         area = cv.contourArea(cnt)
         perimeter = cv.arcLength(cnt, True)
-        if perimeter > 1000:
+        if perimeter > 400:
             factor = 4 * math.pi * area / perimeter**2
             if factor > 0.77:
                 count += 1
