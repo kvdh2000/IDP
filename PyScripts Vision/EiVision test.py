@@ -52,7 +52,7 @@ for f in stream:
     else:
         threshold -= 10
         print ("tyfus")
-    #cv.imshow('test',frame)
+    cv.imshow('test',frame)
 
     #print (threshold)
 
