@@ -34,7 +34,7 @@ for f in stream:
         cnt = contours[cnr]
         area = cv.contourArea(cnt)
         perimeter = cv.arcLength(cnt, True)
-        if perimeter > 1000:
+        if perimeter > 400:
             factor = 4 * math.pi * area / perimeter**2
             if factor > 0.77:
                 count += 1
