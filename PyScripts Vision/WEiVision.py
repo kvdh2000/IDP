@@ -1,33 +1,22 @@
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-from time import sleep
 import cv2 as cv
 import numpy as np
 import time
 import math
 import imutils
-
+ 
 res = (640, 480)
 fr = 24
 maxoffcenter = 10
-
-camera = PiCamera()
-camera.resolution = res
-camera.framerate = fr
-
-time.sleep(1)
 threshold = 255
-
-rawCapture = PiRGBArray(camera, size = res)
-stream = camera.capture_continuous(rawCapture, format="rgb", use_video_port=True)
-frame = None
-
-for f in stream:
+tyfus = False
+ 
+cap = cv.VideoCapture(0)
+ 
+while(1):
     count = 0
-
-    frame = f.array
-    rawCapture.truncate(0)
-    
+ 
+    _, frame = cap.read()
+     
     processing = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
     processing = cv.GaussianBlur(processing,(25,25),0)
     ret,th = cv.threshold(processing,threshold,255,cv.THRESH_BINARY)
@@ -68,7 +57,7 @@ for f in stream:
             print ("tyfus")
     cv.imshow('test',frame)
     #print (threshold)
-
+ 
     k = cv.waitKey(5) & 0xFF
     if k == ord('p'):
         break
