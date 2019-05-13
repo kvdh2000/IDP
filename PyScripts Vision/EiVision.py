@@ -31,7 +31,7 @@ for f in stream:
     processing = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
     processing = cv.GaussianBlur(processing,(25,25),0)
     ret,th = cv.threshold(processing,threshold,255,cv.THRESH_BINARY)
-    contours,hierarchy = cv.findContours(th,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
+    image, contours,hierarchy = cv.findContours(th,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
     for cnr in range(len(contours)):
         cnt = contours[cnr]
         area = cv.contourArea(cnt)
