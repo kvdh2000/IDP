@@ -1,0 +1,12 @@
+todos:
+    ✔ logging wrappers @done(2019-05-14 13:05) @project(todos)
+    ☐ module interface
+    ☐ cli arguments 
+    commuication:
+        ☐ serial with arduinos for control
+        telemetry //blijkbaar niet belangrijk:
+            ☐ gathering over serial
+            ☐ logging to mongodb
+            ☐ transmission to controller
+        
+            

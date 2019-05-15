@@ -536,3 +536,6 @@ hs_err_pid*
 */Makefile
 */cmake_install.cmake
 .DS_Store
+
+# myconf
+.idea/*
