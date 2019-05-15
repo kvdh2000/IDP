@@ -19,7 +19,7 @@ time.sleep(1)
 threshold = 255
 
 rawCapture = PiRGBArray(camera, size = res)
-stream = camera.capture_continuous(rawCapture, format="rgb", use_video_port=True)
+stream = camera.capture_continuous(rawCapture, format="bgr", use_video_port=True)
 frame = None
 tyfus = False
 
@@ -29,7 +29,7 @@ for f in stream:
     frame = f.array
     rawCapture.truncate(0)
     
-    processing = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
+    processing = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     processing = cv.GaussianBlur(processing,(25,25),0)
     ret,th = cv.threshold(processing,threshold,255,cv.THRESH_BINARY)
     image, contours,hierarchy = cv.findContours(th,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)

@@ -1,0 +1,47 @@
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+from time import sleep
+import cv2 as cv
+import numpy as np
+import time
+import math
+import imutils
+
+res = (640, 480)
+fr = 24
+maxoffcenter = 10
+
+camera = PiCamera()
+camera.resolution = res
+camera.framerate = fr
+
+time.sleep(1)
+threshold = 255
+
+rawCapture = PiRGBArray(camera, size = res)
+stream = camera.capture_continuous(rawCapture, format="bgr", use_video_port=True)
+frame = None
+tyfus = False
+
+for f in stream:
+    count = 0
+
+    frame = f.array
+    rawCapture.truncate(0)
+    
+    image, contours, hierarchy = cv.findContours(cv.inRange(cv.cvtColor(frame, cv.COLOR_RGB2HSV), np.array([10,115,100]), np.array([40,255,255])),cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
+    for cnr in range(len(contours)):
+        cnt = contours[cnr]
+        center = cv.moments(cnt)
+        if center['m00'] > 0 and cv.contourArea(cnt) > 500:
+            frame = cv.drawContours(frame, [cnt], -1, (0,255,0), 3)
+            cx = int(center['m10']/center['m00'])
+            cy = int(center['m01']/center['m00'])
+            print(cx, " ", cy)
+            frame = cv.circle(frame,(cx,cy),4,(255,0,0),-1)
+    cv.imshow('test',frame)
+
+    k = cv.waitKey(5) & 0xFF
+    if k == ord('p'):
+        break
+cv.destroyAllWindows()
