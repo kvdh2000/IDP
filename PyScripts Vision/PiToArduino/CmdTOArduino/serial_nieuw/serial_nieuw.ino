@@ -20,8 +20,8 @@ void loop() {
         int cmd_sep_idx = read_buffer.indexOf(cmd_sep);
         if(cmd_sep_idx > 0){
             // pakt commando en slicet de buffer
-            String cmd = read_buffer.substring(0, cmd_end_idx);
-            read_buffer = read_buffer.substring(cmd_end_idx + 1);
+            String cmd = read_buffer.substring(0, cmd_sep_idx);
+            read_buffer = read_buffer.substring(cmd_sep_idx + 1);
             execute_command(cmd);
         }else if (cmd_sep_idx == 0){
             read_buffer = read_buffer.substring(1);
