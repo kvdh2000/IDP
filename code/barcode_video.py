@@ -6,21 +6,19 @@ import datetime
 import imutils
 import time
 
-
-#print(argName.a)
-
-
+# check if the names are the same
 def checkName(name, namecheck):
 	if(name == namecheck):
 		print(name)
 	else:
 		print("nothing found")
-		
+
+# start searching for QR codes		
 def SearchQR(name):
 	print("[INFO] starting video stream...")
 
 	vs = VideoStream(usePiCamera=True).start()
-	time.sleep(2.0)
+	time.sleep(.2)
 	 
 	# open the output CSV file for writing and initialize the set of
 	# barcodes found thus far
@@ -52,13 +50,15 @@ def SearchQR(name):
 			text = "{} ({})".format(barcodeData, barcodeType)
 			#print(barcodeData)
 			
+			# check if the QR code is the same as the QR code that's 
+			# assigned to us
 			checkName(barcodeData, name)
 			
 			cv2.putText(frame, text, (x, y - 10),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 	 
 				
-					# show the output frame
+		# show the output frame
 		cv2.imshow("Barcode Scanner", frame)
 		key = cv2.waitKey(1) & 0xFF
 	 
@@ -71,6 +71,7 @@ def SearchQR(name):
 	csv.close()
 	cv2.destroyAllWindows()
 	vs.stop()
+
 
 	
 
