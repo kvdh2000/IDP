@@ -19,15 +19,6 @@ class QRScanner:
 
 	# start searching for QR codes		
 	def SearchQR(self, name, frame1):
-		print("[INFO] starting video stream...")
-
-		#vs = VideoStream(usePiCamera=True).start()
-		 
-		# open the output CSV file for writing and initialize the set of
-		# barcodes found thus far
-		found = set()
-		
-		# loop over the frames from the video stream
 		
 		# grab the frame from the threaded video stream and resize it to
 		# have a maximum width of 400 pixels
@@ -68,9 +59,3 @@ class QRScanner:
 			if key == ord("q"):
 				break
 		 
-		# close the output CSV file do a bit of cleanup
-		print("[INFO] cleaning up...")
-
-
-	
-
