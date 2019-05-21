@@ -8,7 +8,7 @@
 
 #include <Wire.h>
 
-#define LED 12
+#define LED 13
 
 int x;
 const byte slaveID = 8;
@@ -21,6 +21,7 @@ void setup()
   Serial.println("Arduino NANO1 start");
   
   pinMode(LED, OUTPUT);
+  digitalWrite(LED, HIGH);
 }
 
 void loop()
@@ -32,16 +33,15 @@ void loop()
 
   if (x == 0)
   {
-    digitalWrite(13,LOW);
+    digitalWrite(LED,LOW);
   }
 
   if (x == 1)
   {
-    digitalWrite(13, HIGH);
+    digitalWrite(LED, HIGH);
   }
 
   delay(100);
-
   Serial.println();
 }
 

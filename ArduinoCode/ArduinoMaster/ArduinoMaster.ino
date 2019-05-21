@@ -12,7 +12,7 @@ void setup()
 {
   Wire.begin();
   Serial.begin(9600);
-  Serial.println("Arduino UNO 1 start");
+  Serial.println("Arduino UNO Master start");
 }
 
 void loop()
@@ -23,16 +23,20 @@ void loop()
   Serial.println();
 
   WireSend(8, 0);
-  delay(500);
+  delay(250);
+  WireSend(9, 0);
+  delay(250);
   WireSend(8, 1);
-  delay(500);
+  delay(250);
+  WireSend(9, 1);
+  delay(250);
 
   Serial.println();
 }
 
 void WireSend(int slaveID, int var)
 {
-  println("Wire send command");
+  Serial.println("Wire send command");
   Wire.beginTransmission(slaveID);
   Wire.write(var);
   Wire.endTransmission();
