@@ -60,7 +60,6 @@ class QRScanner:
 				cv2.putText(frame, text, (x, y - 10),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 		 
-					
 			# show the output frame
 			cv2.imshow("Barcode Scanner", frame)
 			key = cv2.waitKey(1) & 0xFF

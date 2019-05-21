@@ -1,4 +1,4 @@
-from bakje import FindCon # import our own script
+from bakje_new import FindCon # import our own script
 from barcode_video import QRScanner # import our own script
 import argparse
 import time
@@ -15,7 +15,4 @@ func = find.FindBakje()
 print(func)
 # if Bakje found it switch to QR scode scanning
 if(func == True):
-	scan.SearchQR(argName.a)
-
-#do a scan
-#SearchQR(argName.a)
+	scan.SearchQR(argName.a) # scans for the QRCode

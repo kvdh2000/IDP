@@ -49,7 +49,7 @@ class FindCon:
             cv2.CHAIN_APPROX_SIMPLE)
             cnts = imutils.grab_contours(cnts)
 
-            # for every contour check if it's a sha[e we know
+            # for every contour check if it's a shape we know
             for c in cnts:
                 # compute the center of the contour, then detect the name of the
                 # shape using only the contour
