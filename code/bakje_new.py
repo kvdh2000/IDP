@@ -13,12 +13,13 @@ class FindCon:
     # find shapes and see if it resembles the container
     def FindBakje(self):
 		
+        foundBakje = False
         # setup the picamera
         cam = PiCamera()
         cam.resolution = (640, 480)
         cam.framerate = 32
         rawCapture = PiRGBArray(cam, size=(640, 480))
-        time.sleep(.2) # sleep to give the camera a short time to startup
+        time.sleep(.25) # sleep to give the camera a short time to startup
         
         # set color values to check for bright colors
         lowerBound = np.array([0, 100, 100])
@@ -42,18 +43,29 @@ class FindCon:
             maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, kernelClose)
 
             maskFinal = maskClose
-            conts, h, img = cv2.findContours(
+            __,conts, h = cv2.findContours(
                 maskFinal.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-            if(len(conts) == 0):
-                continue
-            cv2.drawContours(img, conts, -1, (255, 0, 0), 3)
+            cv2.drawContours(img, conts, 0, (255, 0, 0), 3)
             for i in range(len(conts)):
-                x, y, w, h = cv2.boundingRect(conts[i])
-                cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                area = cv2.contourArea(conts[i])
+                print(area)
+                if(area > 6500):
+                    x, y, w, h = cv2.boundingRect(conts[i])
+                    cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                    foundBakje = True
+                    break
 
             cv2.imshow("maskClose", maskClose)
             cv2.imshow("maskOpen", maskOpen)
             cv2.imshow("mask", mask)
             cv2.imshow("cam", img)
+
+            if(foundBakje == True):
+                break
+            rawCapture.truncate(0)
             cv2.waitKey(10)
+
+        cv2.destroyAllWindows()
+        cam.close()
+        return True

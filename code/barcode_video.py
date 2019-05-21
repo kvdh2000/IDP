@@ -9,6 +9,7 @@ import time
 class QRScanner:
 	def __init__(self):
 		pass
+		
 	# check if the names are the same
 	def checkName(self, name, namecheck):
 		if(name == namecheck):
@@ -55,7 +56,7 @@ class QRScanner:
 				
 				# check if the QR code is the same as the QR code that's 
 				# assigned to us
-				checkName(barcodeData, name)
+				self.checkName(barcodeData, name)
 				
 				cv2.putText(frame, text, (x, y - 10),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
