@@ -17,7 +17,7 @@
 String dcinput = "05120512";
 double angle;
 int intensity;
-int dcpins[12] = {4, 26, 27, 5, 28, 29, 2, 22, 23, 3, 24, 25};
+int dcpins[18] = {4, 26, 27, 5, 28, 29, 2, 22, 23, 3, 24, 25, 6, 30, 31, 7, 32, 33};
 int jX = 512;
 int jY = 512;
 
@@ -42,8 +42,7 @@ void setup()
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
 
-  
-  for(byte c = 0; c < 12; c++)
+  for(byte c = 0; c < 18; c++)
   {
     pinMode(dcpins[c], OUTPUT);
   }
@@ -66,6 +65,7 @@ void loop()
   digitalWrite(LED, LOW);
   delay(50);
 
+  voltMeter();
   readJoy();
 
   if(dcinput != "")
@@ -73,9 +73,6 @@ void loop()
     drive();
     dcinput = "";
   }
-
-  //Serial.print(intensity);
-  voltMeter();
 
   delay(500);
   Serial.println();
@@ -256,4 +253,5 @@ void voltMeter()
   Serial.print("Average U = ");
   Serial.print(gemiddeldeVoltage);
   Serial.println("V");
+  Serial.println();
 }
