@@ -539,3 +539,5 @@ hs_err_pid*
 
 # myconf
 .idea/*
+*.asta.lock
+.vscode/
