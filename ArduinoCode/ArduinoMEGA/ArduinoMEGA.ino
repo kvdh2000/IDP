@@ -5,19 +5,32 @@
  * loop
  * convertxy
  * drive
+ * voltMeter
  */
 
 #define LED 13
+#define vuMeter A3
 #define X A5
 #define Y A6
 
-const String teststring = "05120512";
-String dcinput;
+//Variables for DC motors
+String dcinput = "05120512";
 double angle;
 int intensity;
 int dcpins[12] = {4, 26, 27, 5, 28, 29, 2, 22, 23, 3, 24, 25};
 int jX = 512;
 int jY = 512;
+
+//Variables for Volt Meter
+const int AANTAL_METINGEN  10
+float input_volt = 0.0;
+float temp=0.0;
+float factor= 1.02;
+float voltages[AANTAL_METINGEN];
+uint8_t voltagesIndex = 0;
+float som = 0; 
+boolean arrayGevuld = false;
+float gemiddeldeVoltage = 0.0;
 
 void setup()
 {
@@ -25,6 +38,7 @@ void setup()
   Serial.println("Arduino MEGA start");
   
   pinMode(LED, OUTPUT);
+  pinMode(vuMeter, INPUT);
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
 
@@ -33,8 +47,11 @@ void setup()
   {
     pinMode(dcpins[c], OUTPUT);
   }
-
-  dcinput = teststring;
+  
+  for (uint8_t i = 0; i < 10; i++) 
+  {
+    voltages[i] = 0;
+  }
 }
 
 void loop()
@@ -202,4 +219,40 @@ void readJoy()
   Serial.println(Xx);
   Serial.println(Yy);
   dcinput = Xx + Yy;
+}
+
+void voltMeter()
+{
+  int analogvalue = analogRead(vuMeter);
+  temp = (analogvalue * 5.0) / 1024.0;
+  input_volt = temp / factor;
+  som = som - voltages[voltagesIndex];  
+  voltages[voltagesIndex] = input_volt;
+
+  som = som + voltages[voltagesIndex];
+
+  if (arrayGevuld)
+  {
+    gemiddeldeVoltage = som / AANTAL_METINGEN;
+  }
+  
+  else 
+  {
+    gemiddeldeVoltage = som / (voltagesIndex + 1);
+  }
+  
+  voltagesIndex = voltagesIndex + 1;
+  
+  if (voltagesIndex == AANTAL_METINGEN)
+  {
+    voltagesIndex = 0;
+    arrayGevuld = true;
+  }
+
+  Serial.print("U = ");
+  Serial.print(input_volt);
+  Serial.println("V");
+  Serial.print("Average U = ");
+  Serial.print(gemiddeldeVoltage);
+  Serial.println("V");
 }
