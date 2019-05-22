@@ -60,7 +60,7 @@ void loop()
    // 
    // als de tabel nog niet vol is
    //
-      //gemiddeldeVoltage = som / (voltagesIndex + 1);
+      gemiddeldeVoltage = som / (voltagesIndex + 1);
     }
     //
     // verhoog de metingen index
@@ -80,6 +80,6 @@ void loop()
     Serial.print("average v= ");                 // prints the voltage value in the serial monitor
     Serial.println(gemiddeldeVoltage);
  
-delay(500); //Wait for 200ms
+delay(500);
 
 }
