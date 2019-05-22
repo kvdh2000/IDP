@@ -34,9 +34,28 @@ blue = BlueVision()
 found =[False, False, False]
 
 # initialize variable for serial communication
-port = '/dev/ttyAMA0' # Raspberry port which connects to the arduino
-ard = serial.Serial(port,9600,timeout=5)
+port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
+baud = 9600 # set arduino baudrate
+ard = serial.Serial(port,baud,timeout=5)
 time.sleep(.5) # wait for Arduino and camera
+
+# Run this method async so we can grab the replies from the 
+# arduino
+async def GetArduino():
+    msg = (ard.read(ard.inWaiting()))
+    if(msg != None):
+        print(str(msg.decode('utf-8')))
+    print(msg)
+
+# Method for sending commands to the arduino
+# Command can be max 5 characters long
+def SendMessage(command):
+    loop = asyncio.get_event_loop()
+    if(command != None):
+        print("Python value sent: ")
+        print(command)
+        ard.write(command.encode())
+    loop.run_until_complete(GetArduino())
 
 # drive around
 for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
@@ -51,7 +70,7 @@ for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=Tru
 		found[2] = scan.SearchQR(argName.a, frame) # scans for the QRCode
 	else:
 		print("got all")
-		#SendMessage('marm')
+		SendMessage('marm')
 		
 	rawCapture.truncate(0)
 	#loop.run_until_complete(GetArduino())
