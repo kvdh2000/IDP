@@ -53,8 +53,8 @@ void voltMeter()
     arrayGevuld = true;
   }
 
-  Serial.println("U = " + input_volt + " V");
-  //Serial.println(input_volt);
+  Serial.print("U = ");
+  Serial.println(input_volt);
   Serial.print("Average U = ");
   Serial.println(gemiddeldeVoltage);
 }
