@@ -22,7 +22,7 @@ int jX = 512;
 int jY = 512;
 
 //Variables for Volt Meter
-const int AANTAL_METINGEN  10
+#define AANTAL_METINGEN  10
 float input_volt = 0.0;
 float temp=0.0;
 float factor= 1.02;
@@ -75,6 +75,7 @@ void loop()
   }
 
   //Serial.print(intensity);
+  voltMeter();
 
   delay(500);
   Serial.println();
