@@ -4,10 +4,10 @@ float input_volt = 0.0;
 float temp=0.0;
 float factor= 1.02;
 float voltages[AANTAL_METINGEN];
-uint8_t voltagesIndex;
-float som; 
-boolean arrayGevuld;
-float gemiddeldeVoltage;
+uint8_t voltagesIndex = 0;
+float som = 0; 
+boolean arrayGevuld = false;
+float gemiddeldeVoltage = 0.0;
 
 /****************************************************/
 
@@ -18,10 +18,6 @@ for (uint8_t i = 0; i < 10; i++)
 {
    voltages[i] = 0;
 }
-som = 0;
-voltagesIndex = 0;
-arrayGevuld = false;
-gemiddeldeVoltage = 0.0;
 Serial.begin(9600);//Initialize the serial 
 
 }
