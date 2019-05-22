@@ -9,73 +9,52 @@ float som = 0;
 boolean arrayGevuld = false;
 float gemiddeldeVoltage = 0.0;
 
-/****************************************************/
-
 void setup()
-
 {
 for (uint8_t i = 0; i < 10; i++) 
 {
-   voltages[i] = 0;
-}
-Serial.begin(9600);//Initialize the serial 
-
+  voltages[i] = 0;
 }
 
-/****************************************************/
+Serial.begin(9600);
+}
 
 void loop()
+{   
+  voltMeter();
+  delay(500);
+}
 
+void voltMeter()
 {
+  int analogvalue = analogRead(A0);
+  temp = (analogvalue * 5.0) / 1024.0;
+  input_volt = temp / factor;
+  som = som - voltages[voltagesIndex];  
+  voltages[voltagesIndex] = input_volt;
 
-    int analogvalue = analogRead(A0);
-    temp = (analogvalue * 5.0) / 1024.0;       // FORMULA USED TO CONVERT THE VOLTAGE
-    //input_volt = temp / (r2/(r1+r2));
-    input_volt = temp / factor;
+  som = som + voltages[voltagesIndex];
 
-    // eerst de oudste waarde van de som aftrekken
-    //
-    som = som - voltages[voltagesIndex];  
-    // 
-    // voeg de laatste meting toe aan de tabel
-    //
-    voltages[voltagesIndex] = input_volt;
+  if (arrayGevuld)
+  {
+    gemiddeldeVoltage = som / AANTAL_METINGEN;
+  }
+  
+  else 
+  {
+    gemiddeldeVoltage = som / (voltagesIndex + 1);
+  }
+  
+  voltagesIndex = voltagesIndex + 1;
+  
+  if (voltagesIndex == AANTAL_METINGEN)
+  {
+    voltagesIndex = 0;
+    arrayGevuld = true;
+  }
 
-    som = som + voltages[voltagesIndex];
-
-    if (arrayGevuld)
-    {   
-   //
-   // bij een volledig gevulde tabel
-   //
-      gemiddeldeVoltage = som / AANTAL_METINGEN;
-    }
-    
-    else 
-    {
-   // 
-   // als de tabel nog niet vol is
-   //
-      gemiddeldeVoltage = som / (voltagesIndex + 1);
-    }
-    //
-    // verhoog de metingen index
-    //
-    voltagesIndex = voltagesIndex + 1;
-    //
-    // test voor loop around
-    //
-    if (voltagesIndex == AANTAL_METINGEN)
-    {
-      voltagesIndex = 0;
-      arrayGevuld = true;
-    }
-
-    Serial.print("v= ");                 // prints the voltage value in the serial monitor
-    Serial.println(input_volt);
-    Serial.print("average v= ");                 // prints the voltage value in the serial monitor
-    Serial.println(gemiddeldeVoltage);
- 
-delay(500);
-
+  Serial.println("U = " + input_volt + " V");
+  //Serial.println(input_volt);
+  Serial.print("Average U = ");
+  Serial.println(gemiddeldeVoltage);
 }
