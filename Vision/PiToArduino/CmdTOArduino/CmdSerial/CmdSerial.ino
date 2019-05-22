@@ -158,34 +158,8 @@ void loop()
       read_buffer = "";
     }
   }
-  getCommand(readString);
   SendBack();
   delay(1); // 1ms delay zodat ie 'm niet flipt
-}
-
-void getCommand(String command)
-{
-  //Command can be max 5 characters long
-  if (command == "forw" || command == "back" || command == "left" || command == "right")
-  {
-    moveRobot(command);
-  }
-  else if (command == "dance")
-  {
-    dance();
-  }
-  else if (command == "dancl")
-  {
-    danceLine();
-  }
-  else if (command == "blink")
-  {
-    blinkLed();
-  }
-  else if (command == "marm")
-  {
-    MoveArm();
-  }
 }
 
 void execute_command(String command)
