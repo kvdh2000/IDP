@@ -2,6 +2,7 @@ from bakje_new import FindCon # import our own script
 from barcode_video import QRScanner # import our own script
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+import serial
 import cv2
 import argparse
 import time
@@ -26,15 +27,17 @@ bakje = False
 scan = QRScanner()
 find = FindCon()
 
-#drive around
+# drive around
 for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
 	
-	if(bakje == False):
-		func = find.FindBakje(frame)
-
-	if(func == True):
-		bakje = True
-		scan.SearchQR(argName.a, frame) # scans for the QRCode
+	#if(bakje == False):
+		#func = find.FindBakje(frame)
+	
+	#if(func == True):
+		#bakje = True
+		#scan.SearchQR(argName.a, frame) # scans for the QRCode
+	func = find.FindBakje(frame)
+	scan.SearchQR(argName.a, frame)
 	rawCapture.truncate(0)
 	cv2.waitKey(10)
 

@@ -14,7 +14,7 @@ class FindCon:
     def FindBakje(self, frame):
 		
         foundBakje = False
-        
+        maxoffcenter = 10
         
         # set color values to check for bright colors
         lowerBound = np.array([0, 100, 100])
@@ -22,8 +22,6 @@ class FindCon:
 
         kernelOpen = np.ones((5, 5))
         kernelClose = np.ones((20, 20))
-
-        # for every frame seen by the cmaera see if there's a shape we recognize
         
         img = frame.array # set our working screen/ image
         img = cv2.resize(img, (340, 220))
@@ -45,6 +43,17 @@ class FindCon:
             area = cv2.contourArea(conts[i])
             print(area)
             if(area > 6500):
+                currentContour = conts[i]
+                center = cv2.moments(currentContour)
+                cx = int(center['m10']/center['m00'])
+                cy = int(center['m01']/center['m00'])
+                if cx < ((len(img[1]) / 2) - (len(img[1]) * maxoffcenter * 0.005)):
+                    print ("Go left")
+                elif cx > ((len(img[1]) / 2) + (len(img[1]) * maxoffcenter * 0.005)):
+                    print ("Go right")
+                else:
+                    print ("Good enough")
+
                 x, y, w, h = cv2.boundingRect(conts[i])
                 cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
                 foundBakje = True
