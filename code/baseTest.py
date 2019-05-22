@@ -1,5 +1,7 @@
 from bakje_new import FindCon # import our own script
 from barcode_video import QRScanner # import our own script
+from BlueVision import BlueVision
+from EggVision import EggVision
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import serial
@@ -27,42 +29,31 @@ bakje = False
 # the method from the other script file
 scan = QRScanner()
 find = FindCon()
-
+egg = EggVision()
+blue = BlueVision()
+found =[False, False, False]
 # initialize variable for serial communication
 port = '/dev/ttyAMA0' # Raspberry port which connects to the arduino
 ard = serial.Serial(port,9600,timeout=5)
 time.sleep(.5) # wait for Arduino and camera
-loop = asyncio.get_event_loop()
-
-async def GetArduino():
-	msg= (ard.read(ard.inWaiting()))
-	if(msg != None):
-		print(str(msg.decode('utf-8')))
-
-def SendMessage(command):
-    
-    if(len(command) > 0):
-        print("Python value sent: ")
-        print(command)
-        ard.write(command.encode())
-        #time.sleep(3)
-
 
 # drive around
 for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
 	#if(bakje == False):
 		#func = find.FindBakje(frame)
 	
-	func = find.FindBakje(frame)
-	func1 = scan.SearchQR(argName.a, frame)
-
-	if(func and func1):
-		#bakje = True
-		#scan.SearchQR(argName.a, frame) # scans for the QRCode
-		SendMessage('marm')
-
+	if(not found[0]):
+		found[0] = egg.findEgg(frame)
+	elif(not found[1]):
+		found[1] =find.FindBakje(frame)
+	elif(not found[2]):
+		found[2] = scan.SearchQR(argName.a, frame) # scans for the QRCode
+	else:
+		print("got all")
+		#SendMessage('marm')
+		
 	rawCapture.truncate(0)
-	loop.run_until_complete(GetArduino())
+	#loop.run_until_complete(GetArduino())
 	cv2.waitKey(10)
 
 cv2.destroyAllWindows()
