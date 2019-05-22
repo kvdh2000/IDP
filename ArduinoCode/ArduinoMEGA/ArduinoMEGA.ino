@@ -57,7 +57,7 @@ void loop()
     dcinput = "";
   }
 
-  Serial.print(intensity);
+  //Serial.print(intensity);
 
   delay(500);
   Serial.println();
@@ -65,10 +65,17 @@ void loop()
 
 void convertxy()
 {
-  int x = dcinput.substring(0,4).toInt() - 512;
-  int y = dcinput.substring(4).toInt() - 512;
+  double x = dcinput.substring(0,4).toInt() - 512;
+  double y = dcinput.substring(4).toInt() - 512;
   angle = atan2(y, x);
-  intensity = sqrt(pow(x,2) + pow(y,2));
+  int bigPI = 157;
+  int otherthing = (100 * abs(angle));
+  double itmpangle = (otherthing % bigPI);
+  double tmpangle = itmpangle / 100;
+  if(tmpangle >= M_PI * 0.25){
+    tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
+  }
+  intensity = ((sqrt(pow(x,2) + pow(y,2))) * (512 / (512 / cos(tmpangle))));
 }
 
 void drive()
@@ -83,20 +90,20 @@ void drive()
     digitalWrite(dcpins[4], HIGH);
     digitalWrite(dcpins[5], LOW);
     if(angle <= M_PI * 0.5 && angle >= 0){
-      analogWrite(dcpins[0], map(intensity, 0, 512, 0, 255));
-      analogWrite(dcpins[3], map(intensity, 0, 512, 0, 255));
+      analogWrite(dcpins[0], map(intensity, 0, 515, 0, 255));
+      analogWrite(dcpins[3], map(intensity, 0, 515, 0, 255));
     }
     else
     {
       if(angle >= M_PI * 0.5)
       {
-        analogWrite(dcpins[0], intensity / 512 * map((M_PI * 0.75) - angle, 0, 0.25 * M_PI, 0, 255));
-        analogWrite(dcpins[3], intensity / 512 * map((M_PI * 0.75) - angle, 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[0], intensity / 515 * map((M_PI * 0.75) - angle, 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[3], intensity / 515 * map((M_PI * 0.75) - angle, 0, 0.25 * M_PI, 0, 255));
       }
       else
       {
-        analogWrite(dcpins[0], intensity / 512 * map(abs(angle), 0, 0.25 * M_PI, 0, 255));
-        analogWrite(dcpins[3], intensity / 512 * map(abs(angle), 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[0], intensity / 515 * map(abs(angle), 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[3], intensity / 515 * map(abs(angle), 0, 0.25 * M_PI, 0, 255));
       }
     }
   }
@@ -108,20 +115,20 @@ void drive()
     digitalWrite(dcpins[5], HIGH);
     if(angle <= M_PI * -0.5)
     {
-      analogWrite(dcpins[0], map(intensity, 0, 512, 0, 255));
-      analogWrite(dcpins[3], map(intensity, 0, 512, 0, 255));
+      analogWrite(dcpins[0], map(intensity, 0, 515, 0, 255));
+      analogWrite(dcpins[3], map(intensity, 0, 515, 0, 255));
     }
     else{
       
       if(angle >= M_PI * 0.75)
       {
-        analogWrite(dcpins[0], intensity / 512 * map(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
-        analogWrite(dcpins[3], intensity / 512 * map(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[0], intensity / 515 * map(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[3], intensity / 515 * map(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
       }
       else
       {
-        analogWrite(dcpins[0], intensity / 512 * map(abs(0.25 * M_PI - abs(angle)), 0, 0.25 * M_PI, 0, 255));
-        analogWrite(dcpins[3], intensity / 512 * map(abs(0.25 * M_PI - abs(angle)), 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[0], intensity / 515 * map(abs(0.25 * M_PI - abs(angle)), 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[3], intensity / 515 * map(abs(0.25 * M_PI - abs(angle)), 0, 0.25 * M_PI, 0, 255));
       }
     }
   }
@@ -134,20 +141,20 @@ void drive()
     digitalWrite(dcpins[11], HIGH);
     if(angle >= M_PI * -0.5 && angle <= 0)
     {
-      analogWrite(dcpins[6], map(intensity, 0, 512, 0, 255));
-      analogWrite(dcpins[9], map(intensity, 0, 512, 0, 255));
+      analogWrite(dcpins[6], map(intensity, 0, 515, 0, 255));
+      analogWrite(dcpins[9], map(intensity, 0, 515, 0, 255));
     }
     else
     {
       if(angle <= M_PI * -0.5)
       {
-        analogWrite(dcpins[6], intensity / 512 * map(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
-        analogWrite(dcpins[9], intensity / 512 * map(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[6], intensity / 515 * map(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[9], intensity / 515 * map(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
       }
       else
       {
-        analogWrite(dcpins[6], intensity / 512 * map(angle, 0, 0.25 * M_PI, 0, 255));
-        analogWrite(dcpins[9], intensity / 512 * map(angle, 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[6], intensity / 515 * map(angle, 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[9], intensity / 515 * map(angle, 0, 0.25 * M_PI, 0, 255));
       }
     }
   }
@@ -159,20 +166,20 @@ void drive()
     digitalWrite(dcpins[11], LOW);
     if(angle >= M_PI * 0.5)
     {
-      analogWrite(dcpins[6], map(intensity, 0, 512, 0, 255));
-      analogWrite(dcpins[9], map(intensity, 0, 512, 0, 255));
+      analogWrite(dcpins[6], map(intensity, 0, 515, 0, 255));
+      analogWrite(dcpins[9], map(intensity, 0, 515, 0, 255));
     }
     else
     {
       if(angle <= M_PI * -0.75)
       {
-        analogWrite(dcpins[6], intensity / 512 * map(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
-        analogWrite(dcpins[9], intensity / 512 * map(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[6], intensity / 515 * map(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[9], intensity / 515 * map(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
       }
       else
       {
-        analogWrite(dcpins[6], intensity / 512 * map(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
-        analogWrite(dcpins[9], intensity / 512 * map(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[6], intensity / 515 * map(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+        analogWrite(dcpins[9], intensity / 515 * map(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
       }
     }
   }
