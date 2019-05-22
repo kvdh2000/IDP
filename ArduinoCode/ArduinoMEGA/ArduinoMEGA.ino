@@ -25,7 +25,7 @@ int jY = 512;
 #define AANTAL_METINGEN  10
 float input_volt = 0.0;
 float temp=0.0;
-float factor= 1.02;
+float factor= 1.165;
 float voltages[AANTAL_METINGEN];
 uint8_t voltagesIndex = 0;
 float som = 0; 
