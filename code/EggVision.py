@@ -14,15 +14,11 @@ class EggVision:
     def __init__(self):
         pass
 
-    def findEgg(self, f):
-        frame = None
+    def findEgg(self, frame):
         tyfus = False
-        
         maxoffcenter = 10
-
         count = 0
-
-        frame = f.array
+        frame = frame.array
 
         processing = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
         processing = cv.GaussianBlur(processing, (25, 25), 0)

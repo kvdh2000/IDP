@@ -13,7 +13,6 @@ class FindCon:
     # find shapes and see if it resembles the container
     def FindBakje(self, frame):
 		
-        foundBakje = False
         maxoffcenter = 10
         
         # set color values to check for bright colors
@@ -53,16 +52,10 @@ class FindCon:
                     print ("Go right")
                 else:
                     print ("Good enough")
+                    return True
 
                 x, y, w, h = cv2.boundingRect(conts[i])
                 cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                foundBakje = True
                 break
-
-        cv2.imshow("maskClose", maskClose)
-        cv2.imshow("maskOpen", maskOpen)
-        cv2.imshow("mask", mask)
+                
         cv2.imshow("cam", img)
-
-        if(foundBakje == True):
-            return True

@@ -32,6 +32,7 @@ find = FindCon()
 egg = EggVision()
 blue = BlueVision()
 found =[False, False, False]
+
 # initialize variable for serial communication
 port = '/dev/ttyAMA0' # Raspberry port which connects to the arduino
 ard = serial.Serial(port,9600,timeout=5)

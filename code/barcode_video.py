@@ -56,9 +56,4 @@ class QRScanner:
 		 
 			# show the output frame
 			cv2.imshow("cam", frame)
-			key = cv2.waitKey(1) & 0xFF
-		 
-			# if the `q` key was pressed, break from the loop
-			if key == ord("q"):
-				break
 		 
