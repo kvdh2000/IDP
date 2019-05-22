@@ -14,8 +14,10 @@ class QRScanner:
 	def checkName(self, name, namecheck):
 		if(name == namecheck):
 			print(name)
+			return True
 		else:
 			print("nothing found")
+			return False
 
 	# start searching for QR codes		
 	def SearchQR(self, name, frame1):
@@ -46,7 +48,8 @@ class QRScanner:
 			
 			# check if the QR code is the same as the QR code that's 
 			# assigned to us
-			self.checkName(barcodeData, name)
+			if (self.checkName(barcodeData, name)):
+				return True
 			
 			cv2.putText(frame, text, (x, y - 10),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)

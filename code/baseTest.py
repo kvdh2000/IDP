@@ -3,6 +3,7 @@ from barcode_video import QRScanner # import our own script
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import serial
+import asyncio
 import cv2
 import argparse
 import time
@@ -18,7 +19,7 @@ cam = PiCamera()
 cam.resolution = (640, 480)
 cam.framerate = 32
 rawCapture = PiRGBArray(cam, size=(640, 480))
-time.sleep(.25) # sleep to give the camera a short time to startup
+#time.sleep(.25) # sleep to give the camera a short time to startup
 
 bakje = False
 
@@ -27,18 +28,41 @@ bakje = False
 scan = QRScanner()
 find = FindCon()
 
+# initialize variable for serial communication
+port = '/dev/ttyAMA0' # Raspberry port which connects to the arduino
+ard = serial.Serial(port,9600,timeout=5)
+time.sleep(.5) # wait for Arduino and camera
+loop = asyncio.get_event_loop()
+
+async def GetArduino():
+	msg= (ard.read(ard.inWaiting()))
+	if(msg != None):
+		print(str(msg.decode('utf-8')))
+
+def SendMessage(command):
+    
+    if(len(command) > 0):
+        print("Python value sent: ")
+        print(command)
+        ard.write(command.encode())
+        #time.sleep(3)
+
+
 # drive around
 for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
-	
 	#if(bakje == False):
 		#func = find.FindBakje(frame)
 	
-	#if(func == True):
+	func = find.FindBakje(frame)
+	func1 = scan.SearchQR(argName.a, frame)
+
+	if(func and func1):
 		#bakje = True
 		#scan.SearchQR(argName.a, frame) # scans for the QRCode
-	func = find.FindBakje(frame)
-	scan.SearchQR(argName.a, frame)
+		SendMessage('marm')
+
 	rawCapture.truncate(0)
+	loop.run_until_complete(GetArduino())
 	cv2.waitKey(10)
 
 cv2.destroyAllWindows()
