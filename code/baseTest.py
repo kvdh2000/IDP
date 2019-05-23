@@ -44,7 +44,7 @@ time.sleep(.5) # wait for Arduino and camera
 async def GetArduino():
     msg = (ard.read(ard.inWaiting()))
     if(msg != None):
-        print(str(msg.decode('utf-8')))
+        print(str(msg.decode('utf-8', errors="ignore")))
     print(msg)
 
 # Method for sending commands to the arduino
