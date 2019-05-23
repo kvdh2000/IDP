@@ -14,7 +14,7 @@ class EggVision:
     def __init__(self):
         pass
 
-    def findEgg(self, frame):
+    def FindEgg(self, frame):
         tyfus = False
         maxoffcenter = 10
         count = 0

@@ -11,7 +11,7 @@ class BlueVision:
     def __init__(self):
         pass
         
-    def findCar(self, f):
+    def FindCar(self, f):
         maxoffcenter = 10
         threshold = 255
         frame = None
