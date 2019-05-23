@@ -1,16 +1,21 @@
-from bakje_new import FindCon # import our own script
-from barcode_video import QRScanner # import our own script
+# import our own scripts
+from bakje_new import FindCon
+from barcode_video import QRScanner
 from BlueVision import BlueVision
 from EggVision import EggVision
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import serial
+
+import argparse
 import asyncio
 import cv2
-import argparse
-import time
 import imutils
+from picamera import PiCamera
+from picamera.array import PiRGBArray
+import serial
+import time
 
+# used for grabbing an argument in this case 
+# we use it for grabbing which location we need 
+# to deliver the egg to
 ap = argparse.ArgumentParser()
 ap.add_argument("a")
 argName = ap.parse_args()
@@ -21,9 +26,6 @@ cam = PiCamera()
 cam.resolution = (640, 480)
 cam.framerate = 32
 rawCapture = PiRGBArray(cam, size=(640, 480))
-#time.sleep(.25) # sleep to give the camera a short time to startup
-
-bakje = False
 
 # initialize variable to request 
 # the method from the other script file
@@ -37,9 +39,9 @@ found =[False, False, False]
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
 baud = 9600 # set arduino baudrate
 ard = serial.Serial(port,baud,timeout=5)
-time.sleep(.5) # wait for Arduino and camera
+time.sleep(.5) # wait for Arduino and camera to start up
 
-# Run this method async so we can grab the replies from the 
+# Run this method async so we can grab the replies from the
 # arduino
 async def GetArduino():
     msg = (ard.read(ard.inWaiting()))
@@ -57,23 +59,21 @@ def SendMessage(command):
         ard.write(command.encode())
     loop.run_until_complete(GetArduino())
 
-# drive around
+# drive around and use the camera to search for objects
 for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
-	#if(bakje == False):
-		#func = find.FindBakje(frame)
 	
+	# follow these steps in order
 	if(not found[0]):
-		found[0] = egg.findEgg(frame)
+		found[0] = egg.findEgg(frame) # find the egg
 	elif(not found[1]):
-		found[1] =find.FindBakje(frame)
+		found[1] =find.FindBakje(frame) # find the container
 	elif(not found[2]):
 		found[2] = scan.SearchQR(argName.a, frame) # scans for the QRCode
 	else:
 		print("got all")
-		SendMessage('marm')
+		SendMessage('marm') # send a command to the arduino over Serial
 		
-	rawCapture.truncate(0)
-	#loop.run_until_complete(GetArduino())
+	rawCapture.truncate(0) # ready the camera for a new frame to be analysed
 	cv2.waitKey(10)
 
 cv2.destroyAllWindows()
