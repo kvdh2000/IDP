@@ -27,8 +27,6 @@ cam.resolution = (640, 480)
 cam.framerate = 32
 rawCapture = PiRGBArray(cam, size=(640, 480))
 
-Arm = False
-
 # initialize variable to request 
 # the method from the other script file
 scan = QRScanner()
@@ -61,24 +59,31 @@ def SendMessage(command):
         ard.write(command.encode())
     loop.run_until_complete(GetArduino())
 
-# drive around and use the camera to search for objects
-for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
-	
-	# follow these steps in order
-	if(not found[0]):
-		found[0] = egg.FindEgg(frame) # find the egg
-	elif(not found[1]):
-		found[1] =find.FindContainer(frame) # find the container
-	elif(not found[2]):
-		found[2] = scan.SearchQR(argName.a, frame) # scans for the QRCode
-	else:
-		print("got all")
-		if (Arm == False):
-			SendMessage('marm') # send a command to the arduino over Serial
-			Arm = True
-		
-	rawCapture.truncate(0) # ready the camera for a new frame to be analysed
-	cv2.waitKey(10)
+def main():
+	Arm = False
 
-cv2.destroyAllWindows()
-cam.close()
+	# drive around and use the camera to search for objects
+	for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
+		
+		# follow these steps in order
+		if(not found[0]):
+			found[0] = egg.FindEgg(frame) # find the egg
+		elif(not found[1]):
+			found[1] =find.FindContainer(frame) # find the container
+		elif(not found[2]):
+			found[2] = scan.SearchQR(argName.a, frame) # scans for the QRCode
+		else:
+			print("got all")
+			if (Arm == False):
+				SendMessage('marm') # send a command to the arduino over Serial
+				Arm = True
+			
+		rawCapture.truncate(0) # ready the camera for a new frame to be analysed
+		cv2.waitKey(10)
+
+	cv2.destroyAllWindows()
+	cam.close()
+
+
+if __name__== "__main__":
+	main()
