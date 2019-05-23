@@ -10,7 +10,7 @@ from random import randint
 import numpy as np
 import math
 import imutils
-from picamer.array import PiRGBArray
+from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 from time import sleep
@@ -56,22 +56,13 @@ if __name__ == '__main__':
 
   
   # Create a video capture object to read videos
-  cap = cv2.VideoCapture(0)
- 
-  # Read first frame
-  success, frame = cap.read()
-  # quit if unable to read the video file
-  if not success:
-    print('Failed to read video')
-    sys.exit(1)
-
-  ## Select boxes
+  cam = PiCamera()
+  cam.resolution = (640, 480)
+  cam.framerate = 32
+  rawCapture = PiRGBArray(cam, size=(640, 480))
   bboxes = []
   colors = [] 
-
-  # OpenCV's selectROI function doesn't work for selecting multiple objects in Python
-  # So we will call this function in a loop till we are done selecting all objects
-  while True:
+  for frame in cam.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     # draw bounding boxes over objects
     # selectROI's default behaviour is to draw box starting from the center
     # when fromCenter is set to false, you can draw box starting from top left corner

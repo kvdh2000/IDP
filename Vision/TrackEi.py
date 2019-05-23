@@ -10,7 +10,7 @@ from random import randint
 import numpy as np
 import math
 import imutils
-from picamer.array import PiRGBArray
+from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 from time import sleep
