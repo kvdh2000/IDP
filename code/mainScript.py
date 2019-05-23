@@ -37,7 +37,7 @@ found =[False, False, False]
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
-baud = 9600 # set arduino baudrate
+baud = 1000000 # set arduino baudrate
 ard = serial.Serial(port,baud,timeout=5)
 time.sleep(.5) # wait for Arduino and camera to start up
 
@@ -60,7 +60,7 @@ def SendMessage(command):
     loop.run_until_complete(GetArduino())
 
 def main():
-	Arm = False
+	Arm = False 
 
 	# drive around and use the camera to search for objects
 	for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
@@ -75,7 +75,7 @@ def main():
 		else:
 			print("got all")
 			if (Arm == False):
-				SendMessage('marm') # send a command to the arduino over Serial
+				#SendMessage('marm|') # send a command to the arduino over Serial
 				Arm = True
 			
 		rawCapture.truncate(0) # ready the camera for a new frame to be analysed
