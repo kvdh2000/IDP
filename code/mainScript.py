@@ -33,11 +33,11 @@ scan = QRScanner()
 find = FindCon()
 egg = EggVision()
 blue = BlueVision()
-found =[False, False, False]
+found = [False, False, False]
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
-baud = 1000000 # set arduino baudrate
+baud = 9600 # set arduino baudrate
 ard = serial.Serial(port,baud,timeout=5)
 time.sleep(.5) # wait for Arduino and camera to start up
 
@@ -60,7 +60,6 @@ def SendMessage(command):
     loop.run_until_complete(GetArduino())
 
 def main():
-	Arm = False 
 
 	# drive around and use the camera to search for objects
 	for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
@@ -68,15 +67,16 @@ def main():
 		# follow these steps in order
 		if(not found[0]):
 			found[0] = egg.FindEgg(frame) # find the egg
+			if found[0]:
+				SendMessage('marm|') # send a command to the arduino over Serial
 		elif(not found[1]):
-			found[1] =find.FindContainer(frame) # find the container
+			found[1] = scan.SearchQR(argName.a, frame) # scans for the QRCode
 		elif(not found[2]):
-			found[2] = scan.SearchQR(argName.a, frame) # scans for the QRCode
+			found[2] = find.FindContainer(frame) # find the container
+			if found[2]:
+				SendMessage("marm|")
 		else:
 			print("got all")
-			if (Arm == False):
-				#SendMessage('marm|') # send a command to the arduino over Serial
-				Arm = True
 			
 		rawCapture.truncate(0) # ready the camera for a new frame to be analysed
 		cv2.waitKey(10)

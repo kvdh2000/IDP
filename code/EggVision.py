@@ -15,7 +15,6 @@ class EggVision:
         pass
 
     def FindEgg(self, frame):
-        tyfus = False
         maxoffcenter = 10
         count = 0
         frame = frame.array
@@ -48,18 +47,13 @@ class EggVision:
                 print("Go left")
             else:
                 print("Good enough")
-            return True
-            tyfus = False
-            # print (cx, " ", cy)
+                print('area: ' + str(area))
+                if (area > 20000):
+                    return True
+            #return True
         elif self.threshold < 15:
             self.threshold = 255
-            if tyfus == False:
-                tyfus = True
-                print("tyfus")
         else:
             self.threshold -= 10
-            if tyfus == False:
-                tyfus = True
-                print("tyfus")
-        cv.imshow('cam', frame)
-        print (self.threshold)
+        cv.imshow('cam1', frame)
+        #print (self.threshold)
