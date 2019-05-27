@@ -1,13 +1,11 @@
 #include "DynamixelMotor.h"
 #include "Arduino.h"
-#include "AX12A.h"
 
 #define treu TRUE
 #define DIR_PIN 2
 //Define variables to be used
 int reg = 0;
 String readString;
-String Text = "No text";
 
 #define DIR_PIN 2
 
@@ -53,8 +51,8 @@ DynamixelMotor motor11(interface, 11);
 DynamixelMotor motor12(interface, 12);
 DynamixelMotor motor13(interface, 13);
 DynamixelMotor motor14(interface, 14);
-DynamixelMotor motor13(interface, 15);
-DynamixelMotor motor14(interface, 16);
+DynamixelMotor motor15(interface, 15);
+DynamixelMotor motor16(interface, 16);
 DynamixelMotor motors(interface, BROADCAST_ID);
 
 void setup()
@@ -105,31 +103,6 @@ void setup()
 
 void loop()
 {
-  while (!Serial.available())
-  {
-  } //Wait for data to arrive
-  //Serial read section
-  while (Serial.available())
-  {
-    delay(500);
-    if (Serial.available() > 0)
-    {
-      char c = Serial.read(); //Gets one byte from serial buffer
-      readString += c;        //Makes the string readString
-    }
-  }
-
-  if (readString.length() > 0)
-  {
-    Serial.print("Arduino received: ");
-    Serial.println(readString); //See what was received
-  }
-  getCommand(readString);
-  SendBack();
-}
-
-void loop()
-{
   //Wait for data to arrive
   //Serial read section
   if (Serial.available() && read_buffer.length() < buffer_size)
@@ -158,7 +131,6 @@ void loop()
       read_buffer = "";
     }
   }
-  SendBack();
   delay(1); // 1ms delay zodat ie 'm niet flipt
 }
 
@@ -192,7 +164,7 @@ void execute_command(String command)
   }
 }
 
-void SendBack()
+void SendBack(String Text)
 {
   Serial.print("Arduino sends: ");
   Serial.println(Text);

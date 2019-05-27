@@ -15,18 +15,19 @@ void MoveArm(){
     delay(1000);
     i++;
   }
+  SendBack("Arm moved");
 }
 
 void moveRobot(String direction){
-  Text = "Move robot towards: " + direction;
+  SendBack("Move robot towards: " + direction);
 }
 
 void dance(){
-  Text = "Dance";
+  SendBack("Dance");
 }
 
 void danceLine(){
-  Text = "Line dance";
+  SendBack("Line dance");
 }
 
 void blinkLed(){
