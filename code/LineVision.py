@@ -7,11 +7,11 @@ import time
 import math
 import imutils
 
-class BlueVision:
+class LineVision:
     def __init__(self):
         pass
         
-    def FindCar(self, f):
+    def FindLine(self, f):
         maxoffcenter = 10
         threshold = 255
         frame = None
