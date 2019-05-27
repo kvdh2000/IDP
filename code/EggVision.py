@@ -55,5 +55,5 @@ class EggVision:
             self.threshold = 255
         else:
             self.threshold -= 10
-        cv.imshow('cam1', frame)
+        cv.imshow('cam', frame)
         #print (self.threshold)
