@@ -7,7 +7,7 @@ import asyncio
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
 #port = 'COM5'
 
-ard = serial.Serial(port,9600,timeout=5)
+ard = serial.Serial(port,1000000,timeout=5)
 time.sleep(2) # wait for Arduino
 
 top = Tk() # initialize the Window variable
