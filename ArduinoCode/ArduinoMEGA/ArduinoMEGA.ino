@@ -3,8 +3,10 @@
 /*
  * setup
  * loop
+ * readJoy
  * convertxy
  * drive
+ * tracks
  * voltMeter
  */
 
@@ -76,6 +78,25 @@ void loop()
 
   delay(500);
   Serial.println();
+}
+
+void readJoy()
+{
+  jX = analogRead(X);
+  jY = analogRead(Y);
+  String Xx = String(jX);
+  while(Xx.length() < 4)
+  {
+    Xx = 0 + Xx;
+  }
+  String Yy = String(jY);
+  while(Yy.length() < 4)
+  {
+    Yy = 0 + Yy;
+  }
+  Serial.println(Xx);
+  Serial.println(Yy);
+  dcinput = Xx + Yy;
 }
 
 void convertxy()
@@ -192,23 +213,9 @@ void drive()
   }
 }
 
-void readJoy()
+void tracks()
 {
-  jX = analogRead(X);
-  jY = analogRead(Y);
-  String Xx = String(jX);
-  while(Xx.length() < 4)
-  {
-    Xx = 0 + Xx;
-  }
-  String Yy = String(jY);
-  while(Yy.length() < 4)
-  {
-    Yy = 0 + Yy;
-  }
-  Serial.println(Xx);
-  Serial.println(Yy);
-  dcinput = Xx + Yy;
+  
 }
 
 void voltMeter()
