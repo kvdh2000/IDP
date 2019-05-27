@@ -1,0 +1,3 @@
+[submodule "ArduinoCode/bluetooth/JohnSpecialEasyTransfer"]
+	path = ArduinoCode/bluetooth/JohnSpecialEasyTransfer
+	url = https://github.com/johnvanderholt/JohnSpecialEasyTransfer
