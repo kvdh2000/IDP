@@ -12,12 +12,6 @@ class LineVision:
         pass
         
     def FindLine(self, f):
-        maxoffcenter = 10
-        threshold = 255
-        frame = None
-        tyfus = False
-
-        count = 0
 
         frame = f.array
         

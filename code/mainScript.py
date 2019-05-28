@@ -3,6 +3,7 @@ from ConVision import FindCon
 from QRVision import QRScanner
 from BlueVision import BlueVision
 from EggVision import EggVision
+from LineVision import LineVision
 
 import argparse
 import asyncio
@@ -34,7 +35,11 @@ scan = QRScanner()
 find = FindCon()
 egg = EggVision()
 blue = BlueVision()
+line = LineVision()
 found =[False, False, False]
+
+# use this to check if the arm stopped moving
+# so we can continue with the vision stuff
 armMoved = False
 
 # initialize variable for serial communication
@@ -54,7 +59,7 @@ async def GetArduino():
             print(msg)
         if(re.search('.(Arm mov).', str(msg))):
             print("found")
-            global armMoved
+            global armMoved # add 'global' so it doesn't create a local variable named armMoved
             armMoved = True
     
     
@@ -88,6 +93,8 @@ def main():
             else:
                 print("got all")
         
+        line.FindLine(frame) # run continuesly to check if we're still in the playing field
+
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
 
