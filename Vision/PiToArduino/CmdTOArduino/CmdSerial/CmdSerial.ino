@@ -84,7 +84,7 @@ void setup()
 //  motor16.jointMode(0, 1023);
 
   //digitalWrite(DIR_PIN, HIGH);
-  motor1.goalPosition(900);
+  motor1.goalPosition(825);
   motor2.goalPosition(512);
   motor3.goalPosition(512);
   motor4.goalPosition(512);
@@ -166,6 +166,10 @@ void execute_command(String command)
   else if (command == "marm")
   {
     MoveArm();
+  } 
+  else if (command == "look")
+  {
+    LookAround();
   }
   else
   {
