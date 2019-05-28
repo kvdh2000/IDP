@@ -50,10 +50,8 @@ class EggVision:
                 print('area: ' + str(area))
                 if (area > 20000):
                     return True
-            #return True
         elif self.threshold < 15:
             self.threshold = 255
         else:
             self.threshold -= 10
         cv.imshow('cam', frame)
-        #print (self.threshold)

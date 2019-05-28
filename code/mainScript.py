@@ -41,6 +41,7 @@ found =[False, False, False]
 # use this to check if the arm stopped moving
 # so we can continue with the vision stuff
 armMoved = False
+boolLook = False 
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
@@ -59,8 +60,10 @@ async def GetArduino():
             print(msg)
         if(re.search('.(Arm mov).', str(msg))):
             print("found")
+            global boolLook
             global armMoved # add 'global' so it doesn't create a local variable named armMoved
             armMoved = True
+            boolLook = True 
     
     
 # Method for sending commands to the arduino
@@ -73,27 +76,31 @@ def SendMessage(command):
 
 def main():
     loop = asyncio.get_event_loop()
+    global boolLook
     # drive around and use the camera to search for objects
     for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
         
         loop.run_until_complete(GetArduino())
-        
+        if not boolLook:
+            SendMessage('look|')   
+            boolLook = True
+
         # follow these steps in order
         if(not found[0]):
             found[0] = egg.FindEgg(frame) # find the egg
             if found[0]:
                 SendMessage('marm|') # send a command to the arduino over Serial
-        if armMoved:
+        if armMoved:        
             if(not found[1]):
-                found[1] = find.FindContainer(frame) # scans for the QRCode
+                found[1] = scan.SearchQR(argName.a, frame) # find the container
             elif(not found[2]):
-                found[2] = scan.SearchQR(argName.a, frame) # find the container
+                found[2] = find.FindContainer(frame) # scans for the QRCode
                 if found[2]:
                     SendMessage("marm|")
             else:
                 print("got all")
         
-        line.FindLine(frame) # run continuesly to check if we're still in the playing field
+        #line.FindLine(frame) # run continuesly to check if we're still in the playing field
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)

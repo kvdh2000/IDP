@@ -12,12 +12,6 @@ class BlueVision:
         pass
         
     def FindCar(self, f):
-        maxoffcenter = 10
-        threshold = 255
-        frame = None
-        tyfus = False
-
-        count = 0
 
         frame = f.array
         
