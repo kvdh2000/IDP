@@ -160,7 +160,7 @@ void loop()
   delay(50);
 
   voltMeter();
-  readJoy();
+  //readJoy();
 
   if(dcinput != "")
   {
@@ -200,7 +200,6 @@ void loop()
     }
   }
   
-  delay(500);
   Serial.println();
 }
 
