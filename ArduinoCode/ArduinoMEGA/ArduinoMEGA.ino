@@ -15,7 +15,6 @@
 #include "DynamixelMotor.h"
 #include "Arduino.h"
 
-#define treu true
 #define LED 13
 #define DIR_PIN 2
 #define vuMeter A3
@@ -53,6 +52,7 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("Arduino MEGA start");
+  
   pinMode(LED, OUTPUT);
   pinMode(vuMeter, INPUT);
   pinMode(X, INPUT);
@@ -94,10 +94,9 @@ void loop()
 
   if (Serial.available() && read_buffer.length() < buffer_size)
   {
-//    Serial.println("Start Serial");
+    Serial.println("Start Serial");
     char r_char = Serial.read(); // pakt een char van de serial en plakt hem aan de buffer
     read_buffer += r_char;
-//    Serial.print(r_char);
   }
   else if ((read_buffer.length() >= buffer_size) || read_buffer.indexOf(cmd_sep) > 0)
   {
@@ -285,18 +284,18 @@ void voltMeter()
     arrayGevuld = true;
   }
 
-//  Serial.print("U = ");
-//  Serial.print(input_volt);
-//  Serial.println("V");
-//  Serial.print("Average U = ");
-//  Serial.print(gemiddeldeVoltage);
-//  Serial.println("V");
-//  Serial.println();
+  Serial.print("U = ");
+  Serial.print(input_volt);
+  Serial.println("V");
+  Serial.print("Average U = ");
+  Serial.print(gemiddeldeVoltage);
+  Serial.println("V");
+  Serial.println();
 }
 
 void executeSerial(String command)
 {
-  Serial.println("in execute command");
+  Serial.print("Execute command: ");
   Serial.println(command);
 
   //Command can be max 5 characters long
@@ -335,7 +334,6 @@ void sendBack(String Text)
 {
   Serial.print("Arduino sends: ");
   Serial.println(Text);
-  Serial.print("\n");
   Serial.flush();
   readString = "";
 }
