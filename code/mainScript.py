@@ -42,6 +42,7 @@ found =[False, False, False]
 # so we can continue with the vision stuff
 armMoved = False
 boolLook = False 
+setupComplete = False
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
@@ -64,6 +65,9 @@ async def GetArduino():
             global armMoved # add 'global' so it doesn't create a local variable named armMoved
             armMoved = True
             boolLook = False
+        elif(re.search('.(MEGA start).', str(msg))):
+            global setupComplete
+            setupComplete = True
     
 # Method for sending commands to the arduino
 # Command can be max 5 characters long
@@ -78,17 +82,19 @@ def main():
     global boolLook
     # drive around and use the camera to search for objects
     for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
-        
+
         loop.run_until_complete(GetArduino())
         if not boolLook:
             SendMessage('look|')
             boolLook = True
 
         # follow these steps in order
-        if(not found[0]):
-            found[0] = egg.FindEgg(frame) # find the egg
-            if found[0]:
-                SendMessage('marm|') # send a command to the arduino over Serial
+        # wait till the arduino is ready to receive commands
+        if setupComplete: 
+            if(not found[0]):
+                found[0] = egg.FindEgg(frame) # find the egg
+                if found[0]:
+                    SendMessage('marm|') # send a command to the arduino over Serial
         if armMoved:        
             if(not found[1]):
                 found[1] = scan.SearchQR(argName.a, frame) # scans for the QRCode
