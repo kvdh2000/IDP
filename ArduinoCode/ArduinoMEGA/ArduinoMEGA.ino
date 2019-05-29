@@ -92,6 +92,8 @@ void setup()
 {
   Serial.begin(9600);
   Serial.println("Arduino MEGA start");
+
+  interface.begin(baudrate);
   
   pinMode(LED, OUTPUT);
   pinMode(vuMeter, INPUT);
