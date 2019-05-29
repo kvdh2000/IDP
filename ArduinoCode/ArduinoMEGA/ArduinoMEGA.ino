@@ -60,15 +60,15 @@ void setup()
 
   initServos();
 
-  for (byte c = 0; c < 18; c++)
-  {
-    pinMode(dcpins[c], OUTPUT);
-  }
-
-  for (uint8_t i = 0; i < 10; i++)
-  {
-    voltages[i] = 0;
-  }
+//  for (byte c = 0; c < 18; c++)
+//  {
+//    pinMode(dcpins[c], OUTPUT);
+//  }
+//
+//  for (uint8_t i = 0; i < 10; i++)
+//  {
+//    voltages[i] = 0;
+//  }
 }
 
 void loop()
