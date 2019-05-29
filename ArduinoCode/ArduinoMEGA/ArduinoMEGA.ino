@@ -1,15 +1,16 @@
 
-/* All methods
-   setup
-   loop
-   readJoy
-   convertxy
-   drive
-   tracks
-   voltMeter
-   executeSerial
-   sendBack
-*/
+//All methods
+/*
+ * setup
+ * loop
+ * readJoy
+ * convertxy
+ * drive
+ * tracks
+ * voltMeter
+ * executeSerial
+ * sendBack
+ */
 
 #include "DynamixelMotor.h"
 #include "Arduino.h"
