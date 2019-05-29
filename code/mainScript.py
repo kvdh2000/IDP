@@ -63,8 +63,7 @@ async def GetArduino():
             global boolLook
             global armMoved # add 'global' so it doesn't create a local variable named armMoved
             armMoved = True
-            boolLook = True 
-    
+            boolLook = False
     
 # Method for sending commands to the arduino
 # Command can be max 5 characters long
@@ -82,7 +81,7 @@ def main():
         
         loop.run_until_complete(GetArduino())
         if not boolLook:
-            SendMessage('look|')   
+            SendMessage('look|')
             boolLook = True
 
         # follow these steps in order
@@ -92,9 +91,9 @@ def main():
                 SendMessage('marm|') # send a command to the arduino over Serial
         if armMoved:        
             if(not found[1]):
-                found[1] = scan.SearchQR(argName.a, frame) # find the container
+                found[1] = scan.SearchQR(argName.a, frame) # scans for the QRCode
             elif(not found[2]):
-                found[2] = find.FindContainer(frame) # scans for the QRCode
+                found[2] = find.FindContainer(frame) # find the container
                 if found[2]:
                     SendMessage("marm|")
             else:
