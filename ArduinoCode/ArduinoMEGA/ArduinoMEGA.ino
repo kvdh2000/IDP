@@ -22,8 +22,6 @@
 #define X A5
 #define Y A6
 
-const long unsigned int baudrate = 1000000;
-
 //Variables for Serial
 int reg = 0;
 String readString;
@@ -96,18 +94,16 @@ void loop()
 
   if (Serial.available() && read_buffer.length() < buffer_size)
   {
-    Serial.println("Start Serial");
+//    Serial.println("Start Serial");
     char r_char = Serial.read(); // pakt een char van de serial en plakt hem aan de buffer
     read_buffer += r_char;
-    //Serial.print(r_char);
+//    Serial.print(r_char);
   }
   else if ((read_buffer.length() >= buffer_size) || read_buffer.indexOf(cmd_sep) > 0)
   {
     int cmd_sep_idx = read_buffer.indexOf(cmd_sep);
     if (cmd_sep_idx > 0)
     {
-      Serial.println("exicute");
-      // pakt commando en sliced de buffer
       cmd = read_buffer.substring(0, cmd_sep_idx);
       read_buffer = read_buffer.substring(cmd_sep_idx + 1);
       executeSerial(cmd);
@@ -118,13 +114,9 @@ void loop()
     }
     else
     {
-      Serial.println("recieved garbage clearing buffer");
       read_buffer = "";
     }
   }
-
-  delay(500);
-  Serial.println();
 }
 
 void readJoy()
