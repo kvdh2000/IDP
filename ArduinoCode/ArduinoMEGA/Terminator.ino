@@ -1,4 +1,4 @@
-void MoveArm(){
+void moveArm(){
   int i = 0;
   //  put your main code here, to run repeatedly:
   while(i < 5){
@@ -15,10 +15,10 @@ void MoveArm(){
     delay(1000);
     i++;
   }
-  SendBack("Arm moved");
+  sendBack("Arm moved");
 }
 
-void LookAround(){
+void lookAround(){
   int i = 0;
   //  checking left and right 2 times
   // Eerst kijken voordat je oversteekt  
@@ -41,15 +41,15 @@ void LookAround(){
 }
 
 void moveRobot(String direction){
-  SendBack("Move robot towards: " + direction);
+  sendBack("Move robot towards: " + direction);
 }
 
 void dance(){
-  SendBack("Dance");
+  sendBack("Dance");
 }
 
 void danceLine(){
-  SendBack("Line dance");
+  sendBack("Line dance");
 }
 
 void blinkLed(){

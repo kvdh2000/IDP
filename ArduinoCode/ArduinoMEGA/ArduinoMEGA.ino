@@ -15,6 +15,7 @@
 #include "DynamixelMotor.h"
 #include "Arduino.h"
 
+#define treu true
 #define LED 13
 #define DIR_PIN 2
 #define vuMeter A3
@@ -402,11 +403,11 @@ void executeSerial(String command)
   }
   else if (command == "marm")
   {
-    MoveArm();
+    moveArm();
   } 
   else if (command == "look")
   {
-    LookAround();
+    lookAround();
   }
   else
   {
