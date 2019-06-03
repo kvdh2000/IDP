@@ -1,3 +1,4 @@
+from CalcDistance import CalcDistance
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from time import sleep
@@ -14,6 +15,32 @@ class EggVision:
     def __init__(self):
         pass
 
+    def icanShowYouTheWorld(self, image, c):
+        # initialize the known distance from the camera to the object, which
+        # in this case is 24 inches
+        KNOWN_DISTANCE = 50.0
+
+        # initialize the known object width, which in this case, the piece of
+        # paper is 12 inches wide
+        KNOWN_WIDTH = 4.2
+
+        # load the furst image that contains an object that is KNOWN TO BE 2 feet
+        # from our camera, then find the paper marker in the image, and initialize
+        # the focal length
+        marker = cv.minAreaRect(c)
+        focalLength = 2045.45 * 4.05 #1976.19 # (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
+
+        centimeters = (KNOWN_WIDTH * focalLength)/ marker[1][0]
+        print("Afstand: " + str((centimeters/10)*2) + " CMs")
+
+        # draw a bounding box around the image and display it
+        box = cv.cv.BoxPoints(marker) if imutils.is_cv2() else cv.boxPoints(marker)
+        box = np.int0(box)
+        cv.drawContours(image, [box], -1, (0, 255, 0), 2)
+        cv.putText(image, "%.2fcm" % (centimeters / 10),
+            (image.shape[1] - 200, image.shape[0] - 20), cv.FONT_HERSHEY_SIMPLEX,
+            2.0, (0, 255, 0), 3)
+    
     def FindEgg(self, frame):
         maxoffcenter = 10
         count = 0
@@ -48,8 +75,10 @@ class EggVision:
             else:
                 print("Good enough")
                 print('area: ' + str(area))
+                self.icanShowYouTheWorld(frame, currentcontour)
                 if (area > 20000):
-                    return True
+                    self.icanShowYouTheWorld(frame, currentcontour)
+                    #return True
         elif self.threshold < 15:
             self.threshold = 255
         else:

@@ -59,13 +59,13 @@ async def GetArduino():
         print(str(msg.decode('utf-8', errors="ignore")))
         if(msg == "b''"):
             print(msg)
-        if(re.search('.(Arm mov).', str(msg))):
+        if(re.search('.(Arm mov).', str(msg))): # check if the arm stopped moving
             print("found")
             global boolLook
             global armMoved # add 'global' so it doesn't create a local variable named armMoved
             armMoved = True
             boolLook = False
-        elif(re.search('.(MEGA start).', str(msg))):
+        elif(re.search('.(MEGA start).', str(msg))): # check if the arduino booted
             global setupComplete
             setupComplete = True
     
@@ -106,6 +106,8 @@ def main():
                 print("got all")
         
         #line.FindLine(frame) # run continuesly to check if we're still in the playing field
+        
+        egg.FindEgg(frame) # try finding the distance
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
