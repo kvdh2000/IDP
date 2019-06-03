@@ -13,6 +13,7 @@ class EggVision:
     
     threshold = 255
     def __init__(self):
+        self.distanceFound = 0
         pass
 
     def icanShowYouTheWorld(self, image, c):
@@ -28,11 +29,11 @@ class EggVision:
         # from our camera, then find the paper marker in the image, and initialize
         # the focal length
         marker = cv.minAreaRect(c)
-        focalLength = 2045.45 * 4.05 #1976.19 # (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
+        focalLength = 2045.45 * 4.05 # (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
 
         centimeters = (KNOWN_WIDTH * focalLength)/ marker[1][0]
-        print("Afstand: " + str((centimeters/10)*2) + " CMs")
-
+        print("Afstand: " + str(centimeters/10) + " CMs")
+        self.distanceFound = centimeters/10
         # draw a bounding box around the image and display it
         box = cv.cv.BoxPoints(marker) if imutils.is_cv2() else cv.boxPoints(marker)
         box = np.int0(box)
@@ -69,16 +70,18 @@ class EggVision:
             cx = int(center['m10']/center['m00'])
             cy = int(center['m01']/center['m00'])
             if cx < ((len(frame[1]) / 2) - (len(frame[1]) * maxoffcenter * 0.005)):
-                print("Go right")
-            elif cx > ((len(frame[1]) / 2) + (len(frame[1]) * maxoffcenter * 0.005)):
                 print("Go left")
+            elif cx > ((len(frame[1]) / 2) + (len(frame[1]) * maxoffcenter * 0.005)):
+                print("Go right")
             else:
                 print("Good enough")
                 print('area: ' + str(area))
                 self.icanShowYouTheWorld(frame, currentcontour)
                 if (area > 20000):
                     self.icanShowYouTheWorld(frame, currentcontour)
-                    #return True
+                    if(self.distanceFound < 20):
+                        print("found stuff")
+                        return True
         elif self.threshold < 15:
             self.threshold = 255
         else:
