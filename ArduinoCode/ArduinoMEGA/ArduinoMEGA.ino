@@ -22,6 +22,7 @@
 #define Y A6
 
 //Variables for Serial
+const long unsigned int baudrate = 1000000;
 int reg = 0;
 String readString;
 String read_buffer = "";
