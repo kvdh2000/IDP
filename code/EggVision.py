@@ -8,7 +8,6 @@ import time
 import math
 import imutils
 
-
 class EggVision:
     
     threshold = 255
@@ -16,18 +15,11 @@ class EggVision:
         self.distanceFound = 0
         pass
 
-    def icanShowYouTheWorld(self, image, c):
-        # initialize the known distance from the camera to the object, which
-        # in this case is 24 inches
-        KNOWN_DISTANCE = 50.0
-
+    def eicanShowYouTheWorld(self, image, c):
         # initialize the known object width, which in this case, the piece of
         # paper is 12 inches wide
         KNOWN_WIDTH = 4.2
 
-        # load the furst image that contains an object that is KNOWN TO BE 2 feet
-        # from our camera, then find the paper marker in the image, and initialize
-        # the focal length
         marker = cv.minAreaRect(c)
         focalLength = 2045.45 * 4.05 # (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
 
