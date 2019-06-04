@@ -34,7 +34,7 @@ const char cmd_sep = '|';
 String dcinput = "05120512";
 double angle;
 int intensity;
-int dcpins[18] = {4, 26, 27, 5, 28, 29, 2, 22, 23, 3, 24, 25, 6, 30, 31, 7, 32, 33};
+int dcpins[18] = {5, 26, 27, 6, 28, 29, 3, 22, 23, 4, 24, 25, 7, 30, 31, 8, 32, 33};
 int jX = 512;
 int jY = 512;
 
@@ -61,15 +61,15 @@ void setup()
 
   initServos();
 
-//  for (byte c = 0; c < 18; c++)
-//  {
-//    pinMode(dcpins[c], OUTPUT);
-//  }
-//
-//  for (uint8_t i = 0; i < 10; i++)
-//  {
-//    voltages[i] = 0;
-//  }
+  for (byte c = 0; c < 18; c++)
+  {
+    pinMode(dcpins[c], OUTPUT);
+  }
+
+  for (uint8_t i = 0; i < 10; i++)
+  {
+    voltages[i] = 0;
+  }
 }
 
 void loop()
@@ -84,14 +84,14 @@ void loop()
   digitalWrite(LED, LOW);
   delay(50);
 
-//  voltMeter();
-//  readJoy();
-//
-//  if (dcinput != "")
-//  {
+  voltMeter();
+  readJoy();
+
+  if (dcinput != "")
+  {
 //    drive();
-//    dcinput = "";
-//  }
+    dcinput = "";
+  }
 
   if (Serial.available() && read_buffer.length() < buffer_size)
   {
