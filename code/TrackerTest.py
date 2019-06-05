@@ -34,7 +34,7 @@ class TrackerTest:
                 self.multiTracker.add(self.csrtTracker, frame, bbox)
         
         # get updated location of objects in subsequent frames
-        boxes = self.multiTracker.update(frame)
+        boxes = self.multiTracker.update(frame) # makes shit slow
 
         # draw tracked objects
         for i, newbox in enumerate(boxes):

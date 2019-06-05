@@ -27,7 +27,7 @@ argName = ap.parse_args()
 # close it between switching scripts
 cam = PiCamera()
 cam.resolution = (640, 480)
-cam.framerate = 32
+cam.framerate = 90
 rawCapture = PiRGBArray(cam, size=(640, 480))
 
 # initialize variable to request 
@@ -109,8 +109,8 @@ def main():
         
         #line.FindLine(frame) # run continuesly to check if we're still in the playing field
         
-        track.TrackEgg(frame)
-        #egg.FindEgg(frame)
+        #track.TrackEgg(frame)
+        egg.FindEgg(frame)
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
