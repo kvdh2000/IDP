@@ -5,7 +5,7 @@ from BlueVision import BlueVision
 from EggVision import EggVision
 from LineVision import LineVision
 from TrackerTest import TrackerTest
-from ChickVision import ChickenVision
+from ChickVision import ChickVision
 
 import argparse
 import asyncio
@@ -39,7 +39,7 @@ egg = EggVision()
 blue = BlueVision()
 line = LineVision()
 track = TrackerTest()
-chicken = ChickenVision()
+chicken = ChickVision()
 found =[False, False, False]
 
 # use this to check if the arm stopped moving
