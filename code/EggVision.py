@@ -1,4 +1,3 @@
-from CalcDistance import CalcDistance
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from time import sleep
@@ -15,7 +14,7 @@ class EggVision:
         self.distanceFound = 0
         pass
 
-    def eicanShowYouTheWorld(self, image, c):
+    def icanShowYouTheWorld(self, image, c):
         # initialize the known object width, which in this case, the piece of
         # paper is 12 inches wide
         KNOWN_WIDTH = 4.2
@@ -73,9 +72,11 @@ class EggVision:
                     self.icanShowYouTheWorld(frame, currentcontour)
                     if(self.distanceFound < 20):
                         print("found stuff")
-                        return True
+                        return True, self.distanceFound
+
         elif self.threshold < 15:
             self.threshold = 255
         else:
             self.threshold -= 10
         cv.imshow('cam', frame)
+        return 0, None

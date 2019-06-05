@@ -43,6 +43,7 @@ found =[False, False, False]
 armMoved = False
 boolLook = False 
 setupComplete = False
+location1 = None
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
@@ -92,8 +93,8 @@ def main():
         # wait till the arduino is ready to receive commands
         if setupComplete: 
             if(not found[0]):
-                found[0] = egg.FindEgg(frame) # find the egg
-                if found[0]:
+                found[0], location = egg.FindEgg(frame) # find the egg
+                if found[0] and location is not None:
                     SendMessage('marm|') # send a command to the arduino over Serial
         if armMoved:        
             if(not found[1]):
@@ -107,7 +108,9 @@ def main():
         
         #line.FindLine(frame) # run continuesly to check if we're still in the playing field
         
-        egg.FindEgg(frame) # try finding the distance
+        found[0], location1 = egg.FindEgg(frame) # try finding the distance
+        if location1 is not None:
+            print('Found location or something: ' +str(location1))
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
