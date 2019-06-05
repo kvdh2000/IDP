@@ -7,15 +7,15 @@ import time
 import math
 import imutils
 
-class BlueVision:
+class ChickVision:
     def __init__(self):
         pass
         
-    def FindCar(self, f):
+    def FindChicken(self, f):
 
         frame = f.array
         
-        image, contours, hierarchy = cv.findContours(cv.inRange(cv.cvtColor(frame, cv.COLOR_RGB2HSV), np.array([10,115,100]), np.array([40,255,255])),cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
+        image, contours, hierarchy = cv.findContours(cv.inRange(cv.cvtColor(frame, cv.COLOR_RGB2HSV), np.array([10,100,20]), np.array([20,255,200])),cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
         for cnr in range(len(contours)):
                 cnt = contours[cnr]
                 center = cv.moments(cnt)
