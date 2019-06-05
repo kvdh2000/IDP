@@ -1,13 +1,8 @@
-from __future__ import print_function
-import sys
 import cv2
 from random import randint
 import numpy as np
 import math
 import imutils
-import time
-from time import sleep
-
 
 class TrackerTest:
     def __init__(self):
@@ -15,19 +10,17 @@ class TrackerTest:
 
     bboxes = []
     colors = [] 
+
     # Create MultiTracker object
+    # and initialize our Tracking algorithm
     multiTracker = cv2.MultiTracker_create()
     csrtTracker = cv2.TrackerCSRT_create()
 
     def TrackEgg(self, f):
-        # draw bounding boxes over objects
-        # selectROI's default behaviour is to draw box starting from the center
-        # when fromCenter is set to false, you can draw box starting from top left corner
         frame = f.array
         if not self.bboxes:
             bbox = cv2.selectROI('MultiTracker', frame)
             self.bboxes.append(bbox)
-            #self.colors.append((randint(64, 255), randint(64, 255), randint(64, 255)))
 
             # Initialize MultiTracker 
             for bbox in self.bboxes:

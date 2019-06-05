@@ -1,17 +1,14 @@
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-from time import sleep
 import cv2 as cv
 import numpy as np
 import time
 import math
 import imutils
 
-class BlueVision:
+class ChickenVision:
     def __init__(self):
         pass
         
-    def FindCar(self, f):
+    def FindChicken(self, f):
 
         frame = f.array
         

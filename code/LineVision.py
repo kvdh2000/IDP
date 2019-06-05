@@ -1,6 +1,3 @@
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-from time import sleep
 import cv2 as cv
 import numpy as np
 import time

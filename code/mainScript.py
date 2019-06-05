@@ -5,6 +5,7 @@ from BlueVision import BlueVision
 from EggVision import EggVision
 from LineVision import LineVision
 from TrackerTest import TrackerTest
+from ChickVision import ChickenVision
 
 import argparse
 import asyncio
@@ -38,6 +39,7 @@ egg = EggVision()
 blue = BlueVision()
 line = LineVision()
 track = TrackerTest()
+chicken = ChickenVision()
 found =[False, False, False]
 
 # use this to check if the arm stopped moving
@@ -110,7 +112,8 @@ def main():
         #line.FindLine(frame) # run continuesly to check if we're still in the playing field
         
         #track.TrackEgg(frame)
-        egg.FindEgg(frame)
+        #egg.FindEgg(frame)
+        chicken.FindChicken(frame)
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
