@@ -4,6 +4,7 @@ from QRVision import QRScanner
 from BlueVision import BlueVision
 from EggVision import EggVision
 from LineVision import LineVision
+from TrackerTest import TrackerTest
 
 import argparse
 import asyncio
@@ -36,6 +37,7 @@ find = FindCon()
 egg = EggVision()
 blue = BlueVision()
 line = LineVision()
+track = TrackerTest()
 found =[False, False, False]
 
 # use this to check if the arm stopped moving
@@ -57,7 +59,6 @@ time.sleep(.5) # wait for Arduino and camera to start up
 async def GetArduino():
     msg = (ard.read(ard.inWaiting()))
     if(msg != None):
-        print(str(msg.decode('utf-8', errors="ignore")))
         if(msg == "b''"):
             print(msg)
         if(re.search('.(Arm mov).', str(msg))): # check if the arm stopped moving
@@ -108,9 +109,8 @@ def main():
         
         #line.FindLine(frame) # run continuesly to check if we're still in the playing field
         
-        found[0], location1 = egg.FindEgg(frame) # try finding the distance
-        if location1 is not None:
-            print('Found location or something: ' +str(location1))
+        track.TrackEgg(frame)
+        #egg.FindEgg(frame)
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
