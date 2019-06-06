@@ -13,14 +13,12 @@
  * sendBack
  */
 
-#include "DynamixelMotor.h"
+//#include "DynamixelMotor.h"
 #include "Arduino.h"
-
-int dcpins[18] = {3, 22, 23, 4, 24, 25, 5, 26, 27, 6, 28, 29, 7, 30, 31, 8, 32, 33};
 
 //Pin definitions
 #define DIR_PIN 2
-#define M1D dcpins[0]
+#define M1D 3
 #define M2D 4
 #define M3D 5
 #define M4D 6
