@@ -98,7 +98,9 @@ void loop()
   Serial.println();
   Serial.println("Restart loop");
   Serial.println();
-
+  delay(500);
+  Serial.println(angle);
+  Serial.println(intensity);
   digitalWrite(LED, HIGH);
   delay(50);
   digitalWrite(LED, LOW);
@@ -175,10 +177,10 @@ void convertxy()
 
 void turnOff()
 {
-  digitalWrite(M1D, 0);  
-  digitalWrite(M2D, 0);
-  digitalWrite(M3D, 0);
-  digitalWrite(M4D, 0);
+  analogWrite(M1D, 0);  
+  analogWrite(M2D, 0);
+  analogWrite(M3D, 0);
+  analogWrite(M4D, 0);
   digitalWrite(M1A, LOW);
   digitalWrite(M1B, LOW);
   digitalWrite(M2A, LOW);
