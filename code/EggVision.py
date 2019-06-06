@@ -23,7 +23,6 @@ class EggVision:
         focalLength = 2045.45 * 4.05 # (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
 
         centimeters = (KNOWN_WIDTH * focalLength)/ marker[1][0]
-        print("Afstand: " + str(centimeters/10) + " CMs")
         self.distanceFound = centimeters/10
         # draw a bounding box around the image and display it
         box = cv.cv.BoxPoints(marker) if imutils.is_cv2() else cv.boxPoints(marker)
@@ -70,7 +69,7 @@ class EggVision:
                 self.icanShowYouTheWorld(frame, currentcontour)
                 if (area > 20000):
                     self.icanShowYouTheWorld(frame, currentcontour)
-                    if(self.distanceFound < 20):
+                    if(self.distanceFound < 25):
                         print("found stuff")
                         return True, self.distanceFound
 
@@ -79,4 +78,4 @@ class EggVision:
         else:
             self.threshold -= 10
         cv.imshow('cam', frame)
-        return 0, None
+        return False, None
