@@ -1,11 +1,11 @@
 # import our own scripts
-from ConVision import FindCon
-from QRVision import QRScanner
-from BlueVision import BlueVision
-from EggVision import EggVision
-from LineVision import LineVision
-from TrackerTest import TrackerTest
-from ChickVision import ChickVision
+from ConVision import FindCon # vind het bakje 80% van de keren
+from QRVision import QRScanner # werkt
+from BlueVision import BlueVision # werkt misschien
+from EggVision import EggVision # ongeveer 80% nauwkeurig, distance is goed mits het ei goed gevonden word
+from LineVision import LineVision # werkt niet
+from TrackerTest import TrackerTest # werkt maar nog niet autonoom
+from ChickVision import ChickVision # werkt niet
 
 import argparse
 import asyncio
@@ -47,7 +47,6 @@ found =[False, False, False]
 armMoved = False
 boolLook = False 
 setupComplete = False
-location1 = None
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
@@ -61,6 +60,7 @@ time.sleep(.5) # wait for Arduino and camera to start up
 async def GetArduino():
     msg = (ard.read(ard.inWaiting()))
     if(msg != None):
+        print(msg)
         if(msg == "b''"):
             print(msg)
         if(re.search('.(Arm mov).', str(msg))): # check if the arm stopped moving
@@ -98,22 +98,24 @@ def main():
             if(not found[0]):
                 found[0], location = egg.FindEgg(frame) # find the egg
                 if found[0] and location is not None:
-                    SendMessage('marm|') # send a command to the arduino over Serial
+                    SendMessage('marm-z'+str(round(location, 1))+'|') # send a command to the arduino over Serial
         if armMoved:        
             if(not found[1]):
                 found[1] = scan.SearchQR(argName.a, frame) # scans for the QRCode
             elif(not found[2]):
-                found[2] = find.FindContainer(frame) # find the container
+                found[2], location = find.FindContainer(frame) # find the container
                 if found[2]:
-                    SendMessage("marm|")
+                    SendMessage('marm-z'+str(round(location, 1))+'|')
             else:
                 print("got all")
         
+        # Direct functies aanroepen om te debuggen 
+        # niet afhankelijk maken van de Arduino 
+        # om te testen
         #line.FindLine(frame) # run continuesly to check if we're still in the playing field
-        
-        #track.TrackEgg(frame)
-        #egg.FindEgg(frame)
-        chicken.FindChicken(frame)
+        #track.TrackEgg(frame) # niet autonoom maar werkt wel
+        #egg.FindEgg(frame) # niet 100% nauwkeurig maar werkt, distance werkt wanneer het ei goed gevonden word
+        #chicken.FindChicken(frame) # werkt niet
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
