@@ -1,3 +1,4 @@
+
 //All methods
 /*
  * setup
@@ -14,8 +15,6 @@
 
 //#include "DynamixelMotor.h"
 #include "Arduino.h"
-
-int dcpins[18] = {3, 22, 23, 4, 24, 25, 5, 26, 27, 6, 28, 29, 7, 30, 31, 8, 32, 33};
 
 //Pin definitions
 #define DIR_PIN 2
@@ -36,6 +35,14 @@ int dcpins[18] = {3, 22, 23, 4, 24, 25, 5, 26, 27, 6, 28, 29, 7, 30, 31, 8, 32, 
 #define X A5
 #define Y A6
 
+//Variables for Serial
+const long unsigned int baudrate = 1000000;
+int reg = 0;
+String readString;
+String read_buffer = "";
+String cmd = "";
+const int buffer_size = 10;
+const char cmd_sep = '|';
 
 //Variables for DC motors
 String dcinput = "05120512";
@@ -44,11 +51,22 @@ int intensity;
 int jX = 512;
 int jY = 512;
 
+//Variables for Volt Meter
+#define AANTAL_METINGEN  10
+float voltages[AANTAL_METINGEN];
+float input_volt = 0.0;
+float temp = 0.0;
+float factor = 1.165;
+uint8_t voltagesIndex = 0;
+float som = 0;
+boolean arrayGevuld = false;
+float gemiddeldeVoltage = 0.0;
+
 void setup()
 {
   Serial.begin(9600);
   Serial.println("Arduino MEGA start");
-
+  
   pinMode(LED, OUTPUT);
   pinMode(vuMeter, INPUT);
   pinMode(X, INPUT);
@@ -66,7 +84,12 @@ void setup()
   pinMode(M4A, OUTPUT);
   pinMode(M4B, OUTPUT);
 
+//  initServos()
 
+  for (uint8_t i = 0; i < 10; i++)
+  {
+    voltages[i] = 0;
+  }
 }
 
 void loop()
@@ -75,7 +98,9 @@ void loop()
   Serial.println();
   Serial.println("Restart loop");
   Serial.println();
-
+  delay(500);
+  Serial.println(angle);
+  Serial.println(intensity);
   digitalWrite(LED, HIGH);
   delay(50);
   digitalWrite(LED, LOW);
@@ -87,10 +112,35 @@ void loop()
   if (dcinput != "")
   {
     drive();
-    delay(500);
     dcinput = "";
   }
+//
+//  if (Serial.available() && read_buffer.length() < buffer_size)
+//  {
+//    Serial.println("Start Serial");
+//    char r_char = Serial.read(); // pakt een char van de serial en plakt hem aan de buffer
+//    read_buffer += r_char;
+//  }
+//  else if ((read_buffer.length() >= buffer_size) || read_buffer.indexOf(cmd_sep) > 0)
+//  {
+//    int cmd_sep_idx = read_buffer.indexOf(cmd_sep);
+//    if (cmd_sep_idx > 0)
+//    {
+//      cmd = read_buffer.substring(0, cmd_sep_idx);
+//      read_buffer = read_buffer.substring(cmd_sep_idx + 1);
+//      executeSerial(cmd);
+//    }
+//    else if (cmd_sep_idx == 0)
+//    {
+//      read_buffer = read_buffer.substring(1);
+//    }
+//    else
+//    {
+//      read_buffer = "";
+//    }
+//  }
 }
+
 void readJoy()
 {
   jX = analogRead(X);
@@ -112,8 +162,8 @@ void readJoy()
 
 void convertxy()
 {
-  double x = dcinput.substring(0, 4).toInt() - 512;
-  double y = dcinput.substring(4).toInt() - 512;
+  int x = dcinput.substring(0, 4).toInt() - 512;
+  int y = dcinput.substring(4).toInt() - 512;
   angle = atan2(y, x); //in radians
   int bigPI = 157;
   int otherthing = (100 * abs(angle));
@@ -127,10 +177,10 @@ void convertxy()
 
 void turnOff()
 {
-  digitalWrite(M1D, 0);  
-  digitalWrite(M2D, 0);
-  digitalWrite(M3D, 0);
-  digitalWrite(M4D, 0);
+  analogWrite(M1D, 0);  
+  analogWrite(M2D, 0);
+  analogWrite(M3D, 0);
+  analogWrite(M4D, 0);
   digitalWrite(M1A, LOW);
   digitalWrite(M1B, LOW);
   digitalWrite(M2A, LOW);
@@ -162,27 +212,18 @@ void drive()
 
     if (angle <= M_PI * 0.5 && angle >= 0)
     {
-      double output = map(intensity, 0, 515, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M1D, map(intensity, 0, 515, 0, 255));
+      analogWrite(M2D, map(intensity, 0, 515, 0, 255));
     }
     else if (angle >= M_PI * 0.5)
     {
-      double output = intensity / 515 * map((M_PI * 0.75) - angle, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M1D, intensity / 515 * map((M_PI * 0.75) - angle, 0, 0.25 * M_PI, 0, 255));
+      analogWrite(M2D, intensity / 515 * map((M_PI * 0.75) - angle, 0, 0.25 * M_PI, 0, 255));
     }
     else
     {
-      double output = intensity / 515 * map(abs(angle), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M1D, intensity / 515 * map(abs(angle), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(M2D, intensity / 515 * map(abs(angle), 0, 0.25 * M_PI, 0, 255));
     }
   }
   else
@@ -193,27 +234,18 @@ void drive()
     digitalWrite(M2B, HIGH);
     if (angle <= M_PI * -0.5)
     {
-      double output = map(intensity, 0, 515, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M1D, map(intensity, 0, 515, 0, 255));
+      analogWrite(M2D, map(intensity, 0, 515, 0, 255));
     }
     else if (angle >= M_PI * 0.75)
     {
-      double output = intensity / 515 * map(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M1D, intensity / 515 * map(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+      analogWrite(M2D, intensity / 515 * map(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
     }
     else
     {
-      double output = intensity / 515 * map(abs(0.25 * M_PI - abs(angle)), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M1D, intensity / 515 * map(abs(0.25 * M_PI - abs(angle)), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(M2D, intensity / 515 * map(abs(0.25 * M_PI - abs(angle)), 0, 0.25 * M_PI, 0, 255));
     }
   }
 
@@ -227,27 +259,18 @@ void drive()
 
     if (angle >= M_PI * -0.5 && angle <= 0)
     {
-      double output = map(intensity, 0, 515, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M3D, map(intensity, 0, 515, 0, 255));
+      analogWrite(M4D, map(intensity, 0, 515, 0, 255));
     }
     else if (angle <= M_PI * -0.5)
     {
-      double output = intensity / 515 * map(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M3D, intensity / 515 * map(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(M4D, intensity / 515 * map(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
     }
     else
     {
-      double output = intensity / 515 * map(angle, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M3D, intensity / 515 * map(angle, 0, 0.25 * M_PI, 0, 255));
+      analogWrite(M4D, intensity / 515 * map(angle, 0, 0.25 * M_PI, 0, 255));
     }
   }
   else
@@ -256,31 +279,23 @@ void drive()
     digitalWrite(M3B, LOW);
     digitalWrite(M4A, HIGH);
     digitalWrite(M4B, LOW);
-
+    
     if (angle >= M_PI * 0.5)
     {
-      double output = map(intensity, 0, 515, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M3D, map(intensity, 0, 515, 0, 255));
+      analogWrite(M4D, map(intensity, 0, 515, 0, 255));
     }
     else if (angle <= M_PI * -0.75)
     {
-      double output = intensity / 515 * map(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M3D, intensity / 515 * map(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+      analogWrite(M4D, intensity / 515 * map(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
     }
     else
     {
-      double output = intensity / 515 * map(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("pwm = ");
-      Serial.println(output);
+      analogWrite(M3D, intensity / 515 * map(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(M4D, intensity / 515 * map(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
     }
+    
   }
 }
 
@@ -288,3 +303,85 @@ void tracks()
 {
 
 }
+
+void voltMeter()
+{
+  int analogvalue = analogRead(vuMeter);
+  temp = (analogvalue * 5.0) / 1024.0;
+  input_volt = temp / factor;
+  som = som - voltages[voltagesIndex];
+  voltages[voltagesIndex] = input_volt;
+
+  som = som + voltages[voltagesIndex];
+
+  if (arrayGevuld)
+  {
+    gemiddeldeVoltage = som / AANTAL_METINGEN;
+  }
+
+  else
+  {
+    gemiddeldeVoltage = som / (voltagesIndex + 1);
+  }
+
+  voltagesIndex = voltagesIndex + 1;
+
+  if (voltagesIndex == AANTAL_METINGEN)
+  {
+    voltagesIndex = 0;
+    arrayGevuld = true;
+  }
+
+  Serial.print("U = ");
+  Serial.print(input_volt);
+  Serial.println("V");
+  Serial.print("Average U = ");
+  Serial.print(gemiddeldeVoltage);
+  Serial.println("V");
+  Serial.println();
+}
+
+//void executeSerial(String command)
+//{
+//  Serial.print("Execute command: ");
+//  Serial.println(command);
+//
+//  //Command can be max 5 characters long
+//  String str = "command: ";
+//  if (command == "forw" || command == "back" || command == "left" || command == "right")
+//  {
+//    moveRobot(command);
+//  }
+//  else if (command == "dance")
+//  {
+//    dance();
+//  }
+//  else if (command == "dancl")
+//  {
+//    danceLine();
+//  }
+//  else if (command == "blink")
+//  {
+//    blinkLed();
+//  }
+//  else if (command == "marm")
+//  {
+//    moveArm();
+//  }
+//  else if (command == "look")
+//  {
+//    lookAround();
+//  }
+//  else
+//  {
+//    Serial.println(str + "unknown " + command);
+//  }
+//}
+//
+//void sendBack(String Text)
+//{
+//  Serial.print("Arduino sends: ");
+//  Serial.println(Text);
+//  Serial.flush();
+//  readString = "";
+//}
