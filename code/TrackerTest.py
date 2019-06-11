@@ -1,3 +1,8 @@
+__author__ = "Merijn, Daan Eekhof"
+__version__ = "0.8.0"
+__maintainer__ = "Merijn"
+__status__ = "Development"
+
 import cv2
 from random import randint
 import numpy as np

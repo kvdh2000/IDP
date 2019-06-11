@@ -1,7 +1,11 @@
+__author__ = "Daan Eekhof, Keanu Attema, and Elon Gielink"
+__version__ = "0.8.0"
+__maintainer__ = "Daan Eekhof"
+__status__ = "Development"
+
 import cv2
 from imutils.video import VideoStream
 from pyzbar import pyzbar
-import argparse
 import datetime
 import imutils
 import time
@@ -54,6 +58,6 @@ class QRScanner:
 			cv2.putText(frame, text, (x, y - 10),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 		 
-			# show the output frame
-			cv2.imshow("cam", frame)
+		# show the output frame
+		cv2.imshow("cam", frame)
 		 

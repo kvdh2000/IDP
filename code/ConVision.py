@@ -1,32 +1,18 @@
+__author__ = "Daan Eekhof, Keanu Attema, Elon Gielink"
+__version__ = "0.8.0"
+__maintainer__ = "Daan Eekhof, Keanu Attema"
+__status__ = "Development"
+
+from CalcDistance import CalcDistance
 import cv2
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 import imutils
 import numpy as np
 import math
-import time
 
 class FindCon:
     def __init__(self):
+        self.dist = CalcDistance()
         pass
-    
-    def icanShowYouTheWorld(self, image, c):
-        # initialize the known object width, which in this case, the piece of
-        # paper is 12 inches wide
-        KNOWN_WIDTH = 14.5
-
-        marker = cv2.minAreaRect(c)
-        focalLength = 1975.86 * 4.05 # (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
-
-        centimeters = (KNOWN_WIDTH * focalLength)/ marker[1][0]
-        self.distanceFound = centimeters/10
-        # draw a bounding box around the image and display it
-        box = cv2.cv.BoxPoints(marker) if imutils.is_cv2() else cv2.boxPoints(marker)
-        box = np.int0(box)
-        cv2.drawContours(image, [box], -1, (0, 255, 0), 2)
-        cv2.putText(image, "%.2fcm" % (centimeters / 10),
-            (image.shape[1] - 200, image.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX,
-            2.0, (0, 255, 0), 3)
     
     # find shapes and see if it resembles the container
     def FindContainer(self, frame):
@@ -69,10 +55,10 @@ class FindCon:
                     print ("Go right")
                 else:
                     print ("Good enough")
-                    self.icanShowYouTheWorld(img, currentContour)
-                    if(self.distanceFound < 25):
+                    centimeters = self.dist.getDistance(img, currentContour, 1975.86, 14.5)
+                    if(centimeters < 25):
                         print("found stuff")
-                        return True, self.distanceFound
+                        return True, centimeters
 
                 x, y, w, h = cv2.boundingRect(conts[i])
                 cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
