@@ -65,11 +65,11 @@ void loop() {
        if (millis() - bt_counter > 100)
         {
           bt_counter = millis();
-          bluetooth_send.send_int("VEH_Xas", analogRead(VEH_X_AS));
-          bluetooth_send.send_int("VEH_Yas", analogRead(VEH_Y_AS));
-          bluetooth_send.send_int("ARM_Xas", (analogRead(ARM_X_AS) - 1024) * -1);// JS2 moet worden geinvert
-          bluetooth_send.send_int("ARM_Yas", (analogRead(ARM_Y_AS)- 1024) * -1);
-          bluetooth_send.send_int("Klauw", klauwbool);
+          bluetooth_send.send_int("Motor_Xas", analogRead(VEH_X_AS));
+          bluetooth_send.send_int("Motor_Yas", analogRead(VEH_Y_AS));
+          bluetooth_send.send_int("Arm_Xas", (analogRead(ARM_X_AS) - 1024) * -1);// JS2 moet worden geinvert
+          bluetooth_send.send_int("Arm_Yas", (analogRead(ARM_Y_AS)- 1024) * -1);
+          bluetooth_send.send_int("Hand", klauwbool);
         }
     }
 }
