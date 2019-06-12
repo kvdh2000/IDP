@@ -1,27 +1,10 @@
 int16_t speed1 = 1023;
 int16_t speed2 = 512;
 
-HardwareDynamixelInterface interface(Serial1, DIR_PIN);
-DynamixelMotor motor1(interface, 1);
-DynamixelMotor motor2(interface, 2);
-DynamixelMotor motor3(interface, 3);
-DynamixelMotor motor4(interface, 4);
-DynamixelMotor motor5(interface, 5);
-DynamixelMotor motor6(interface, 6);
-//DynamixelMotor motor7(interface, 7);
-//DynamixelMotor motor8(interface, 8);
-//DynamixelMotor motor9(interface, 9);
-//DynamixelMotor motor10(interface, 10);
-//DynamixelMotor motor11(interface, 11);
-//DynamixelMotor motor12(interface, 12);
-//DynamixelMotor motor13(interface, 13);
-//DynamixelMotor motor14(interface, 14);
-//DynamixelMotor motor15(interface, 15);
-//DynamixelMotor motor16(interface, 16);
-DynamixelMotor motors(interface, BROADCAST_ID);
 
-void initServos(){  
-  interface.begin(baudrate);  
+
+void initServos(){ 
+  interface.begin(baudrate);   
   motors.enableTorque();
   motors.speed(speed2);
   motor1.jointMode(0, 1023);

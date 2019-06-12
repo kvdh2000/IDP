@@ -7,13 +7,16 @@
  * convertxy
  * turnOff
  * drive
+ * armMovement
  * voltMeter
  * executeSerial
  * sendBack
+ * dmap
  */
 
 #include "DynamixelMotor.h"
 #include "Arduino.h"
+#include "JohnsSpecialEasyTransfer.h"
 
 //Pin definitions
 #define DIR_PIN 2
@@ -40,8 +43,52 @@ int reg = 0;
 String readString;
 String read_buffer = "";
 String cmd = "";
-const int buffer_size = 10;
+const int bufferSize = 10;
 const char cmd_sep = '|';
+
+//Variables for bt
+JohnsSpecialEasyTransfer bluetooth_conn;
+int MotorXas;
+int MotorYas;
+int ArmXas;
+int ArmYas;
+int CurArmY = 825;
+int CurArmX = 0;
+
+//General Variables
+const int deadzone_min = 485;
+const int deadzone_max = 535;
+
+//Variables for Servos
+HardwareDynamixelInterface interface(Serial1, DIR_PIN);
+DynamixelMotor motor1(interface, 1);
+DynamixelMotor motor2(interface, 2);
+DynamixelMotor motor3(interface, 3);
+DynamixelMotor motor4(interface, 4);
+DynamixelMotor motor5(interface, 5);
+DynamixelMotor motor6(interface, 6);
+//DynamixelMotor motor7(interface, 7);
+//DynamixelMotor motor8(interface, 8);
+//DynamixelMotor motor9(interface, 9);
+//DynamixelMotor motor10(interface, 10);
+//DynamixelMotor motor11(interface, 11);
+//DynamixelMotor motor12(interface, 12);
+//DynamixelMotor motor13(interface, 13);
+//DynamixelMotor motor14(interface, 14);
+//DynamixelMotor motor15(interface, 15);
+//DynamixelMotor motor16(interface, 16);
+DynamixelMotor motors(interface, BROADCAST_ID);
+float A = 17;
+float B = 0;
+float C = 14;
+float D = 6.7;
+float afstand;
+float alpha;
+float beta;
+float gamma;
+float alphar;
+float betar;
+float gammar;
 
 //Variables for DC motors
 String dcinput = "05120512";
@@ -63,8 +110,17 @@ float gemiddeldeVoltage = 0.0;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(38400);
+  Serial1.begin(38400);
+  Serial2.begin(38400);
   Serial.println("Arduino MEGA start");
+
+  bluetooth_conn.begin(&Serial2);
+  bluetooth_conn.add_recieve_int("Motor_Xas", 512);
+  bluetooth_conn.add_recieve_int("Motor_Yas", 512);
+  bluetooth_conn.add_recieve_int("Arm_Xas", 512);
+  bluetooth_conn.add_recieve_int("Arm_Yas", 512);
+  bluetooth_conn.add_recieve_int("Hand", 512);
   
   pinMode(LED, OUTPUT);
   pinMode(vuMeter, INPUT);
@@ -97,7 +153,9 @@ void loop()
   Serial.println();
   Serial.println("Restart loop");
   Serial.println();
-  delay(1000);
+
+  bluetooth_conn.update();
+  
   digitalWrite(LED, HIGH);
   delay(50);
   digitalWrite(LED, LOW);
@@ -109,18 +167,20 @@ void loop()
   if (dcinput != "")
   {
     drive();
-    Serial.println(angle);
-    Serial.println(intensity);
+//    Serial.println(angle);
+//    Serial.println(intensity);
     dcinput = "";
   }
 
-  if (Serial.available() && read_buffer.length() < buffer_size)
+  armMovement();
+
+  if (Serial.available() && read_buffer.length() < bufferSize)
   {
     Serial.println("Start Serial");
     char r_char = Serial.read(); // pakt een char van de serial en plakt hem aan de buffer
     read_buffer += r_char;
   }
-  else if ((read_buffer.length() >= buffer_size) || read_buffer.indexOf(cmd_sep) > 0)
+  else if ((read_buffer.length() >= bufferSize) || read_buffer.indexOf(cmd_sep) > 0)
   {
     int cmd_sep_idx = read_buffer.indexOf(cmd_sep);
     if (cmd_sep_idx > 0)
@@ -195,7 +255,7 @@ void drive()
   convertxy();
 
   //Deadzone
-  if (jX < 612 && jX > 412 && jY < 612 && jY > 412)
+  if (deadzone_min < jX < deadzone_max && deadzone_min < jY < deadzone_max)
   {
     turnOff();
     return;
@@ -335,6 +395,56 @@ void drive()
   }
 }
 
+void armMovement(){  
+  motors.speed(500);
+  
+  ArmXas = bluetooth_conn.get_int("Arm_Xas");
+  ArmYas = bluetooth_conn.get_int("Arm_Yas");
+  int Hand = bluetooth_conn.get_int("Hand");
+
+  if(Hand == 0){
+    motor6.goalPosition(600);
+  }
+  else{
+    motor6.goalPosition(50);    
+  }
+  if (ArmXas < deadzone_min) {
+      CurArmY -= 20;     
+  }
+  if(ArmXas > deadzone_max)
+  {
+      CurArmY += 20;      
+  }
+  if(ArmYas > deadzone_max)
+  {
+      CurArmX += 2;         
+  }
+  if(ArmYas < deadzone_min)
+  {
+      CurArmX -= 2;        
+  }
+
+  CurArmX = constrain(CurArmX, 1, 28);
+  
+  B=sqrt(CurArmX*CurArmX+D*D);
+  if(B < 26 and B != 0){ 
+      alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
+      betar = acos((A * A - B * B + C * C) / (2 * A * C));
+      gammar = acos((A * A + B * B - C * C) / (2 * A * B));
+      alpha = alphar * 180 / M_PI+60;
+      beta = betar * 180 / M_PI-20;
+      gamma = gammar * 180 / M_PI;
+      float servohoek1 = map(alpha, 0, 360, 100, 1023);
+      float servohoek2 = map(beta, 0, 360, 50, 1023);
+      motor2.goalPosition(servohoek1);
+      motor4.goalPosition(servohoek2); 
+  }
+   
+  CurArmY = constrain(CurArmY, 0, 1023);
+    
+  motor1.goalPosition(CurArmY);
+}
+
 void voltMeter()
 {
   int analogvalue = analogRead(vuMeter);
@@ -370,18 +480,6 @@ void voltMeter()
   Serial.print(gemiddeldeVoltage);
   Serial.println("V");
   Serial.println();
-}
-
-double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh)
-{
-  //warning this function is highly complex
-  
-  double frommargin = fromhigh - fromlow;
-  double tomargin = tohigh - tolow;
-  
-  double output = (input - fromlow) / frommargin * tomargin + tolow;
-
-  return output;
 }
 
 void executeSerial(String command)
@@ -427,4 +525,16 @@ void sendBack(String Text)
   Serial.println(Text);
   Serial.flush();
   readString = "";
+}
+
+double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh)
+{
+  //warning this function is highly complex
+  
+  double frommargin = fromhigh - fromlow;
+  double tomargin = tohigh - tolow;
+  
+  double output = (input - fromlow) / frommargin * tomargin + tolow;
+
+  return output;
 }

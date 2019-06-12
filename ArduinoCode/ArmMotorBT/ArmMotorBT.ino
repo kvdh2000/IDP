@@ -85,11 +85,11 @@ void setup() {
     motor6.goalPosition(350);
 
     bluetooth_conn.begin(&Serial2);
-    bluetooth_conn.add_recieve_int("VEH_Xas", js_neutral);
-    bluetooth_conn.add_recieve_int("VEH_Yas", js_neutral);
-    bluetooth_conn.add_recieve_int("ARM_Xas", js_neutral);
-    bluetooth_conn.add_recieve_int("ARM_Yas", js_neutral);
-    bluetooth_conn.add_recieve_int("Klauw", js_neutral);
+    bluetooth_conn.add_recieve_int("Motor_Xas", js_neutral);
+    bluetooth_conn.add_recieve_int("Motor_Yas", js_neutral);
+    bluetooth_conn.add_recieve_int("Motor_Xas", js_neutral);
+    bluetooth_conn.add_recieve_int("Motor_Yas", js_neutral);
+    bluetooth_conn.add_recieve_int("Motor", js_neutral);
 
     pinMode(3, OUTPUT);
     pinMode(motor_linksom, OUTPUT);
