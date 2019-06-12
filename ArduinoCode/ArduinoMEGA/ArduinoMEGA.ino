@@ -211,6 +211,9 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
 		tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
 	}
 	intensity = ((sqrt(pow(x, 2) + pow(y, 2))) * (512 / (512 / cos(tmpangle))));
+  
+  Serial.println(angle);
+  Serial.println(intensity);
 }
 
 void turnOff()
@@ -228,7 +231,7 @@ void drive() //Everything from making joystick input usable to sending the right
 	convertxy(); //Converting joystick input into usable variables
 
 	//Deadzone
-	if (deadzone_min < MotorXas < deadzone_max && deadzone_min < MotorYas < deadzone_max)
+	if (intensity < 50)
 	{
 		turnOff();
 		return;
