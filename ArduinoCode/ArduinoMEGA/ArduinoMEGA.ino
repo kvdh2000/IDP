@@ -19,20 +19,9 @@
 #include "JohnsSpecialEasyTransfer.h"
 
 //Pin definitions
+const int dcpins[12] = {22, 23, 3, 24, 25, 4, 26, 27, 5, 28, 29, 6};
 #define DIR_PIN 2
-#define M1D 3
-#define M2D 4
-#define M3D 5
-#define M4D 6
 #define LED 13
-#define M1A 22
-#define M1B 23
-#define M2A 24
-#define M2B 25
-#define M3A 26
-#define M3B 27
-#define M4A 28
-#define M4B 29
 #define vuMeter A3
 #define X A5
 #define Y A6
@@ -126,18 +115,10 @@ void setup()
   pinMode(vuMeter, INPUT);
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
-  pinMode(M1D, OUTPUT);
-  pinMode(M1D, OUTPUT);
-  pinMode(M1D, OUTPUT);
-  pinMode(M1D, OUTPUT);
-  pinMode(M1A, OUTPUT);
-  pinMode(M1B, OUTPUT);
-  pinMode(M2A, OUTPUT);
-  pinMode(M2B, OUTPUT);
-  pinMode(M3A, OUTPUT);
-  pinMode(M3B, OUTPUT);
-  pinMode(M4A, OUTPUT);
-  pinMode(M4B, OUTPUT);
+
+  for(byte c = 0; c < 12; c++){
+    pinMode(c, OUTPUT);
+  }
 
   initServos();
 
@@ -167,8 +148,6 @@ void loop()
   if (dcinput != "")
   {
     drive();
-//    Serial.println(angle);
-//    Serial.println(intensity);
     dcinput = "";
   }
 
@@ -219,11 +198,125 @@ void readJoy()
   dcinput = Xx + Yy;
 }
 
-void convertxy()
+void turnOff()
 {
-  int x = dcinput.substring(0, 4).toInt() - 512;
-  int y = dcinput.substring(4).toInt() - 512;
-  angle = -atan2(y, x); //in radians
+  for(byte c = 0; c < 12; c++){
+    digitalWrite(c, 0);
+  }
+}
+
+void drive()  //Everything from making joystick input usable to sending the right signals to the dc motors
+{
+  convertxy();  //Converting joystick input into usable variables
+
+  //Deadzone within which the motors will not receive a signal
+  if (deadzone_min < jX < deadzone_max && deadzone_min < jY < deadzone_max)
+  {
+    turnOff();
+    return;
+  }
+
+  //Deciding on which signals to send to both left motors as well as sending them based on both the angle and the required speed
+  if (angle <= M_PI * 0.75 && angle >= M_PI * -0.25)
+  {
+    digitalWrite(dcpins[0], HIGH);
+    digitalWrite(dcpins[1], LOW);
+    digitalWrite(dcpins[3], HIGH);
+    digitalWrite(dcpins[4], LOW);
+
+    if (angle <= M_PI * 0.5 && angle >= 0)
+    {
+      analogWrite(dcpins[2], dmap(intensity, 0, 515, 0, 255));
+      analogWrite(dcpins[5], dmap(intensity, 0, 515, 0, 255));
+    }
+    else if (angle >= M_PI * 0.5)
+    {
+      analogWrite(dcpins[2], double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcpins[5], double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
+    }
+    else
+    {
+      analogWrite(dcpins[2], intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
+      analogWrite(dcpins[5], intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
+    }
+  }
+  else
+  {
+    digitalWrite(dcpins[0], LOW);
+    digitalWrite(dcpins[1], HIGH);
+    digitalWrite(dcpins[3], LOW);
+    digitalWrite(dcpins[4], HIGH);
+    if (angle <= M_PI * -0.5)
+    {
+      analogWrite(dcpins[2], dmap(intensity, 0, 515, 0, 255));
+      analogWrite(dcpins[5], dmap(intensity, 0, 515, 0, 255));
+    }
+    else if (angle >= M_PI * 0.75)
+    {
+      analogWrite(dcpins[2], double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcpins[5], double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+    }
+    else
+    {
+      analogWrite(dcpins[2], double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+      analogWrite(dcpins[5], double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+    }
+  }
+
+  //Deciding on which signals to send to both right motors as well as sending them based on both the angle and the required speed
+  if (angle <= 0.25 * M_PI && angle >= M_PI * -0.75)
+  {
+    digitalWrite(dcpins[6], LOW);
+    digitalWrite(dcpins[7], HIGH);
+    digitalWrite(dcpins[9], LOW);
+    digitalWrite(dcpins[10], HIGH);
+
+    if (angle >= M_PI * -0.5 && angle <= 0)
+    {
+      analogWrite(dcpins[8], dmap(intensity, 0, 515, 0, 255));
+      analogWrite(dcpins[11], dmap(intensity, 0, 515, 0, 255));
+    }
+    else if (angle <= M_PI * -0.5)
+    {
+      analogWrite(dcpins[8], double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcpins[11], double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+    }
+    else
+    {
+      analogWrite(dcpins[8], double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcpins[11], double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+    }
+  }
+  else
+  {
+    digitalWrite(dcpins[6], HIGH);
+    digitalWrite(dcpins[7], LOW);
+    digitalWrite(dcpins[9], HIGH);
+    digitalWrite(dcpins[10], LOW);
+    
+    if (angle >= M_PI * 0.5)
+    {
+      analogWrite(dcpins[8], dmap(intensity, 0, 515, 0, 255));
+      analogWrite(dcpins[11], dmap(intensity, 0, 515, 0, 255));
+    }
+    else if (angle <= M_PI * -0.75)
+    {
+      analogWrite(dcpins[8], double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcpins[11], double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+    }
+    else
+    {
+      analogWrite(dcpins[8], double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcpins[11], double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+    }
+  }
+}
+
+void convertxy()  //Deciding the angle of the joystick, converting it to a circle input from a square input and deciding the factor for the speed by calculating the distance from the center of the joystick
+{
+  int x = MotorXas - 512;
+  int y = MotorYas - 512;
+  angle = -atan2(y, x);
   int bigPI = 157;
   int otherthing = (100 * abs(angle));
   double itmpangle = (otherthing % bigPI);
@@ -234,165 +327,9 @@ void convertxy()
   intensity = ((sqrt(pow(x, 2) + pow(y, 2))) * (512 / (512 / cos(tmpangle))));
 }
 
-void turnOff()
+double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh) //Improving the map function to work with doubles
 {
-  analogWrite(M1D, 0);  
-  analogWrite(M2D, 0);
-  analogWrite(M3D, 0);
-  analogWrite(M4D, 0);
-  digitalWrite(M1A, LOW);
-  digitalWrite(M1B, LOW);
-  digitalWrite(M2A, LOW);
-  digitalWrite(M2B, LOW);
-  digitalWrite(M3A, LOW);
-  digitalWrite(M3B, LOW);
-  digitalWrite(M4A, LOW);
-  digitalWrite(M4B, LOW);
-}
-
-void drive()
-{
-  convertxy();
-
-  //Deadzone
-  if (deadzone_min < jX < deadzone_max && deadzone_min < jY < deadzone_max)
-  {
-    turnOff();
-    return;
-  }
-
-  //Links
-  if (angle <= M_PI * 0.75 && angle >= M_PI * -0.25)
-  {
-    digitalWrite(M1A, HIGH);
-    digitalWrite(M1B, LOW);
-    digitalWrite(M2A, HIGH);
-    digitalWrite(M2B, LOW);
-
-    if (angle <= M_PI * 0.5 && angle >= 0)
-    {
-      double output = dmap(intensity, 0, 515, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q1 pwm L = ");
-      Serial.println(output);
-    }
-    else if (angle >= M_PI * 0.5)
-    {
-      double output = double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q2-1 pwm L = ");
-      Serial.println(output);
-    }
-    else
-    {
-      double output = intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255.0);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q4-2 pwm L = ");
-      Serial.println(output);
-    }
-  }
-  else
-  {
-    digitalWrite(M1A, LOW);
-    digitalWrite(M1B, HIGH);
-    digitalWrite(M2A, LOW);
-    digitalWrite(M2B, HIGH);
-    if (angle <= M_PI * -0.5)
-    {
-      double output = dmap(intensity, 0, 515, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q3 pwm L = ");
-      Serial.println(output);
-    }
-    else if (angle >= M_PI * 0.75)
-    {
-      double output = double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q2-2 pwm L = ");
-      Serial.println(output);
-    }
-    else
-    {
-      double tangle = abs(angle);
-      double mapped = dmap(tangle, 0.25 * M_PI, 0.5 * M_PI, 0, 255);
-      double output = double(intensity) / 515 * mapped;
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q4-1 mapped L = ");
-      Serial.println(output);
-    }
-  }
-
-  //Rechts
-  if (angle <= 0.25 * M_PI && angle >= M_PI * -0.75)
-  {
-    digitalWrite(M3A, LOW);
-    digitalWrite(M3B, HIGH);
-    digitalWrite(M4A, LOW);
-    digitalWrite(M4B, HIGH);
-
-    if (angle >= M_PI * -0.5 && angle <= 0)
-    {
-      double output = dmap(intensity, 0, 515, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q2 pwm R = ");
-      Serial.println(output);
-    }
-    else if (angle <= M_PI * -0.5)
-    {
-      double output = double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q3-2 pwm R = ");
-      Serial.println(output);
-    }
-    else
-    {
-      double output = double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q1-1 pwm R = ");
-      Serial.println(output);
-    }
-  }
-  else
-  {
-    digitalWrite(M3A, HIGH);
-    digitalWrite(M3B, LOW);
-    digitalWrite(M4A, HIGH);
-    digitalWrite(M4B, LOW);
-    
-    if (angle >= M_PI * 0.5)
-    {
-      double output = dmap(intensity, 0, 515, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q2 pwm R = ");
-      Serial.println(output);
-    }
-    else if (angle <= M_PI * -0.75)
-    {
-      double output = double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q3-1 pwm R = ");
-      Serial.println(output);
-    }
-    else
-    {
-      double output = double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q1-2 pwm R = ");
-      Serial.println(output);
-    }
-  }
+  return (input - fromlow) / (fromhigh - fromlow) * (tohigh - tolow) + tolow;
 }
 
 void armMovement(){  
@@ -525,16 +462,4 @@ void sendBack(String Text)
   Serial.println(Text);
   Serial.flush();
   readString = "";
-}
-
-double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh)
-{
-  //warning this function is highly complex
-  
-  double frommargin = fromhigh - fromlow;
-  double tomargin = tohigh - tolow;
-  
-  double output = (input - fromlow) / frommargin * tomargin + tolow;
-
-  return output;
 }
