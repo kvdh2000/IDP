@@ -53,11 +53,12 @@ found =[False, False, False]
 armMoved = False
 boolLook = False 
 setupComplete = True
-locationCon = 'Duckstad' # default is None
+locationCon = None # default is None
+locations = ("Duckstad", "Eibergen", "Eindhoven", "Barneveld")
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
-baud = 9600 # set arduino baudrate
+baud = 38400 # set arduino baudrate
 ard = serial.Serial(port,baud,timeout=5)
 msg = ''
 time.sleep(.5) # wait for Arduino and camera to start up
@@ -74,6 +75,7 @@ async def GetArduino():
     msg = (ard.read(ard.inWaiting()))
     if msg != None:
         print(msg)
+        loc = re.search('.?(Loc:)(\d).?', str(msg))
         if msg == "b''":
             print(msg)
         if re.search('.(Arm mov).', str(msg)): # check if the arm stopped moving
@@ -82,14 +84,10 @@ async def GetArduino():
             boolLook = False
         elif re.search('.(MEGA start).', str(msg)): # check if the arduino booted
             setupComplete = True
-        elif re.search('.(Loc: Duckst).', str(msg)):
-            locationCon = 'Duckstad'
-        elif re.search(".(Loc: 'Eiber).", str(msg)):
-            locationCon = 'Eibergen'
-        elif re.search('.(Loc: Barnev).', str(msg)):
-            locationCon = 'Barneveld'
-        elif re.search('.(Loc: Eindho).', str(msg)):
-            locationCon = 'Eindhoven'
+        elif loc is not None:
+            locationCon = locations[int(loc.group(2))]
+            print("Location python: "+locationCon)
+
     
 # Method for sending commands to the arduino
 # Command can be max 5 characters long

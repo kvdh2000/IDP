@@ -60,6 +60,7 @@ int CurArmX = 0;
 //General Variables
 const int deadzone_min = 485;
 const int deadzone_max = 535;
+const int js_neutral = 512;
 
 //Variables for Servos
 HardwareDynamixelInterface interface(Serial1, DIR_PIN);
@@ -117,11 +118,11 @@ void setup()
 	Serial.println("Arduino MEGA start");
 
 	bluetooth_conn.begin(&Serial2);
-	bluetooth_conn.add_recieve_int("Motor_Xas", 512);
-	bluetooth_conn.add_recieve_int("Motor_Yas", 512);
-	bluetooth_conn.add_recieve_int("Arm_Xas", 512);
-	bluetooth_conn.add_recieve_int("Arm_Yas", 512);
-	bluetooth_conn.add_recieve_int("Hand", 512);
+	bluetooth_conn.add_recieve_int("Motor_Xas", js_neutral);
+	bluetooth_conn.add_recieve_int("Motor_Yas", js_neutral);
+	bluetooth_conn.add_recieve_int("Arm_Xas", js_neutral);
+	bluetooth_conn.add_recieve_int("Arm_Yas", js_neutral);
+	bluetooth_conn.add_recieve_int("Hand", js_neutral);
 
 	pinMode(LED, OUTPUT);
 	pinMode(vuMeter, INPUT);
