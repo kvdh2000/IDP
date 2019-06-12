@@ -15,6 +15,7 @@ struct Motor {
  * drive
  * armMovement
  * voltMeter
+ * locationUpdate
  * executeSerial
  * sendBack
  * dmap
@@ -56,6 +57,8 @@ int ArmXas;
 int ArmYas;
 int CurArmY = 825;
 int CurArmX = 0;
+const int loc_default = 0;
+int loc_update;
 
 //General Variables
 const int deadzone_min = 485;
@@ -123,6 +126,7 @@ void setup()
 	bluetooth_conn.add_recieve_int("Arm_Xas", js_neutral);
 	bluetooth_conn.add_recieve_int("Arm_Yas", js_neutral);
 	bluetooth_conn.add_recieve_int("Hand", js_neutral);
+ bluetooth_conn.add_recieve_int("Location", loc_default);
 
 	pinMode(LED, OUTPUT);
 	pinMode(vuMeter, INPUT);
@@ -162,6 +166,7 @@ void loop()
 	readJoy();
 	drive();
 	armMovement();
+  locationUpdate();
 
 	if (Serial.available() && read_buffer.length() < bufferSize)
 	{
@@ -425,6 +430,12 @@ void voltMeter()
 	Serial.print(gemiddeldeVoltage);
 	Serial.println("V");
 	Serial.println();
+}
+
+void locationUpdate(){
+  loc_update = bluetooth_conn.get_int("Location");
+  Serial.print("Loc:");
+  Serial.println(loc_update);
 }
 
 void executeSerial(String command)
