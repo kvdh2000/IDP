@@ -1,6 +1,9 @@
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-from time import sleep
+__author__ = "Pim Spithorst, Daan Eekhof, Elon Gielink"
+__version__ = "0.8.0"
+__maintainer__ = "Pim Spithorst"
+__status__ = "Development"
+
+from CalcDistance import CalcDistance
 import cv2 as cv
 import numpy as np
 import time
@@ -11,27 +14,9 @@ class EggVision:
     
     threshold = 255
     def __init__(self):
-        self.distanceFound = 0
+        self.dist = CalcDistance()
         pass
-
-    def icanShowYouTheWorld(self, image, c):
-        # initialize the known object width, which in this case, the piece of
-        # paper is 12 inches wide
-        KNOWN_WIDTH = 4.2
-
-        marker = cv.minAreaRect(c)
-        focalLength = 2045.45 * 4.05 # (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
-
-        centimeters = (KNOWN_WIDTH * focalLength)/ marker[1][0]
-        self.distanceFound = centimeters/10
-        # draw a bounding box around the image and display it
-        box = cv.cv.BoxPoints(marker) if imutils.is_cv2() else cv.boxPoints(marker)
-        box = np.int0(box)
-        cv.drawContours(image, [box], -1, (0, 255, 0), 2)
-        cv.putText(image, "%.2fcm" % (centimeters / 10),
-            (image.shape[1] - 200, image.shape[0] - 20), cv.FONT_HERSHEY_SIMPLEX,
-            2.0, (0, 255, 0), 3)
-    
+        
     def FindEgg(self, frame):
         maxoffcenter = 10
         count = 0
@@ -66,12 +51,11 @@ class EggVision:
             else:
                 print("Good enough")
                 print('area: ' + str(area))
-                self.icanShowYouTheWorld(frame, currentcontour)
                 if (area > 20000):
-                    self.icanShowYouTheWorld(frame, currentcontour)
-                    if(self.distanceFound < 25):
+                    centimeter = self.dist.getDistance(frame, currentcontour, 2045.45, 4.2)
+                    if(centimeter < 25):
                         print("found stuff")
-                        return True, self.distanceFound
+                        return True, centimeter
 
         elif self.threshold < 15:
             self.threshold = 255

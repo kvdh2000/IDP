@@ -1,3 +1,8 @@
+__author__ = "Daan Eekhof, Keanu Attema, and Elon Gielink"
+__version__ = "0.8.0"
+__maintainer__ = "Daan Eekhof"
+__status__ = "Development"
+
 # import our own scripts
 from ConVision import FindCon # vind het bakje 80% van de keren
 from QRVision import QRScanner # werkt
@@ -20,6 +25,7 @@ import re
 # used for grabbing an argument in this case 
 # we use it for grabbing which location we need 
 # to deliver the egg to
+# will be parsed from the controller
 ap = argparse.ArgumentParser()
 ap.add_argument("a")
 argName = ap.parse_args()
@@ -46,7 +52,8 @@ found =[False, False, False]
 # so we can continue with the vision stuff
 armMoved = False
 boolLook = False 
-setupComplete = False
+setupComplete = True
+locationCon = 'Duckstad' # default is None
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
@@ -58,20 +65,31 @@ time.sleep(.5) # wait for Arduino and camera to start up
 # Run this method async so we can grab the replies from the
 # arduino
 async def GetArduino():
+    # add 'global' so it doesn't create a local variable named armMoved
+    global locationCon
+    global boolLook
+    global armMoved 
+    global setupComplete
+
     msg = (ard.read(ard.inWaiting()))
-    if(msg != None):
+    if msg != None:
         print(msg)
-        if(msg == "b''"):
+        if msg == "b''":
             print(msg)
-        if(re.search('.(Arm mov).', str(msg))): # check if the arm stopped moving
+        if re.search('.(Arm mov).', str(msg)): # check if the arm stopped moving
             print("found")
-            global boolLook
-            global armMoved # add 'global' so it doesn't create a local variable named armMoved
             armMoved = True
             boolLook = False
-        elif(re.search('.(MEGA start).', str(msg))): # check if the arduino booted
-            global setupComplete
+        elif re.search('.(MEGA start).', str(msg)): # check if the arduino booted
             setupComplete = True
+        elif re.search('.(Loc: Duckst).', str(msg)):
+            locationCon = 'Duckstad'
+        elif re.search(".(Loc: 'Eiber).", str(msg)):
+            locationCon = 'Eibergen'
+        elif re.search('.(Loc: Barnev).', str(msg)):
+            locationCon = 'Barneveld'
+        elif re.search('.(Loc: Eindho).', str(msg)):
+            locationCon = 'Eindhoven'
     
 # Method for sending commands to the arduino
 # Command can be max 5 characters long
@@ -101,7 +119,7 @@ def main():
                     SendMessage('marm-z'+str(round(location, 1))+'|') # send a command to the arduino over Serial
         if armMoved:        
             if(not found[1]):
-                found[1] = scan.SearchQR(argName.a, frame) # scans for the QRCode
+                found[1] = scan.SearchQR(locationCon, frame) # scans for the QRCode
             elif(not found[2]):
                 found[2], location = find.FindContainer(frame) # find the container
                 if found[2]:
