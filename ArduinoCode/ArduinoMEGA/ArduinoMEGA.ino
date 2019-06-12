@@ -126,7 +126,7 @@ void setup()
 	bluetooth_conn.add_recieve_int("Arm_Xas", js_neutral);
 	bluetooth_conn.add_recieve_int("Arm_Yas", js_neutral);
 	bluetooth_conn.add_recieve_int("Hand", js_neutral);
- bluetooth_conn.add_recieve_int("Location", loc_default);
+	bluetooth_conn.add_recieve_int("Location", loc_default);
 
 	pinMode(LED, OUTPUT);
 	pinMode(vuMeter, INPUT);
@@ -203,7 +203,7 @@ void readJoy()
 	Serial.println(MotorYas);
 }
 
-void convertxy()  //Deciding the angle of the joystick, converting it to a circle input from a square input and deciding the factor for the speed by calculating the distance from the center of the joystick
+void convertxy() //Deciding the angle of the joystick, converting it to a circle input from a square input and deciding the factor for the speed by calculating the distance from the center of the joystick
 {
   int x = MotorXas - 512;
   int y = MotorYas - 512;
