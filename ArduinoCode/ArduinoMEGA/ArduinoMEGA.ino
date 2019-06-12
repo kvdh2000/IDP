@@ -1,4 +1,10 @@
 
+struct Motor {
+  int A;
+  int B;
+  int PWM;
+};
+
 //All methods
 /*
  * setup
@@ -19,8 +25,15 @@
 #include "JohnsSpecialEasyTransfer.h"
 
 //Pin definitions
-const int dcpins[12] = {22, 23, 3, 24, 25, 4, 26, 27, 5, 28, 29, 6};
 #define DIR_PIN 2
+const Motor dcMotors[5] = 
+{
+  Motor{0,0,0}, 
+  Motor{22, 23, 3},
+  Motor{24, 25, 4}, 
+  Motor{26, 27, 5}, 
+  Motor{28, 29, 6}
+};
 #define LED 13
 #define vuMeter A3
 #define X A5
@@ -115,9 +128,11 @@ void setup()
 	pinMode(X, INPUT);
 	pinMode(Y, INPUT);
 
-	for (byte c = 0; c < 12; c++)
+	for (byte c = 1; c < 5; c++)
 	{
-		pinMode(c, OUTPUT);
+		pinMode(dcMotors[c].A, OUTPUT);
+    pinMode(dcMotors[c].B, OUTPUT);
+    pinMode(dcMotors[c].PWM, OUTPUT);
 	}
 
 	initServos();
@@ -200,9 +215,11 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
 
 void turnOff()
 {
-	for (byte c = 0; c < 12; c++)
+	for (byte c = 1; c < 5; c++)
 	{
-		digitalWrite(c, 0);
+    digitalWrite(dcMotors[c].A, 0);
+    digitalWrite(dcMotors[c].B, 0);
+    digitalWrite(dcMotors[c].PWM, 0);
 	}
 }
 
@@ -220,102 +237,98 @@ void drive() //Everything from making joystick input usable to sending the right
 	//Deciding on which signals to send to both left motors as well as sending them based on both the angle and the required speed
 	if (angle <= M_PI * 0.75 && angle >= M_PI * -0.25)
 	{
-		digitalWrite(dcpins[0], HIGH);
-		digitalWrite(dcpins[1], LOW);
-		digitalWrite(dcpins[3], HIGH);
-		digitalWrite(dcpins[4], LOW);
+		digitalWrite(dcMotors[1].A, HIGH);
+    digitalWrite(dcMotors[1].B, LOW);
+		digitalWrite(dcMotors[2].A, HIGH);
+		digitalWrite(dcMotors[2].B, LOW);
 
 		if (angle <= M_PI * 0.5 && angle >= 0)
 		{
-			analogWrite(dcpins[2], dmap(intensity, 0, 515, 0, 255));
-			analogWrite(dcpins[5], dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
 		}
 		else if (angle >= M_PI * 0.5)
 		{
-			analogWrite(dcpins[2], double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcpins[5], double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[1].PWM, double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[2].PWM, double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
 		}
 		else
 		{
-			analogWrite(dcpins[2], intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
-			analogWrite(dcpins[5], intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
+			analogWrite(dcMotors[1].PWM, intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
+			analogWrite(dcMotors[2].PWM, intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
 		}
 	}
 	else
 	{
-		digitalWrite(dcpins[0], LOW);
-		digitalWrite(dcpins[1], HIGH);
-		digitalWrite(dcpins[3], LOW);
-		digitalWrite(dcpins[4], HIGH);
+		digitalWrite(dcMotors[1].A, LOW);
+    digitalWrite(dcMotors[1].B, HIGH);
+    digitalWrite(dcMotors[2].A, LOW);
+    digitalWrite(dcMotors[2].B, HIGH);
+    
 		if (angle <= M_PI * -0.5)
 		{
-			analogWrite(dcpins[2], dmap(intensity, 0, 515, 0, 255));
-			analogWrite(dcpins[5], dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
 		}
 		else if (angle >= M_PI * 0.75)
 		{
-			analogWrite(dcpins[2], double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcpins[5], double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[1].PWM, double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[2].PWM, double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
 		}
 		else
 		{
-			analogWrite(dcpins[2], double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
-			analogWrite(dcpins[5], double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+			analogWrite(dcMotors[1].PWM, double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+			analogWrite(dcMotors[2].PWM, double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
 		}
 	}
 
 	//Deciding on which signals to send to both right motors as well as sending them based on both the angle and the required speed
 	if (angle <= 0.25 * M_PI && angle >= M_PI * -0.75)
 	{
-		digitalWrite(dcpins[6], LOW);
-		digitalWrite(dcpins[7], HIGH);
-		digitalWrite(dcpins[9], LOW);
-		digitalWrite(dcpins[10], HIGH);
+		digitalWrite(dcMotors[3].A, LOW);
+		digitalWrite(dcMotors[3].B, HIGH);
+		digitalWrite(dcMotors[4].A, LOW);
+		digitalWrite(dcMotors[4].B, HIGH);
 
 		if (angle >= M_PI * -0.5 && angle <= 0)
 		{
-			analogWrite(dcpins[8], dmap(intensity, 0, 515, 0, 255));
-			analogWrite(dcpins[11], dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcMotors[3].PWM, dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcMotors[4].PWM, dmap(intensity, 0, 515, 0, 255));
 		}
 		else if (angle <= M_PI * -0.5)
 		{
-			analogWrite(dcpins[8], double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcpins[11], double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[3].PWM, double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[4].PWM, double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
 		}
 		else
 		{
-			analogWrite(dcpins[8], double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcpins[11], double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[3].PWM, double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[4].PWM, double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
 		}
 	}
 	else
 	{
-		digitalWrite(dcpins[6], HIGH);
-		digitalWrite(dcpins[7], LOW);
-		digitalWrite(dcpins[9], HIGH);
-		digitalWrite(dcpins[10], LOW);
+    digitalWrite(dcMotors[3].A, HIGH);
+    digitalWrite(dcMotors[3].B, LOW);
+    digitalWrite(dcMotors[4].A, HIGH);
+    digitalWrite(dcMotors[4].B, LOW);
 
 		if (angle >= M_PI * 0.5)
 		{
-			analogWrite(dcpins[8], dmap(intensity, 0, 515, 0, 255));
-			analogWrite(dcpins[11], dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcMotors[3].PWM, dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcMotors[4].PWM, dmap(intensity, 0, 515, 0, 255));
 		}
 		else if (angle <= M_PI * -0.75)
 		{
-			analogWrite(dcpins[8], double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcpins[11], double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[3].PWM, double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[4].PWM, double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
 		}
 		else
 		{
-			analogWrite(dcpins[8], double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcpins[11], double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[3].PWM, double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[4].PWM, double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
 		}
 	}
-}
-
-double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh) //Improving the map function to work with doubles
-{
-	return (input - fromlow) / (fromhigh - fromlow) * (tohigh - tolow) + tolow;
 }
 
 void armMovement()
@@ -453,4 +466,9 @@ void sendBack(String Text)
 	Serial.println(Text);
 	Serial.flush();
 	readString = "";
+}
+
+double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh) //Improving the map function to work with doubles
+{
+  return (input - fromlow) / (fromhigh - fromlow) * (tohigh - tolow) + tolow;
 }
