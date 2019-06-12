@@ -94,6 +94,7 @@ def main():
 
     cv2.destroyAllWindows()
     cam.close()
+    
 
 
 if __name__== "__main__":
