@@ -52,14 +52,15 @@ const char cmd_sep = '|';
 JohnsSpecialEasyTransfer bluetooth_conn;
 int MotorXas;
 int MotorYas;
-int ArmXas;
-int ArmYas;
+int ARMXas;
+int ARMYas;
 int CurArmY = 825;
 int CurArmX = 0;
 
 //General Variables
 const int deadzone_min = 485;
 const int deadzone_max = 535;
+const int js_neutral = 512;
 
 //Variables for Servos
 HardwareDynamixelInterface interface(Serial1, DIR_PIN);
@@ -117,11 +118,11 @@ void setup()
 	Serial.println("Arduino MEGA start");
 
 	bluetooth_conn.begin(&Serial2);
-	bluetooth_conn.add_recieve_int("Motor_Xas", 512);
-	bluetooth_conn.add_recieve_int("Motor_Yas", 512);
-	bluetooth_conn.add_recieve_int("Arm_Xas", 512);
-	bluetooth_conn.add_recieve_int("Arm_Yas", 512);
-	bluetooth_conn.add_recieve_int("Hand", 512);
+	bluetooth_conn.add_recieve_int("VEH_Xas", js_neutral);
+	bluetooth_conn.add_recieve_int("VEH_Yas", js_neutral);
+	bluetooth_conn.add_recieve_int("ARM_Xas", js_neutral);
+	bluetooth_conn.add_recieve_int("ARM_Yas", js_neutral);
+	bluetooth_conn.add_recieve_int("Klauw", js_neutral);
 
 	pinMode(LED, OUTPUT);
 	pinMode(vuMeter, INPUT);
@@ -338,9 +339,9 @@ void armMovement()
 {
 	motors.speed(500);
 
-	ArmXas = bluetooth_conn.get_int("Arm_Xas");
-	ArmYas = bluetooth_conn.get_int("Arm_Yas");
-	int Hand = bluetooth_conn.get_int("Hand");
+	ARMXas = bluetooth_conn.get_int("ARM_Xas");
+	ARMYas = bluetooth_conn.get_int("ARM_Yas");
+	int Hand = bluetooth_conn.get_int("Klauw");
 
 	if (Hand == 0)
 	{
@@ -350,19 +351,19 @@ void armMovement()
 	{
 		motor6.goalPosition(50);
 	}
-	if (ArmXas < deadzone_min)
+	if (ARMXas < deadzone_min)
 	{
 		CurArmY -= 20;
 	}
-	if (ArmXas > deadzone_max)
+	if (ARMXas > deadzone_max)
 	{
 		CurArmY += 20;
 	}
-	if (ArmYas > deadzone_max)
+	if (ARMYas > deadzone_max)
 	{
 		CurArmX += 2;
 	}
-	if (ArmYas < deadzone_min)
+	if (ARMYas < deadzone_min)
 	{
 		CurArmX -= 2;
 	}
