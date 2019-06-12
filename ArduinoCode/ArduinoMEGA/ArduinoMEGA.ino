@@ -94,7 +94,7 @@ float gammar;
 
 //Variables for DC motors
 double angle;
-int intensity;
+double intensity;
 int jX = 512;
 int jY = 512;
 
@@ -201,7 +201,7 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
 {
 	int x = MotorXas - 512;
 	int y = MotorYas - 512;
-	angle = -atan2(y, x);
+	angle = atan2(y, x);
 	int bigPI = 157;
 	int otherthing = (100 * abs(angle));
 	double itmpangle = (otherthing % bigPI);
