@@ -91,7 +91,6 @@ float betar;
 float gammar;
 
 //Variables for DC motors
-String dcinput = "05120512";
 double angle;
 int intensity;
 int jX = 512;
@@ -163,15 +162,7 @@ void loop()
 
   voltMeter();
   readJoy();
-
-  if (dcinput != "")
-  {
-    drive();
-//    Serial.println(angle);
-//    Serial.println(intensity);
-    dcinput = "";
-  }
-
+  drive();
   armMovement();
 
   if (Serial.available() && read_buffer.length() < bufferSize)
@@ -202,27 +193,17 @@ void loop()
 
 void readJoy()
 {
-  jX = analogRead(X);
-  jY = analogRead(Y);
-  String Xx = String(jX);
-  while (Xx.length() < 4)
-  {
-    Xx = 0 + Xx;
-  }
-  String Yy = String(jY);
-  while (Yy.length() < 4)
-  {
-    Yy = 0 + Yy;
-  }
-  Serial.println(Xx);
-  Serial.println(Yy);
-  dcinput = Xx + Yy;
+  MotorXas = analogRead(X);
+  MotorYas = analogRead(Y);
+  
+  Serial.println(MotorXas);
+  Serial.println(MotorYas);
 }
 
 void convertxy()
 {
-  int x = dcinput.substring(0, 4).toInt() - 512;
-  int y = dcinput.substring(4).toInt() - 512;
+  int x = MotorXas - 512;
+  int y = MotorYas - 512;
   angle = -atan2(y, x); //in radians
   int bigPI = 157;
   int otherthing = (100 * abs(angle));
@@ -232,6 +213,9 @@ void convertxy()
     tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
   }
   intensity = ((sqrt(pow(x, 2) + pow(y, 2))) * (512 / (512 / cos(tmpangle))));
+
+//    Serial.println(angle);
+//    Serial.println(intensity);
 }
 
 void turnOff()
@@ -255,7 +239,7 @@ void drive()
   convertxy();
 
   //Deadzone
-  if (deadzone_min < jX < deadzone_max && deadzone_min < jY < deadzone_max)
+  if (deadzone_min < MotorXas < deadzone_max && deadzone_min < MotorYas < deadzone_max)
   {
     turnOff();
     return;
