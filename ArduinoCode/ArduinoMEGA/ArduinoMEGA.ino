@@ -198,22 +198,19 @@ void readJoy()
 	Serial.println(MotorYas);
 }
 
-void convertxy() //Deciding the angle of the joystick, converting it to a circle input from a square input and deciding the factor for the speed by calculating the distance from the center of the joystick
+void convertxy()  //Deciding the angle of the joystick, converting it to a circle input from a square input and deciding the factor for the speed by calculating the distance from the center of the joystick
 {
-	int x = MotorXas - 512;
-	int y = MotorYas - 512;
-	angle = atan2(y, x);
-	int bigPI = 157;
-	int otherthing = (100 * abs(angle));
-	double itmpangle = (otherthing % bigPI);
-	double tmpangle = itmpangle / 100;
-	if (tmpangle >= M_PI * 0.25)
-	{
-		tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
-	}
-	intensity = ((sqrt(pow(x, 2) + pow(y, 2))) * (512 / (512 / cos(tmpangle))));
-  
-  Serial.println(angle);
+  int x = MotorXas - 512;
+  int y = MotorYas - 512;
+  angle = -atan2(y, x);
+  int halfabigPI = 157;
+  int otherthing = abs(int(100 * angle));
+  double itmpangle = (otherthing % halfabigPI);
+  double tmpangle = itmpangle / 100;
+  if (tmpangle >= M_PI * 0.25) {
+    tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
+  }
+  intensity = ((sqrt(pow(x, 2) + pow(y, 2))) * ((512 / dmap((512 / cos(tmpangle)), 0, 724, 0, 512))/sqrt(2)));
   Serial.println(intensity);
 }
 
@@ -253,13 +250,13 @@ void drive() //Everything from making joystick input usable to sending the right
 		}
 		else if (angle >= M_PI * 0.5)
 		{
-			analogWrite(dcMotors[1].PWM, double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcMotors[2].PWM, double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[1].PWM, intensity / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[2].PWM, intensity / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
 		}
 		else
 		{
-			analogWrite(dcMotors[1].PWM, intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
-			analogWrite(dcMotors[2].PWM, intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
+			analogWrite(dcMotors[1].PWM, intensity / 515 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
+			analogWrite(dcMotors[2].PWM, intensity / 515 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
 		}
 	}
 	else
@@ -276,13 +273,13 @@ void drive() //Everything from making joystick input usable to sending the right
 		}
 		else if (angle >= M_PI * 0.75)
 		{
-			analogWrite(dcMotors[1].PWM, double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcMotors[2].PWM, double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[1].PWM, intensity / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[2].PWM, intensity / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
 		}
 		else
 		{
-			analogWrite(dcMotors[1].PWM, double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
-			analogWrite(dcMotors[2].PWM, double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+			analogWrite(dcMotors[1].PWM, intensity / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+			analogWrite(dcMotors[2].PWM, intensity / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
 		}
 	}
 
@@ -301,13 +298,13 @@ void drive() //Everything from making joystick input usable to sending the right
 		}
 		else if (angle <= M_PI * -0.5)
 		{
-			analogWrite(dcMotors[3].PWM, double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcMotors[4].PWM, double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
 		}
 		else
 		{
-			analogWrite(dcMotors[3].PWM, double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcMotors[4].PWM, double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
 		}
 	}
 	else
@@ -324,13 +321,13 @@ void drive() //Everything from making joystick input usable to sending the right
 		}
 		else if (angle <= M_PI * -0.75)
 		{
-			analogWrite(dcMotors[3].PWM, double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcMotors[4].PWM, double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
 		}
 		else
 		{
-			analogWrite(dcMotors[3].PWM, double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
-			analogWrite(dcMotors[4].PWM, double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
 		}
 	}
 }
