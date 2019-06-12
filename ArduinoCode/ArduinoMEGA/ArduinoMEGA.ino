@@ -98,7 +98,7 @@ void loop()
   Serial.println();
   Serial.println("Restart loop");
   Serial.println();
-  delay(500);
+  delay(1000);
   digitalWrite(LED, HIGH);
   delay(50);
   digitalWrite(LED, LOW);
@@ -112,7 +112,6 @@ void loop()
     drive();
     Serial.println(angle);
     Serial.println(intensity);
-    delay(500);
     dcinput = "";
   }
 //
@@ -213,7 +212,7 @@ void drive()
 
     if (angle <= M_PI * 0.5 && angle >= 0)
     {
-      double output = map(intensity, 0, 515, 0, 255);
+      double output = dmap(intensity, 0, 515, 0, 255);
       analogWrite(M1D, output);
       analogWrite(M2D, output);
       Serial.print("Q1 pwm L = ");
@@ -221,9 +220,7 @@ void drive()
     }
     else if (angle >= M_PI * 0.5)
     {
-      double di = M_PI * 0.75 - angle;
-      double tres = 0.25 * M_PI;
-      double output = intensity / 515 * map(di, 0, tres, 0, 255);
+      double output = double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255);
       analogWrite(M1D, output);
       analogWrite(M2D, output);
       Serial.print("Q2-1 pwm L = ");
@@ -231,18 +228,7 @@ void drive()
     }
     else
     {
-      double di = abs(angle);
-      double tres = 0.25 * M_PI;
-      Serial.print("di: ");
-      Serial.println(di);
-      Serial.print("tres: ");
-      Serial.println(tres);
-      double dmap = domap(di, 0.0, tres, 0.0, 255.0);
-      Serial.print("dmap: ");
-      Serial.println(dmap);
-      Serial.print("intensity: ");
-      Serial.println(intensity);
-      double output = intensity / 515.0 * dmap;
+      double output = intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255.0);
       analogWrite(M1D, output);
       analogWrite(M2D, output);
       Serial.print("Q4-2 pwm L = ");
@@ -257,7 +243,7 @@ void drive()
     digitalWrite(M2B, HIGH);
     if (angle <= M_PI * -0.5)
     {
-      double output = map(intensity, 0, 515, 0, 255);
+      double output = dmap(intensity, 0, 515, 0, 255);
       analogWrite(M1D, output);
       analogWrite(M2D, output);
       Serial.print("Q3 pwm L = ");
@@ -265,7 +251,7 @@ void drive()
     }
     else if (angle >= M_PI * 0.75)
     {
-      double output = intensity / 515 * map(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255);
+      double output = double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255);
       analogWrite(M1D, output);
       analogWrite(M2D, output);
       Serial.print("Q2-2 pwm L = ");
@@ -274,12 +260,12 @@ void drive()
     else
     {
       double tangle = abs(angle);
-      double dmap = domap(tangle, 0.25 * M_PI, 0.5 * M_PI, 0, 255);
-      double output = intensity / 515 * dmap;
+      double mapped = dmap(tangle, 0.25 * M_PI, 0.5 * M_PI, 0, 255);
+      double output = double(intensity) / 515 * mapped;
       analogWrite(M1D, output);
       analogWrite(M2D, output);
-      Serial.print("Q4-1 dmap L = ");
-      Serial.println(dmap);
+      Serial.print("Q4-1 mapped L = ");
+      Serial.println(output);
     }
   }
 
@@ -293,7 +279,7 @@ void drive()
 
     if (angle >= M_PI * -0.5 && angle <= 0)
     {
-      double output = map(intensity, 0, 515, 0, 255);
+      double output = dmap(intensity, 0, 515, 0, 255);
       analogWrite(M3D, output);
       analogWrite(M4D, output);
       Serial.print("Q2 pwm R = ");
@@ -301,7 +287,7 @@ void drive()
     }
     else if (angle <= M_PI * -0.5)
     {
-      double output = intensity / 515 * map(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255);
+      double output = double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255);
       analogWrite(M3D, output);
       analogWrite(M4D, output);
       Serial.print("Q3-2 pwm R = ");
@@ -309,7 +295,7 @@ void drive()
     }
     else
     {
-      double output = intensity / 515 * map(angle, 0, 0.25 * M_PI, 0, 255);
+      double output = double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255);
       analogWrite(M3D, output);
       analogWrite(M4D, output);
       Serial.print("Q1-1 pwm R = ");
@@ -325,7 +311,7 @@ void drive()
     
     if (angle >= M_PI * 0.5)
     {
-      double output = map(intensity, 0, 515, 0, 255);
+      double output = dmap(intensity, 0, 515, 0, 255);
       analogWrite(M3D, output);
       analogWrite(M4D, output);
       Serial.print("Q2 pwm R = ");
@@ -333,7 +319,7 @@ void drive()
     }
     else if (angle <= M_PI * -0.75)
     {
-      double output = intensity / 515 * map(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255);
+      double output = double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255);
       analogWrite(M3D, output);
       analogWrite(M4D, output);
       Serial.print("Q3-1 pwm R = ");
@@ -341,7 +327,7 @@ void drive()
     }
     else
     {
-      double output = intensity / 515 * map(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255);
+      double output = double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255);
       analogWrite(M3D, output);
       analogWrite(M4D, output);
       Serial.print("Q1-2 pwm R = ");
@@ -392,18 +378,16 @@ void voltMeter()
   Serial.println();
 }
 
-double domap(double input, double tres1, double tres2, double pres1, double pres2)
+double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh)
 {
-  //warning this function is very lazy
-  //hurray I'm writing code
-  int a = input * 10000.0;
-  int b = tres1 * 10000.0;
-  int c = tres2 * 10000.0;
-  int d = pres1 * 10000.0;
-  int e = pres2 * 10000.0;
+  //warning this function is highly complex
+  
+  double frommargin = fromhigh - fromlow;
+  double tomargin = tohigh - tolow;
+  
+  double output = (input - fromlow) / frommargin * tomargin + tolow;
 
-  double output = map(a, b, c, d, e);
-  return output/10000.0;
+  return output;
 }
 
 //void executeSerial(String command)
