@@ -210,8 +210,7 @@ void convertxy()  //Deciding the angle of the joystick, converting it to a circl
   if (tmpangle >= M_PI * 0.25) {
     tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
   }
-  intensity = ((sqrt(pow(x, 2) + pow(y, 2))) * ((512 / dmap((512 / cos(tmpangle)), 0, 724, 0, 512))/sqrt(2)));
-  Serial.println(intensity);
+  intensity = dmap(sqrt(pow(x, 2) + pow(y, 2)), 0, 512 / cos(tmpangle), 0, 512);
 }
 
 void turnOff()
