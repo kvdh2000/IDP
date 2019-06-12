@@ -19,20 +19,9 @@
 #include "JohnsSpecialEasyTransfer.h"
 
 //Pin definitions
+const int dcpins[12] = {22, 23, 3, 24, 25, 4, 26, 27, 5, 28, 29, 6};
 #define DIR_PIN 2
-#define M1D 3
-#define M2D 4
-#define M3D 5
-#define M4D 6
 #define LED 13
-#define M1A 22
-#define M1B 23
-#define M2A 24
-#define M2B 25
-#define M3A 26
-#define M3B 27
-#define M4A 28
-#define M4B 29
 #define vuMeter A3
 #define X A5
 #define Y A6
@@ -97,7 +86,7 @@ int jX = 512;
 int jY = 512;
 
 //Variables for Volt Meter
-#define AANTAL_METINGEN  10
+#define AANTAL_METINGEN 10
 float voltages[AANTAL_METINGEN];
 float input_volt = 0.0;
 float temp = 0.0;
@@ -109,416 +98,359 @@ float gemiddeldeVoltage = 0.0;
 
 void setup()
 {
-  Serial.begin(38400);
-  Serial1.begin(38400);
-  Serial2.begin(38400);
-  Serial.println("Arduino MEGA start");
+	Serial.begin(38400);
+	Serial1.begin(38400);
+	Serial2.begin(38400);
+	Serial.println("Arduino MEGA start");
 
-  bluetooth_conn.begin(&Serial2);
-  bluetooth_conn.add_recieve_int("Motor_Xas", 512);
-  bluetooth_conn.add_recieve_int("Motor_Yas", 512);
-  bluetooth_conn.add_recieve_int("Arm_Xas", 512);
-  bluetooth_conn.add_recieve_int("Arm_Yas", 512);
-  bluetooth_conn.add_recieve_int("Hand", 512);
-  
-  pinMode(LED, OUTPUT);
-  pinMode(vuMeter, INPUT);
-  pinMode(X, INPUT);
-  pinMode(Y, INPUT);
-  pinMode(M1D, OUTPUT);
-  pinMode(M1D, OUTPUT);
-  pinMode(M1D, OUTPUT);
-  pinMode(M1D, OUTPUT);
-  pinMode(M1A, OUTPUT);
-  pinMode(M1B, OUTPUT);
-  pinMode(M2A, OUTPUT);
-  pinMode(M2B, OUTPUT);
-  pinMode(M3A, OUTPUT);
-  pinMode(M3B, OUTPUT);
-  pinMode(M4A, OUTPUT);
-  pinMode(M4B, OUTPUT);
+	bluetooth_conn.begin(&Serial2);
+	bluetooth_conn.add_recieve_int("Motor_Xas", 512);
+	bluetooth_conn.add_recieve_int("Motor_Yas", 512);
+	bluetooth_conn.add_recieve_int("Arm_Xas", 512);
+	bluetooth_conn.add_recieve_int("Arm_Yas", 512);
+	bluetooth_conn.add_recieve_int("Hand", 512);
 
-  initServos();
+	pinMode(LED, OUTPUT);
+	pinMode(vuMeter, INPUT);
+	pinMode(X, INPUT);
+	pinMode(Y, INPUT);
 
-  for (uint8_t i = 0; i < 10; i++)
-  {
-    voltages[i] = 0;
-  }
+	for (byte c = 0; c < 12; c++)
+	{
+		pinMode(c, OUTPUT);
+	}
+
+	initServos();
+
+	for (uint8_t i = 0; i < 10; i++)
+	{
+		voltages[i] = 0;
+	}
 }
 
 void loop()
 {
-  Serial.println("-------------------------------------------------");
-  Serial.println();
-  Serial.println("Restart loop");
-  Serial.println();
+	Serial.println("-------------------------------------------------");
+	Serial.println();
+	Serial.println("Restart loop");
+	Serial.println();
 
-  bluetooth_conn.update();
-  
-  digitalWrite(LED, HIGH);
-  delay(50);
-  digitalWrite(LED, LOW);
-  delay(50);
+	bluetooth_conn.update();
 
-  voltMeter();
-  readJoy();
-  drive();
-  armMovement();
+	digitalWrite(LED, HIGH);
+	delay(50);
+	digitalWrite(LED, LOW);
+	delay(50);
 
-  if (Serial.available() && read_buffer.length() < bufferSize)
-  {
-    Serial.println("Start Serial");
-    char r_char = Serial.read(); // pakt een char van de serial en plakt hem aan de buffer
-    read_buffer += r_char;
-  }
-  else if ((read_buffer.length() >= bufferSize) || read_buffer.indexOf(cmd_sep) > 0)
-  {
-    int cmd_sep_idx = read_buffer.indexOf(cmd_sep);
-    if (cmd_sep_idx > 0)
-    {
-      cmd = read_buffer.substring(0, cmd_sep_idx);
-      read_buffer = read_buffer.substring(cmd_sep_idx + 1);
-      executeSerial(cmd);
-    }
-    else if (cmd_sep_idx == 0)
-    {
-      read_buffer = read_buffer.substring(1);
-    }
-    else
-    {
-      read_buffer = "";
-    }
-  }
+	voltMeter();
+	readJoy();
+	drive();
+	armMovement();
+
+	if (Serial.available() && read_buffer.length() < bufferSize)
+	{
+		Serial.println("Start Serial");
+		char r_char = Serial.read(); // pakt een char van de serial en plakt hem aan de buffer
+		read_buffer += r_char;
+	}
+	else if ((read_buffer.length() >= bufferSize) || read_buffer.indexOf(cmd_sep) > 0)
+	{
+		int cmd_sep_idx = read_buffer.indexOf(cmd_sep);
+		if (cmd_sep_idx > 0)
+		{
+			cmd = read_buffer.substring(0, cmd_sep_idx);
+			read_buffer = read_buffer.substring(cmd_sep_idx + 1);
+			executeSerial(cmd);
+		}
+		else if (cmd_sep_idx == 0)
+		{
+			read_buffer = read_buffer.substring(1);
+		}
+		else
+		{
+			read_buffer = "";
+		}
+	}
 }
 
 void readJoy()
 {
-  MotorXas = analogRead(X);
-  MotorYas = analogRead(Y);
-  
-  Serial.println(MotorXas);
-  Serial.println(MotorYas);
+	MotorXas = analogRead(X);
+	MotorYas = analogRead(Y);
+
+	Serial.println(MotorXas);
+	Serial.println(MotorYas);
 }
 
-void convertxy()
+void convertxy() //Deciding the angle of the joystick, converting it to a circle input from a square input and deciding the factor for the speed by calculating the distance from the center of the joystick
 {
-  int x = MotorXas - 512;
-  int y = MotorYas - 512;
-  angle = -atan2(y, x); //in radians
-  int bigPI = 157;
-  int otherthing = (100 * abs(angle));
-  double itmpangle = (otherthing % bigPI);
-  double tmpangle = itmpangle / 100;
-  if (tmpangle >= M_PI * 0.25) {
-    tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
-  }
-  intensity = ((sqrt(pow(x, 2) + pow(y, 2))) * (512 / (512 / cos(tmpangle))));
-
-//    Serial.println(angle);
-//    Serial.println(intensity);
+	int x = MotorXas - 512;
+	int y = MotorYas - 512;
+	angle = -atan2(y, x);
+	int bigPI = 157;
+	int otherthing = (100 * abs(angle));
+	double itmpangle = (otherthing % bigPI);
+	double tmpangle = itmpangle / 100;
+	if (tmpangle >= M_PI * 0.25)
+	{
+		tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
+	}
+	intensity = ((sqrt(pow(x, 2) + pow(y, 2))) * (512 / (512 / cos(tmpangle))));
 }
 
 void turnOff()
 {
-  analogWrite(M1D, 0);  
-  analogWrite(M2D, 0);
-  analogWrite(M3D, 0);
-  analogWrite(M4D, 0);
-  digitalWrite(M1A, LOW);
-  digitalWrite(M1B, LOW);
-  digitalWrite(M2A, LOW);
-  digitalWrite(M2B, LOW);
-  digitalWrite(M3A, LOW);
-  digitalWrite(M3B, LOW);
-  digitalWrite(M4A, LOW);
-  digitalWrite(M4B, LOW);
+	for (byte c = 0; c < 12; c++)
+	{
+		digitalWrite(c, 0);
+	}
 }
 
-void drive()
+void drive() //Everything from making joystick input usable to sending the right signals to the dc motors
 {
-  convertxy();
+	convertxy(); //Converting joystick input into usable variables
 
-  //Deadzone
-  if (deadzone_min < MotorXas < deadzone_max && deadzone_min < MotorYas < deadzone_max)
-  {
-    turnOff();
-    return;
-  }
+	//Deadzone
+	if (deadzone_min < MotorXas < deadzone_max && deadzone_min < MotorYas < deadzone_max)
+	{
+		turnOff();
+		return;
+	}
 
-  //Links
-  if (angle <= M_PI * 0.75 && angle >= M_PI * -0.25)
-  {
-    digitalWrite(M1A, HIGH);
-    digitalWrite(M1B, LOW);
-    digitalWrite(M2A, HIGH);
-    digitalWrite(M2B, LOW);
+	//Deciding on which signals to send to both left motors as well as sending them based on both the angle and the required speed
+	if (angle <= M_PI * 0.75 && angle >= M_PI * -0.25)
+	{
+		digitalWrite(dcpins[0], HIGH);
+		digitalWrite(dcpins[1], LOW);
+		digitalWrite(dcpins[3], HIGH);
+		digitalWrite(dcpins[4], LOW);
 
-    if (angle <= M_PI * 0.5 && angle >= 0)
-    {
-      double output = dmap(intensity, 0, 515, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q1 pwm L = ");
-      Serial.println(output);
-    }
-    else if (angle >= M_PI * 0.5)
-    {
-      double output = double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q2-1 pwm L = ");
-      Serial.println(output);
-    }
-    else
-    {
-      double output = intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255.0);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q4-2 pwm L = ");
-      Serial.println(output);
-    }
-  }
-  else
-  {
-    digitalWrite(M1A, LOW);
-    digitalWrite(M1B, HIGH);
-    digitalWrite(M2A, LOW);
-    digitalWrite(M2B, HIGH);
-    if (angle <= M_PI * -0.5)
-    {
-      double output = dmap(intensity, 0, 515, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q3 pwm L = ");
-      Serial.println(output);
-    }
-    else if (angle >= M_PI * 0.75)
-    {
-      double output = double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q2-2 pwm L = ");
-      Serial.println(output);
-    }
-    else
-    {
-      double tangle = abs(angle);
-      double mapped = dmap(tangle, 0.25 * M_PI, 0.5 * M_PI, 0, 255);
-      double output = double(intensity) / 515 * mapped;
-      analogWrite(M1D, output);
-      analogWrite(M2D, output);
-      Serial.print("Q4-1 mapped L = ");
-      Serial.println(output);
-    }
-  }
+		if (angle <= M_PI * 0.5 && angle >= 0)
+		{
+			analogWrite(dcpins[2], dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcpins[5], dmap(intensity, 0, 515, 0, 255));
+		}
+		else if (angle >= M_PI * 0.5)
+		{
+			analogWrite(dcpins[2], double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcpins[5], double(intensity) / 515 * dmap(M_PI * 0.75 - angle, 0, 0.25 * M_PI, 0, 255));
+		}
+		else
+		{
+			analogWrite(dcpins[2], intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
+			analogWrite(dcpins[5], intensity / 515.0 * dmap(angle + 0.25 * M_PI, 0.0, 0.25 * M_PI, 0.0, 255));
+		}
+	}
+	else
+	{
+		digitalWrite(dcpins[0], LOW);
+		digitalWrite(dcpins[1], HIGH);
+		digitalWrite(dcpins[3], LOW);
+		digitalWrite(dcpins[4], HIGH);
+		if (angle <= M_PI * -0.5)
+		{
+			analogWrite(dcpins[2], dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcpins[5], dmap(intensity, 0, 515, 0, 255));
+		}
+		else if (angle >= M_PI * 0.75)
+		{
+			analogWrite(dcpins[2], double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcpins[5], double(intensity) / 515 * dmap(angle - M_PI * 0.75, 0, 0.25 * M_PI, 0, 255));
+		}
+		else
+		{
+			analogWrite(dcpins[2], double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+			analogWrite(dcpins[5], double(intensity) / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+		}
+	}
 
-  //Rechts
-  if (angle <= 0.25 * M_PI && angle >= M_PI * -0.75)
-  {
-    digitalWrite(M3A, LOW);
-    digitalWrite(M3B, HIGH);
-    digitalWrite(M4A, LOW);
-    digitalWrite(M4B, HIGH);
+	//Deciding on which signals to send to both right motors as well as sending them based on both the angle and the required speed
+	if (angle <= 0.25 * M_PI && angle >= M_PI * -0.75)
+	{
+		digitalWrite(dcpins[6], LOW);
+		digitalWrite(dcpins[7], HIGH);
+		digitalWrite(dcpins[9], LOW);
+		digitalWrite(dcpins[10], HIGH);
 
-    if (angle >= M_PI * -0.5 && angle <= 0)
-    {
-      double output = dmap(intensity, 0, 515, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q2 pwm R = ");
-      Serial.println(output);
-    }
-    else if (angle <= M_PI * -0.5)
-    {
-      double output = double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q3-2 pwm R = ");
-      Serial.println(output);
-    }
-    else
-    {
-      double output = double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q1-1 pwm R = ");
-      Serial.println(output);
-    }
-  }
-  else
-  {
-    digitalWrite(M3A, HIGH);
-    digitalWrite(M3B, LOW);
-    digitalWrite(M4A, HIGH);
-    digitalWrite(M4B, LOW);
-    
-    if (angle >= M_PI * 0.5)
-    {
-      double output = dmap(intensity, 0, 515, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q2 pwm R = ");
-      Serial.println(output);
-    }
-    else if (angle <= M_PI * -0.75)
-    {
-      double output = double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q3-1 pwm R = ");
-      Serial.println(output);
-    }
-    else
-    {
-      double output = double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255);
-      analogWrite(M3D, output);
-      analogWrite(M4D, output);
-      Serial.print("Q1-2 pwm R = ");
-      Serial.println(output);
-    }
-  }
+		if (angle >= M_PI * -0.5 && angle <= 0)
+		{
+			analogWrite(dcpins[8], dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcpins[11], dmap(intensity, 0, 515, 0, 255));
+		}
+		else if (angle <= M_PI * -0.5)
+		{
+			analogWrite(dcpins[8], double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcpins[11], double(intensity) / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+		}
+		else
+		{
+			analogWrite(dcpins[8], double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcpins[11], double(intensity) / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+		}
+	}
+	else
+	{
+		digitalWrite(dcpins[6], HIGH);
+		digitalWrite(dcpins[7], LOW);
+		digitalWrite(dcpins[9], HIGH);
+		digitalWrite(dcpins[10], LOW);
+
+		if (angle >= M_PI * 0.5)
+		{
+			analogWrite(dcpins[8], dmap(intensity, 0, 515, 0, 255));
+			analogWrite(dcpins[11], dmap(intensity, 0, 515, 0, 255));
+		}
+		else if (angle <= M_PI * -0.75)
+		{
+			analogWrite(dcpins[8], double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcpins[11], double(intensity) / 515 * dmap(-0.75 * M_PI - angle, 0, 0.25 * M_PI, 0, 255));
+		}
+		else
+		{
+			analogWrite(dcpins[8], double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+			analogWrite(dcpins[11], double(intensity) / 515 * dmap(angle - (0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+		}
+	}
 }
 
-void armMovement(){  
-  motors.speed(500);
-  
-  ArmXas = bluetooth_conn.get_int("Arm_Xas");
-  ArmYas = bluetooth_conn.get_int("Arm_Yas");
-  int Hand = bluetooth_conn.get_int("Hand");
+double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh) //Improving the map function to work with doubles
+{
+	return (input - fromlow) / (fromhigh - fromlow) * (tohigh - tolow) + tolow;
+}
 
-  if(Hand == 0){
-    motor6.goalPosition(600);
-  }
-  else{
-    motor6.goalPosition(50);    
-  }
-  if (ArmXas < deadzone_min) {
-      CurArmY -= 20;     
-  }
-  if(ArmXas > deadzone_max)
-  {
-      CurArmY += 20;      
-  }
-  if(ArmYas > deadzone_max)
-  {
-      CurArmX += 2;         
-  }
-  if(ArmYas < deadzone_min)
-  {
-      CurArmX -= 2;        
-  }
+void armMovement()
+{
+	motors.speed(500);
 
-  CurArmX = constrain(CurArmX, 1, 28);
-  
-  B=sqrt(CurArmX*CurArmX+D*D);
-  if(B < 26 and B != 0){ 
-      alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
-      betar = acos((A * A - B * B + C * C) / (2 * A * C));
-      gammar = acos((A * A + B * B - C * C) / (2 * A * B));
-      alpha = alphar * 180 / M_PI+60;
-      beta = betar * 180 / M_PI-20;
-      gamma = gammar * 180 / M_PI;
-      float servohoek1 = map(alpha, 0, 360, 100, 1023);
-      float servohoek2 = map(beta, 0, 360, 50, 1023);
-      motor2.goalPosition(servohoek1);
-      motor4.goalPosition(servohoek2); 
-  }
-   
-  CurArmY = constrain(CurArmY, 0, 1023);
-    
-  motor1.goalPosition(CurArmY);
+	ArmXas = bluetooth_conn.get_int("Arm_Xas");
+	ArmYas = bluetooth_conn.get_int("Arm_Yas");
+	int Hand = bluetooth_conn.get_int("Hand");
+
+	if (Hand == 0)
+	{
+		motor6.goalPosition(600);
+	}
+	else
+	{
+		motor6.goalPosition(50);
+	}
+	if (ArmXas < deadzone_min)
+	{
+		CurArmY -= 20;
+	}
+	if (ArmXas > deadzone_max)
+	{
+		CurArmY += 20;
+	}
+	if (ArmYas > deadzone_max)
+	{
+		CurArmX += 2;
+	}
+	if (ArmYas < deadzone_min)
+	{
+		CurArmX -= 2;
+	}
+
+	CurArmX = constrain(CurArmX, 1, 28);
+
+	B = sqrt(CurArmX * CurArmX + D * D);
+	if (B < 26 and B != 0)
+	{
+		alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
+		betar = acos((A * A - B * B + C * C) / (2 * A * C));
+		gammar = acos((A * A + B * B - C * C) / (2 * A * B));
+		alpha = alphar * 180 / M_PI + 60;
+		beta = betar * 180 / M_PI - 20;
+		gamma = gammar * 180 / M_PI;
+		float servohoek1 = map(alpha, 0, 360, 100, 1023);
+		float servohoek2 = map(beta, 0, 360, 50, 1023);
+		motor2.goalPosition(servohoek1);
+		motor4.goalPosition(servohoek2);
+	}
+
+	CurArmY = constrain(CurArmY, 0, 1023);
+
+	motor1.goalPosition(CurArmY);
 }
 
 void voltMeter()
 {
-  int analogvalue = analogRead(vuMeter);
-  temp = (analogvalue * 5.0) / 1024.0;
-  input_volt = temp / factor;
-  som = som - voltages[voltagesIndex];
-  voltages[voltagesIndex] = input_volt;
+	int analogvalue = analogRead(vuMeter);
+	temp = (analogvalue * 5.0) / 1024.0;
+	input_volt = temp / factor;
+	som = som - voltages[voltagesIndex];
+	voltages[voltagesIndex] = input_volt;
 
-  som = som + voltages[voltagesIndex];
+	som = som + voltages[voltagesIndex];
 
-  if (arrayGevuld)
-  {
-    gemiddeldeVoltage = som / AANTAL_METINGEN;
-  }
+	if (arrayGevuld)
+	{
+		gemiddeldeVoltage = som / AANTAL_METINGEN;
+	}
 
-  else
-  {
-    gemiddeldeVoltage = som / (voltagesIndex + 1);
-  }
+	else
+	{
+		gemiddeldeVoltage = som / (voltagesIndex + 1);
+	}
 
-  voltagesIndex = voltagesIndex + 1;
+	voltagesIndex = voltagesIndex + 1;
 
-  if (voltagesIndex == AANTAL_METINGEN)
-  {
-    voltagesIndex = 0;
-    arrayGevuld = true;
-  }
+	if (voltagesIndex == AANTAL_METINGEN)
+	{
+		voltagesIndex = 0;
+		arrayGevuld = true;
+	}
 
-  Serial.print("U = ");
-  Serial.print(input_volt);
-  Serial.println("V");
-  Serial.print("Average U = ");
-  Serial.print(gemiddeldeVoltage);
-  Serial.println("V");
-  Serial.println();
+	Serial.print("U = ");
+	Serial.print(input_volt);
+	Serial.println("V");
+	Serial.print("Average U = ");
+	Serial.print(gemiddeldeVoltage);
+	Serial.println("V");
+	Serial.println();
 }
 
 void executeSerial(String command)
 {
-  Serial.print("Execute command: ");
-  Serial.println(command);
+	Serial.print("Execute command: ");
+	Serial.println(command);
 
-  //Command can be max 5 characters long
-  String str = "command: ";
-  if (command == "forw" || command == "back" || command == "left" || command == "right")
-  {
-    moveRobot(command);
-  }
-  else if (command == "dance")
-  {
-    dance();
-  }
-  else if (command == "dancl")
-  {
-    danceLine();
-  }
-  else if (command == "blink")
-  {
-    blinkLed();
-  }
-  else if (command == "marm")
-  {
-    moveArm();
-  }
-  else if (command == "look")
-  {
-    lookAround();
-  }
-  else
-  {
-    Serial.println(str + "unknown " + command);
-  }
+	//Command can be max 5 characters long
+	String str = "command: ";
+	if (command == "forw" || command == "back" || command == "left" || command == "right")
+	{
+		moveRobot(command);
+	}
+	else if (command == "dance")
+	{
+		dance();
+	}
+	else if (command == "dancl")
+	{
+		danceLine();
+	}
+	else if (command == "blink")
+	{
+		blinkLed();
+	}
+	else if (command == "marm")
+	{
+		moveArm();
+	}
+	else if (command == "look")
+	{
+		lookAround();
+	}
+	else
+	{
+		Serial.println(str + "unknown " + command);
+	}
 }
 
 void sendBack(String Text)
 {
-  Serial.print("Arduino sends: ");
-  Serial.println(Text);
-  Serial.flush();
-  readString = "";
-}
-
-double dmap(double input, double fromlow, double fromhigh, double tolow, double tohigh)
-{
-  //warning this function is highly complex
-  
-  double frommargin = fromhigh - fromlow;
-  double tomargin = tohigh - tolow;
-  
-  double output = (input - fromlow) / frommargin * tomargin + tolow;
-
-  return output;
+	Serial.print("Arduino sends: ");
+	Serial.println(Text);
+	Serial.flush();
+	readString = "";
 }
