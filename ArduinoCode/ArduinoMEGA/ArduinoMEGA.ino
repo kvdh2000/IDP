@@ -7,13 +7,12 @@
  * convertxy
  * turnOff
  * drive
- * tracks
  * voltMeter
  * executeSerial
  * sendBack
  */
 
-//#include "DynamixelMotor.h"
+#include "DynamixelMotor.h"
 #include "Arduino.h"
 
 //Pin definitions
@@ -84,7 +83,7 @@ void setup()
   pinMode(M4A, OUTPUT);
   pinMode(M4B, OUTPUT);
 
-//  initServos()
+  initServos();
 
   for (uint8_t i = 0; i < 10; i++)
   {
@@ -104,7 +103,7 @@ void loop()
   digitalWrite(LED, LOW);
   delay(50);
 
-//  voltMeter();
+  voltMeter();
   readJoy();
 
   if (dcinput != "")
@@ -114,31 +113,31 @@ void loop()
     Serial.println(intensity);
     dcinput = "";
   }
-//
-//  if (Serial.available() && read_buffer.length() < buffer_size)
-//  {
-//    Serial.println("Start Serial");
-//    char r_char = Serial.read(); // pakt een char van de serial en plakt hem aan de buffer
-//    read_buffer += r_char;
-//  }
-//  else if ((read_buffer.length() >= buffer_size) || read_buffer.indexOf(cmd_sep) > 0)
-//  {
-//    int cmd_sep_idx = read_buffer.indexOf(cmd_sep);
-//    if (cmd_sep_idx > 0)
-//    {
-//      cmd = read_buffer.substring(0, cmd_sep_idx);
-//      read_buffer = read_buffer.substring(cmd_sep_idx + 1);
-//      executeSerial(cmd);
-//    }
-//    else if (cmd_sep_idx == 0)
-//    {
-//      read_buffer = read_buffer.substring(1);
-//    }
-//    else
-//    {
-//      read_buffer = "";
-//    }
-//  }
+
+  if (Serial.available() && read_buffer.length() < buffer_size)
+  {
+    Serial.println("Start Serial");
+    char r_char = Serial.read(); // pakt een char van de serial en plakt hem aan de buffer
+    read_buffer += r_char;
+  }
+  else if ((read_buffer.length() >= buffer_size) || read_buffer.indexOf(cmd_sep) > 0)
+  {
+    int cmd_sep_idx = read_buffer.indexOf(cmd_sep);
+    if (cmd_sep_idx > 0)
+    {
+      cmd = read_buffer.substring(0, cmd_sep_idx);
+      read_buffer = read_buffer.substring(cmd_sep_idx + 1);
+      executeSerial(cmd);
+    }
+    else if (cmd_sep_idx == 0)
+    {
+      read_buffer = read_buffer.substring(1);
+    }
+    else
+    {
+      read_buffer = "";
+    }
+  }
 }
 
 void readJoy()
@@ -336,11 +335,6 @@ void drive()
   }
 }
 
-void tracks()
-{
-
-}
-
 void voltMeter()
 {
   int analogvalue = analogRead(vuMeter);
@@ -390,47 +384,47 @@ double dmap(double input, double fromlow, double fromhigh, double tolow, double 
   return output;
 }
 
-//void executeSerial(String command)
-//{
-//  Serial.print("Execute command: ");
-//  Serial.println(command);
-//
-//  //Command can be max 5 characters long
-//  String str = "command: ";
-//  if (command == "forw" || command == "back" || command == "left" || command == "right")
-//  {
-//    moveRobot(command);
-//  }
-//  else if (command == "dance")
-//  {
-//    dance();
-//  }
-//  else if (command == "dancl")
-//  {
-//    danceLine();
-//  }
-//  else if (command == "blink")
-//  {
-//    blinkLed();
-//  }
-//  else if (command == "marm")
-//  {
-//    moveArm();
-//  }
-//  else if (command == "look")
-//  {
-//    lookAround();
-//  }
-//  else
-//  {
-//    Serial.println(str + "unknown " + command);
-//  }
-//}
-//
-//void sendBack(String Text)
-//{
-//  Serial.print("Arduino sends: ");
-//  Serial.println(Text);
-//  Serial.flush();
-//  readString = "";
-//}
+void executeSerial(String command)
+{
+  Serial.print("Execute command: ");
+  Serial.println(command);
+
+  //Command can be max 5 characters long
+  String str = "command: ";
+  if (command == "forw" || command == "back" || command == "left" || command == "right")
+  {
+    moveRobot(command);
+  }
+  else if (command == "dance")
+  {
+    dance();
+  }
+  else if (command == "dancl")
+  {
+    danceLine();
+  }
+  else if (command == "blink")
+  {
+    blinkLed();
+  }
+  else if (command == "marm")
+  {
+    moveArm();
+  }
+  else if (command == "look")
+  {
+    lookAround();
+  }
+  else
+  {
+    Serial.println(str + "unknown " + command);
+  }
+}
+
+void sendBack(String Text)
+{
+  Serial.print("Arduino sends: ");
+  Serial.println(Text);
+  Serial.flush();
+  readString = "";
+}
