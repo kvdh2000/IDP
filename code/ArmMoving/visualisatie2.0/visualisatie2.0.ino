@@ -51,9 +51,6 @@ byte incomming = 0;
 int errorcode = 0;
 
 
-
-
-
 SoftwareSerial HMISerial(7, 8);
 
 //page1
@@ -145,54 +142,17 @@ void setup() {
 
 void loop() {
     nexLoop(knoppenlijst);
-//  Serial.println(dansing);
-//  Serial.print(tracking);
-//  Serial.print(linedanceing);
-//  Serial.print(eitransporting);
-//  Serial.print(instelhoogte);
-//  Serial.print(Xcord);
-//  Serial.print(Ycord);
-//
-//  if (Serial.available() > 0) {
-//    incomming = Serial.peek();
-//      errorcode = Serial.read();
-//      Serial.print(errorcode);
-//      if (errorcode == '0') {
-//        HMISerial.print("errormelding.txt=");
-//        HMISerial.print("\"nothing to see here\"");
-//        HMISerial.write(0xff);
-//        HMISerial.write(0xff);
-//        HMISerial.write(0xff);
-//        delay(100);
-//      }
-//      if (errorcode == '1') {
-//        HMISerial.print("errormelding.txt=");
-//        HMISerial.print("\"Tempeture critical, check servo\"");
-//        HMISerial.write(0xff);
-//        HMISerial.write(0xff);
-//        HMISerial.write(0xff);
-//        delay(100);
-//      }
-//      if (errorcode == '2') {
-//        HMISerial.print("errormelding.txt=");
-//        HMISerial.print("\"servo overload, check servo-    lights\"");
-//        HMISerial.write(0xff);
-//        HMISerial.write(0xff);
-//        HMISerial.write(0xff);
-//        delay(100);
-//      }
-//  }
-	if (millis() - bt_counter > 100)
-	{
-		bt_counter = 0;
-		bluetooth_send.send_int("J1_Xas", analogRead(JS1_X_AS));
-		bluetooth_send.send_int("J1_Yas", analogRead(JS1_Y_AS));
-		bluetooth_send.send_int("J2_Xas", (analogRead(JS2_X_AS) - 1024) * -1);// JS2 moet worden geinvert
-		bluetooth_send.send_int("J2_Yas", (analogRead(JS2_Y_AS)- 1024) * -1);
-	}
-
-	
-    
+    Serial.println(currentpage);
+//    if(currentpage == 3){
+//    	if (millis() - bt_counter > 100)
+//    	{
+//    		bt_counter = millis();
+//        bluetooth_send.send_int("J1_Xas", analogRead(JS1_X_AS));
+//    		bluetooth_send.send_int("J1_Yas", analogRead(JS1_Y_AS));
+//    		bluetooth_send.send_int("J2_Xas", (analogRead(JS2_X_AS) - 1024) * -1);// JS2 moet worden geinvert
+//    		bluetooth_send.send_int("J2_Yas", (analogRead(JS2_Y_AS)- 1024) * -1);
+//    	}
+//    }
 // delay(100);
 }
 
@@ -206,6 +166,7 @@ void functiesin (void *ptr) {
 
 void bewegenin (void *ptr) {
     currentpage = 3;
+    Serial.println("kaaaaankaaaaaaeeerrrrr");
 }
 
 void terugin (void *ptr) {

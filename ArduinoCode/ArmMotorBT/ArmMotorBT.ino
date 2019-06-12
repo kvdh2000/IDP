@@ -24,6 +24,7 @@ const long unsigned int baudrate = 1000000;
 const int deadzone_min = 485;
 const int deadzone_max = 535;
 const int js_neutral = 512;
+const int loc_default = 0;
 
 
 int ARMXas;
@@ -36,6 +37,7 @@ int totaal;
 float snelheid = 0;
 int richting;               //0 dan is het achteruit en 1 dan is vooruit
 int vooruitschaal;
+int loc_update;
 
 float A = 17;
 float B = 0;
@@ -90,6 +92,7 @@ void setup() {
     bluetooth_conn.add_recieve_int("ARM_Xas", js_neutral);
     bluetooth_conn.add_recieve_int("ARM_Yas", js_neutral);
     bluetooth_conn.add_recieve_int("Klauw", js_neutral);
+    bluetooth_conn.add_recieve_int("Location", loc_default);
 
     pinMode(3, OUTPUT);
     pinMode(motor_linksom, OUTPUT);
@@ -101,7 +104,7 @@ void loop() {
   bluetooth_conn.update();
 //  vehicleMovement();
   armMovement();
-  
+  locationUpdate();
 }
 
 void armMovement(){  
@@ -198,4 +201,10 @@ void vehicleMovement(){
     default:
         break;
     }
+}
+
+void locationUpdate(){
+  loc_update = bluetooth_conn.get_int("Location");
+  Serial.print("Loc:");
+  Serial.println(loc_update);
 }
