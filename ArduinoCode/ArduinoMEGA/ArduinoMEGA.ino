@@ -52,8 +52,8 @@ const char cmd_sep = '|';
 JohnsSpecialEasyTransfer bluetooth_conn;
 int MotorXas;
 int MotorYas;
-int ARMXas;
-int ARMYas;
+int ArmXas;
+int ArmYas;
 int CurArmY = 825;
 int CurArmX = 0;
 
@@ -118,11 +118,11 @@ void setup()
 	Serial.println("Arduino MEGA start");
 
 	bluetooth_conn.begin(&Serial2);
-	bluetooth_conn.add_recieve_int("VEH_Xas", js_neutral);
-	bluetooth_conn.add_recieve_int("VEH_Yas", js_neutral);
-	bluetooth_conn.add_recieve_int("ARM_Xas", js_neutral);
-	bluetooth_conn.add_recieve_int("ARM_Yas", js_neutral);
-	bluetooth_conn.add_recieve_int("Klauw", js_neutral);
+	bluetooth_conn.add_recieve_int("Motor_Xas", js_neutral);
+	bluetooth_conn.add_recieve_int("Motor_Yas", js_neutral);
+	bluetooth_conn.add_recieve_int("Arm_Xas", js_neutral);
+	bluetooth_conn.add_recieve_int("Arm_Yas", js_neutral);
+	bluetooth_conn.add_recieve_int("Hand", js_neutral);
 
 	pinMode(LED, OUTPUT);
 	pinMode(vuMeter, INPUT);
@@ -339,9 +339,9 @@ void armMovement()
 {
 	motors.speed(500);
 
-	ARMXas = bluetooth_conn.get_int("ARM_Xas");
-	ARMYas = bluetooth_conn.get_int("ARM_Yas");
-	int Hand = bluetooth_conn.get_int("Klauw");
+	ArmXas = bluetooth_conn.get_int("Arm_Xas");
+	ArmYas = bluetooth_conn.get_int("Arm_Yas");
+	int Hand = bluetooth_conn.get_int("Hand");
 
 	if (Hand == 0)
 	{
@@ -351,19 +351,19 @@ void armMovement()
 	{
 		motor6.goalPosition(50);
 	}
-	if (ARMXas < deadzone_min)
+	if (ArmXas < deadzone_min)
 	{
 		CurArmY -= 20;
 	}
-	if (ARMXas > deadzone_max)
+	if (ArmXas > deadzone_max)
 	{
 		CurArmY += 20;
 	}
-	if (ARMYas > deadzone_max)
+	if (ArmYas > deadzone_max)
 	{
 		CurArmX += 2;
 	}
-	if (ARMYas < deadzone_min)
+	if (ArmYas < deadzone_min)
 	{
 		CurArmX -= 2;
 	}
