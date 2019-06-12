@@ -14,7 +14,7 @@ class CalcDistance:
         pass
 
     # requires, image/ frame form camera
-    # contour, focalRange (calculated form the amount of pixels in the photo)
+    # contour, focalRange (calculated from the amount of pixels in the photo)
     # known width of the object in real life in centimeters
     def getDistance(self, image, c, focalRange, KNOWN_WIDTH):
         # initialize the known object width, which in this case, the piece of
