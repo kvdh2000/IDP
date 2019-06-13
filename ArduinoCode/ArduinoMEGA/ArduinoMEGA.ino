@@ -10,8 +10,8 @@ struct Motor {
  * setup
  * loop
  * readJoy
- * convertxy
  * turnOff
+ * convertxy
  * drive
  * armMovement
  * voltMeter
@@ -203,6 +203,16 @@ void readJoy()
 	Serial.println(MotorYas);
 }
 
+void turnOff()
+{
+  for (byte c = 1; c < 5; c++)
+  {
+    digitalWrite(dcMotors[c].A, 0);
+    digitalWrite(dcMotors[c].B, 0);
+    digitalWrite(dcMotors[c].PWM, 0);
+  }
+}
+
 void convertxy() //Deciding the angle of the joystick, converting it to a circle input from a square input and deciding the factor for the speed by calculating the distance from the center of the joystick
 {
   int x = MotorXas - 512;
@@ -216,16 +226,6 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
     tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
   }
   intensity = dmap(sqrt(pow(x, 2) + pow(y, 2)), 0, 512 / cos(tmpangle), 0, 512);
-}
-
-void turnOff()
-{
-	for (byte c = 1; c < 5; c++)
-	{
-    digitalWrite(dcMotors[c].A, 0);
-    digitalWrite(dcMotors[c].B, 0);
-    digitalWrite(dcMotors[c].PWM, 0);
-	}
 }
 
 void drive() //Everything from making joystick input usable to sending the right signals to the dc motors
