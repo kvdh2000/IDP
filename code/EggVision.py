@@ -1,6 +1,6 @@
-__author__ = "Pim Spithorst, Daan Eekhof, Elon Gielink"
+__author__ = "Pim Spithost, Kishan van den Hoogen, Daan Eekhof, Elon Gielink"
 __version__ = "0.8.0"
-__maintainer__ = "Pim Spithorst"
+__maintainer__ = "Pim Spithost"
 __status__ = "Development"
 
 from CalcDistance import CalcDistance

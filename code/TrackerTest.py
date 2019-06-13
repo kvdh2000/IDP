@@ -1,6 +1,6 @@
-__author__ = "Merijn, Daan Eekhof"
+__author__ = "Merijn Bijma, Daan Eekhof"
 __version__ = "0.8.0"
-__maintainer__ = "Merijn"
+__maintainer__ = "Merijn Bijma"
 __status__ = "Development"
 
 import cv2
