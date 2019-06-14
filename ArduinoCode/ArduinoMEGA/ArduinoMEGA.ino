@@ -55,6 +55,7 @@ int stickTwoXas;
 int stickTwoYas;
 int CurArmY = 512;
 int CurArmX = 20;
+int Hand = 0;
 bool rijdBool = true;
 const int loc_default = 0;
 int loc_update;
@@ -164,7 +165,8 @@ void loop()
 
   voltMeter();
   readJoy();
-  rijdBool = bluetooth_conn.get_int("Rijden");
+  getBTValues();
+  
   if (rijdBool) {
     drive();
   }
@@ -198,6 +200,15 @@ void loop()
       read_buffer = "";
     }
   }
+}
+
+void getBTValues(){  
+  stickOneXas = bluetooth_conn.get_int("StickOne_Xas");
+  stickOneYas = bluetooth_conn.get_int("StickOne_Yas");
+  stickTwoYas = bluetooth_conn.get_int("StickTwo_Xas");
+  stickTwoYas = bluetooth_conn.get_int("StickTwo_Yas");
+  rijdBool = bluetooth_conn.get_int("Rijden");
+  Hand = bluetooth_conn.get_int("Hand");
 }
 
 void readJoy()
