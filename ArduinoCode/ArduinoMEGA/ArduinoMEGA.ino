@@ -1,10 +1,3 @@
-
-struct Motor {
-  int A;
-  int B;
-  int PWM;
-};
-
 #include "DynamixelMotor.h"
 #include "Arduino.h"
 #include "btLib.h"
@@ -27,18 +20,25 @@ struct Motor {
 
 //Pin definitions
 #define DIR_PIN 2
-const Motor dcMotors[5] = {
+#define LED 13
+#define vuMeter A3
+#define X A5
+#define Y A6
+
+struct Motor {
+  int A;
+  int B;
+  int PWM;
+};
+
+const Motor dcMotors[5] =
+{
   Motor{0, 0, 0},
   Motor{22, 23, 3},
   Motor{24, 25, 4},
   Motor{26, 27, 5},
   Motor{28, 29, 6}
 };
-#define LED 13
-#define vuMeter A3
-#define X A5
-#define Y A6
-
 //Variables for Serial
 const long unsigned int baudrate = 1000000;
 int reg = 0;
@@ -55,7 +55,8 @@ int stickOneYas;
 int stickTwoXas;
 int stickTwoYas;
 int CurArmY = 512;
-int CurArmX = 20;
+int CurArmX1 = 512;
+int CurArmX2 = 512;
 int Hand = 0;
 bool driveBool = true;
 const int loc_default = 0;
@@ -123,11 +124,11 @@ void setup()
 
   bluetooth_conn.begin(&Serial2);
   bluetooth_conn.add_recieve_int("StickOne_Xas", js_neutral);
-  bluetooth_conn.add_recieve_int("StickOne_Yas_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("StickOne_Yas", js_neutral);
   bluetooth_conn.add_recieve_int("StickTwo_Xas", js_neutral);
   bluetooth_conn.add_recieve_int("StickTwo_Yas", js_neutral);
   bluetooth_conn.add_recieve_int("Hand", js_neutral);
-  bluetooth_conn.add_recieve_int("Rijden", js_neutral);
+  bluetooth_conn.add_recieve_int("Drive", js_neutral);
   bluetooth_conn.add_recieve_int("Location", loc_default);
 
   pinMode(LED, OUTPUT);
@@ -204,11 +205,11 @@ void loop()
 }
 
 void getBTValues() {
-  stickOneXas = bluetooth_conn.get_int("StickOne_Xas");
-  stickOneYas = bluetooth_conn.get_int("StickOne_Yas");
+  stickOneXas = bluetooth_conn.get_int("StickOne_Yas");
+  stickOneYas = bluetooth_conn.get_int("StickOne_Xas");
+  stickTwoXas = bluetooth_conn.get_int("StickTwo_Yas");
   stickTwoYas = bluetooth_conn.get_int("StickTwo_Xas");
-  stickTwoYas = bluetooth_conn.get_int("StickTwo_Yas");
-  driveBool = bluetooth_conn.get_int("Rijden");
+  driveBool = bluetooth_conn.get_int("Drive");
   Hand = bluetooth_conn.get_int("Hand");
 }
 
