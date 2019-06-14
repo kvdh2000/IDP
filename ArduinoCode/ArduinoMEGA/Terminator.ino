@@ -56,7 +56,7 @@ int getMotor3Value(int mtr2Val) {
 void armMovement()
 {
   motors.speed(300);
-  
+
   Serial.print("x  -  ");
   Serial.println(stickTwoXas);
   Serial.print("y =  ");
@@ -87,7 +87,7 @@ void armMovement()
   if (stickOneYas < deadzone_min)
   {
     CurArmY -= 2;
-  }  
+  }
   if (stickTwoYas > deadzone_max)
   {
     CurArmY += 2;
@@ -97,9 +97,9 @@ void armMovement()
     CurArmY -= 2;
   }
 
-//  motor2.goalPosition(CurArmX1 );
-//  motor3.goalPosition(getMotor3Value(CurArmX1));
-//  motor4.goalPosition(CurArmX2);
+  //  motor2.goalPosition(CurArmX1 );
+  //  motor3.goalPosition(getMotor3Value(CurArmX1));
+  //  motor4.goalPosition(CurArmX2);
   //  CurArmX = constrain(CurArmX, 1, 28);
   //
   //  B = sqrt(CurArmX * CurArmX + D * D);
