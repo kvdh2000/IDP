@@ -5,12 +5,18 @@ void initServos() {
   interface.begin(baudrate);
   motors.enableTorque();
   motors.speed(speed2);
+
+  //Arm
   motor1.jointMode(0, 1023);
   motor2.jointMode(150, 900);
   motor3.jointMode(150, 900);
   motor4.jointMode(20, 1023);
   motor5.jointMode(0, 1023);
+
+  //Hand
   motor6.jointMode(28, 684);
+
+  //Legs
   //  motor7.jointMode(0, 1023);
   //  motor8.jointMode(0, 1023);
   //  motor9.jointMode(0, 1023);
@@ -19,6 +25,8 @@ void initServos() {
   //  motor12.jointMode(0, 1023);
   //  motor13.jointMode(0, 1023);
   //  motor14.jointMode(0, 1023);
+
+  //Hinges
   //  motor15.jointMode(0, 1023);
   //  motor16.jointMode(0, 1023);
 
@@ -26,7 +34,6 @@ void initServos() {
   motor1.goalPosition(512);
   motor2.goalPosition(512);
   motor3.goalPosition(getMotor3Value(512));
-
   motor4.goalPosition(512);
   motor5.goalPosition(512);
   motor6.goalPosition(460);
@@ -38,6 +45,8 @@ void initServos() {
   //  motor12.goalPosition(200);
   //  motor13.goalPosition(200);
   //  motor14.goalPosition(350);
+  //  motor15.goalPosition(512);
+  //  motor16.goalPosition(512);
 }
 
 int getMotor3Value(int mtr2Val) {

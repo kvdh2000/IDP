@@ -1,6 +1,13 @@
+
+struct Motor {
+  int A;
+  int B;
+  int PWM;
+};
+
 #include "DynamixelMotor.h"
 #include "Arduino.h"
-#include "JohnsSpecialEasyTransfer.h"
+#include "btLib.h"
 
 //All methods
 /*
@@ -20,25 +27,17 @@
 
 //Pin definitions
 #define DIR_PIN 2
+const Motor dcMotors[5] = {
+  Motor{0,0,0}, 
+  Motor{22, 23, 3},
+  Motor{24, 25, 4}, 
+  Motor{26, 27, 5}, 
+  Motor{28, 29, 6}};
 #define LED 13
 #define vuMeter A3
 #define X A5
 #define Y A6
 
-struct Motor {
-  int A;
-  int B;
-  int PWM;
-};
-
-const Motor dcMotors[5] = 
-{
-  Motor{0,0,0}, 
-  Motor{22, 23, 3},
-  Motor{24, 25, 4}, 
-  Motor{26, 27, 5}, 
-  Motor{28, 29, 6}
-};
 //Variables for Serial
 const long unsigned int baudrate = 1000000;
 int reg = 0;
@@ -49,7 +48,7 @@ const int bufferSize = 10;
 const char cmd_sep = '|';
 
 //Variables for bt
-JohnsSpecialEasyTransfer bluetooth_conn;
+btLib bluetooth_conn;
 int MotorXas;
 int MotorYas;
 int ArmXas;
