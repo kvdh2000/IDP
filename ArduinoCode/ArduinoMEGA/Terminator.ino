@@ -48,14 +48,16 @@ void armMovement()
 {
   motors.speed(300);
 
-  ArmXas1 = bluetooth_conn.get_int("Arm_Xas");
-  ArmXas2 = bluetooth_conn.get_int("Arm_Xas");
-  ArmYas = bluetooth_conn.get_int("Arm_Yas");
+  stickOneXas = bluetooth_conn.get_int("Arm_Xas");
+  stickOneYas = bluetooth_conn.get_int("Arm_Xas");
+  stickTwoYas = bluetooth_conn.get_int("Arm_Yas");
+  stickTwoYas = bluetooth_conn.get_int("Arm_Yas");
+  
   int Hand = bluetooth_conn.get_int("Hand");
   Serial.print("x  -  ");
-  Serial.println(ArmXas);
+  Serial.println(stickTwoXas);
   Serial.print("y =  ");
-  Serial.println(ArmYas);
+  Serial.println(stickTwoYas);
 
   if (Hand == 0)
   {
@@ -67,26 +69,34 @@ void armMovement()
   }
 
 
-  if (ArmXas < deadzone_min)
+  if (stickOneXas < deadzone_min)
   {
-    CurArmY -= 20;
+    CurArmX -= 20;
   }
-  if (ArmXas > deadzone_max)
+  if (stickOneXas > deadzone_max)
   {
-    CurArmY += 20;
+    CurArmX += 20;
   }
-  if (ArmYas > deadzone_max)
+  if (stickOneYas > deadzone_max)
   {
-    CurArmX += 2;
+    CurArmY += 2;
   }
-  if (ArmYas < deadzone_min)
+  if (stickOneYas < deadzone_min)
   {
-    CurArmX -= 2;
+    CurArmY -= 2;
+  }  
+  if (stickTwoYas > deadzone_max)
+  {
+    CurArmY += 2;
+  }
+  if (stickTwoYas < deadzone_min)
+  {
+    CurArmY -= 2;
   }
 
-  motor2.goalPosition(CurArmX1);
-  motor3.goalPosition(getMotor3Value(CurArmX1));
-  motor4.goalPosition(CurArmX2);
+//  motor2.goalPosition(CurArmX1 );
+//  motor3.goalPosition(getMotor3Value(CurArmX1));
+//  motor4.goalPosition(CurArmX2);
   //  CurArmX = constrain(CurArmX, 1, 28);
   //
   //  B = sqrt(CurArmX * CurArmX + D * D);
