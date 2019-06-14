@@ -23,7 +23,7 @@ struct Motor {
 
 #include "DynamixelMotor.h"
 #include "Arduino.h"
-#include "JohnsSpecialEasyTransfer.h"
+#include "btLib.h"
 
 //Pin definitions
 #define DIR_PIN 2
@@ -50,7 +50,7 @@ const int bufferSize = 10;
 const char cmd_sep = '|';
 
 //Variables for bt
-JohnsSpecialEasyTransfer bluetooth_conn;
+btLib bluetooth_conn;
 int MotorXas;
 int MotorYas;
 int ArmXas;
