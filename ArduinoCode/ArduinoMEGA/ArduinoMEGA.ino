@@ -165,6 +165,7 @@ void loop()
 
   voltMeter();
   readJoy();
+  rijdBool = bluetooth_conn.get_int("Rijden");
   if (rijdBool) {
     drive();
   }
