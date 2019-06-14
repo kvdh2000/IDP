@@ -47,13 +47,7 @@ int getMotor3Value(int mtr2Val) {
 void armMovement()
 {
   motors.speed(300);
-
-  stickOneXas = bluetooth_conn.get_int("Arm_Xas");
-  stickOneYas = bluetooth_conn.get_int("Arm_Xas");
-  stickTwoYas = bluetooth_conn.get_int("Arm_Yas");
-  stickTwoYas = bluetooth_conn.get_int("Arm_Yas");
   
-  int Hand = bluetooth_conn.get_int("Hand");
   Serial.print("x  -  ");
   Serial.println(stickTwoXas);
   Serial.print("y =  ");
