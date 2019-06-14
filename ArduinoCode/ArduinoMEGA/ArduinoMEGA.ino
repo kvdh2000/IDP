@@ -28,11 +28,12 @@ struct Motor {
 //Pin definitions
 #define DIR_PIN 2
 const Motor dcMotors[5] = {
-  Motor{0,0,0}, 
+  Motor{0, 0, 0},
   Motor{22, 23, 3},
-  Motor{24, 25, 4}, 
-  Motor{26, 27, 5}, 
-  Motor{28, 29, 6}};
+  Motor{24, 25, 4},
+  Motor{26, 27, 5},
+  Motor{28, 29, 6}
+};
 #define LED 13
 #define vuMeter A3
 #define X A5
