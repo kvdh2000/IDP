@@ -54,7 +54,7 @@ armMoved = False
 boolLook = False 
 setupComplete = True
 locationCon = None # default is None
-locations = ("Duckstad", "Eibergen", "Eindhoven", "Barneveld")
+locations = ("Duckstad", "Eibergen", "Eindhoven", "Barneveld") # initialize locations
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
@@ -92,7 +92,7 @@ async def GetArduino():
 # Method for sending commands to the arduino
 # Command can be max 5 characters long
 def SendMessage(command):
-    if(command != None):
+    if command != None:
         print("Python value sent: ")
         print(command)
         ard.write(command.encode())
@@ -111,14 +111,14 @@ def main():
         # follow these steps in order
         # wait till the arduino is ready to receive commands
         if setupComplete: 
-            if(not found[0]):
+            if not found[0]:
                 found[0], location = egg.FindEgg(frame) # find the egg
                 if found[0] and location is not None:
                     SendMessage('marm-z'+str(round(location, 1))+'|') # send a command to the arduino over Serial
         if armMoved:        
-            if(not found[1]):
+            if not found[1] and locationCon is not None:
                 found[1] = scan.SearchQR(locationCon, frame) # scans for the QRCode
-            elif(not found[2]):
+            elif not found[2]:
                 found[2], location = find.FindContainer(frame) # find the container
                 if found[2]:
                     SendMessage('marm-z'+str(round(location, 1))+'|')
@@ -132,6 +132,7 @@ def main():
         #track.TrackEgg(frame) # niet autonoom maar werkt wel
         #egg.FindEgg(frame) # niet 100% nauwkeurig maar werkt, distance werkt wanneer het ei goed gevonden word
         #chicken.FindChicken(frame) # werkt niet
+        boolTest, locTest = blue.BlueVision(frame)
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
