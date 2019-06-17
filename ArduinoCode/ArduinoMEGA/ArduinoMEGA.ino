@@ -1,4 +1,3 @@
-
 //Functions
 /*
    setup
@@ -177,7 +176,7 @@ void loop()
   getBTValues();
 
   if (driveBool) {
-    drive();
+    drive(true);
   }
   else {
     armMovement();
@@ -254,7 +253,7 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
   intensity = dmap(sqrt(pow(x, 2) + pow(y, 2)), 0, 512 / cos(tmpangle), 0, 512);
 }
 
-void drive() //Everything from making joystick input usable to sending the right signals to the dc motors
+void drive(bool type) //Everything from making joystick input usable to sending the right signals to the dc motors
 {
   convertxy(); //Converting joystick input into usable variables
 
@@ -264,7 +263,25 @@ void drive() //Everything from making joystick input usable to sending the right
     turnOff();
     return;
   }
+  if(!type){
+    if(angle <= 0){
+      digitalWrite(dcMotors[5].A, HIGH);
+      digitalWrite(dcMotors[5].B, LOW);
+      digitalWrite(dcMotors[6].A, HIGH);
+      digitalWrite(dcMotors[6].B, LOW);  
+    }else{
+      digitalWrite(dcMotors[5].A, LOW);
+      digitalWrite(dcMotors[5].B, HIGH);
+      digitalWrite(dcMotors[6].A, LOW);
+      digitalWrite(dcMotors[6].B, HIGH);
+    }
+    analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
+    analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
 
+    return;
+  }
+
+  //pim's if else labyrint
   //Deciding on which signals to send to both left motors as well as sending them based on both the angle and the required speed
   if (angle <= M_PI * 0.75 && angle >= M_PI * -0.25)
   {
