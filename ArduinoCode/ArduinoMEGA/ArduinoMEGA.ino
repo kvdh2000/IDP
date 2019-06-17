@@ -1,3 +1,6 @@
+#include <Dynamixel.h>
+#include "Arduino.h"
+#include "JohnsSpecialEasyTransfer.h"
 
 struct Motor {
   int A;
@@ -21,9 +24,6 @@ struct Motor {
  * dmap
  */
 
-#include "DynamixelMotor.h"
-#include "Arduino.h"
-#include "JohnsSpecialEasyTransfer.h"
 
 //Pin definitions
 #define DIR_PIN 2
