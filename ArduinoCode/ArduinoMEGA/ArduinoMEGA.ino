@@ -1,15 +1,5 @@
 
-struct Motor {
-  int A;
-  int B;
-  int PWM;
-};
-
-#include "DynamixelMotor.h"
-#include "Arduino.h"
-#include "btLib.h"
-
-//All methods
+//Functions
 /*
    setup
    loop
@@ -25,6 +15,16 @@ struct Motor {
    dmap
 */
 
+#include "DynamixelMotor.h"
+#include "Arduino.h"
+#include "btLib.h"
+
+struct Motor {
+  int A;
+  int B;
+  int PWM;
+};
+
 //Pin definitions
 #define DIR_PIN 2
 const Motor dcMotors[5] = {
@@ -35,7 +35,7 @@ const Motor dcMotors[5] = {
   Motor{28, 29, 6}
 };
 #define LED 13
-#define vuMeter A3
+#define volt A3
 #define X A5
 #define Y A6
 
@@ -131,7 +131,7 @@ void setup()
   bluetooth_conn.add_recieve_int("Location", loc_default);
 
   pinMode(LED, OUTPUT);
-  pinMode(vuMeter, INPUT);
+  pinMode(volt, INPUT);
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
 
@@ -356,7 +356,7 @@ void drive() //Everything from making joystick input usable to sending the right
 
 void voltMeter()
 {
-  int analogvalue = analogRead(vuMeter);
+  int analogvalue = analogRead(volt);
   temp = (analogvalue * 5.0) / 1024.0;
   input_volt = temp / factor;
   som = som - voltages[voltagesIndex];
