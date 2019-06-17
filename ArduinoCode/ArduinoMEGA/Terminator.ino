@@ -5,18 +5,12 @@ void initServos() {
   interface.begin(baudrate);
   motors.enableTorque();
   motors.speed(speed2);
-
-  //Arm
   motor1.jointMode(0, 1023);
   motor2.jointMode(150, 900);
   motor3.jointMode(150, 900);
   motor4.jointMode(20, 1023);
   motor5.jointMode(0, 1023);
-
-  //Hand
   motor6.jointMode(28, 684);
-
-  //Legs
   //  motor7.jointMode(0, 1023);
   //  motor8.jointMode(0, 1023);
   //  motor9.jointMode(0, 1023);
@@ -25,8 +19,6 @@ void initServos() {
   //  motor12.jointMode(0, 1023);
   //  motor13.jointMode(0, 1023);
   //  motor14.jointMode(0, 1023);
-
-  //Hinges
   //  motor15.jointMode(0, 1023);
   //  motor16.jointMode(0, 1023);
 
@@ -34,6 +26,7 @@ void initServos() {
   motor1.goalPosition(512);
   motor2.goalPosition(512);
   motor3.goalPosition(getMotor3Value(512));
+
   motor4.goalPosition(512);
   motor5.goalPosition(512);
   motor6.goalPosition(460);
@@ -45,8 +38,6 @@ void initServos() {
   //  motor12.goalPosition(200);
   //  motor13.goalPosition(200);
   //  motor14.goalPosition(350);
-  //  motor15.goalPosition(512);
-  //  motor16.goalPosition(512);
 }
 
 int getMotor3Value(int mtr2Val) {
@@ -57,10 +48,12 @@ void armMovement()
 {
   motors.speed(300);
 
-  Serial.print("x  -  ");
-  Serial.println(stickTwoXas);
+  Serial.print("x1  -  ");
+  Serial.println(stickOneXas);
   Serial.print("y =  ");
-  Serial.println(stickTwoYas);
+  Serial.println(stickOneYas);
+  Serial.print("x2 =  ");
+  Serial.println(stickTwoXas);
 
   if (Hand == 0)
   {
@@ -71,35 +64,41 @@ void armMovement()
     motor6.goalPosition(0);
   }
 
-
   if (stickOneXas < deadzone_min)
   {
-    CurArmX -= 20;
+    CurArmX1 -= 20;
   }
   if (stickOneXas > deadzone_max)
   {
-    CurArmX += 20;
+    CurArmX1 += 20;
   }
   if (stickOneYas > deadzone_max)
   {
-    CurArmY += 2;
+    CurArmY += 20;
   }
   if (stickOneYas < deadzone_min)
   {
-    CurArmY -= 2;
+    CurArmY -= 20;
   }
-  if (stickTwoYas > deadzone_max)
+  if (stickTwoXas > deadzone_max)
   {
-    CurArmY += 2;
+    CurArmX2 -= 10;
+    Serial.println("minderGAss");
   }
-  if (stickTwoYas < deadzone_min)
+  if (stickTwoXas < deadzone_min)
   {
-    CurArmY -= 2;
+    CurArmX2 += 10;
+    Serial.println("gasss");
   }
-
-  //  motor2.goalPosition(CurArmX1 );
-  //  motor3.goalPosition(getMotor3Value(CurArmX1));
-  //  motor4.goalPosition(CurArmX2);
+  
+  CurArmX1 = constrain(CurArmX1, 150, 900);
+  CurArmX2 = constrain(CurArmX2, 50, 900);
+  Serial.print(CurArmX2);
+  CurArmY = constrain(CurArmY, 1, 1023);
+  motor1.goalPosition(CurArmY);
+  motor2.goalPosition(CurArmX1);
+  motor3.goalPosition(getMotor3Value(CurArmX1));
+  motor4.goalPosition(CurArmX2);
   //  CurArmX = constrain(CurArmX, 1, 28);
   //
   //  B = sqrt(CurArmX * CurArmX + D * D);
@@ -121,7 +120,7 @@ void armMovement()
   //
   //  CurArmY = constrain(CurArmY, 0, 1023);
 
-  motor1.goalPosition(CurArmY);
+//  motor1.goalPosition(CurArmY);
 }
 
 void moveArm() {
