@@ -32,6 +32,5 @@ class BlueVision:
                                 centimeter = self.dist.getDistance(frame, currentcontour, 2045.45, 4.2)
                                 if(centimeter < 25):
                                     print("found stuff")
-                                    return True, centimeter
                         frame = cv.circle(frame,(cx,cy),4,(255,0,0),-1)
         cv.imshow('cam',frame)
