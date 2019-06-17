@@ -1,6 +1,22 @@
-#include <Dynamixel.h>
+//Functions
+/*
+   setup
+   loop
+   readJoy
+   turnOff
+   convertxy
+   drive
+   armMovement
+   voltMeter
+   locationUpdate
+   executeSerial
+   sendBack
+   dmap
+*/
+
+#include "DynamixelMotor.h"
 #include "Arduino.h"
-#include "JohnsSpecialEasyTransfer.h"
+#include "btLib.h"
 
 struct Motor {
   int A;
@@ -8,44 +24,24 @@ struct Motor {
   int PWM;
 };
 
-//All methods
-/*
- * setup
- * loop
- * readJoy
- * turnOff
- * convertxy
- * drive
- * armMovement
- * voltMeter
- * locationUpdate
- * executeSerial
- * sendBack
- * dmap
- */
-
-
 //Pin definitions
 #define DIR_PIN 2
-const Motor dcMotors[5] = 
-{
-  Motor{
-    0,0,0  }
-  , 
-  Motor{
-    22, 23, 3  }
-  ,
-  Motor{
-    24, 25, 4  }
-  , 
-  Motor{
-    26, 27, 5  }
-  , 
-  Motor{
-    28, 29, 6  }
-};
 #define LED 13
 #define vuMeter A3
+#define X A5
+#define Y A6
+const Motor dcMotors[7] =
+{
+  Motor{0, 0, 0},
+  Motor{22, 23, 3},
+  Motor{24, 25, 4},
+  Motor{26, 27, 5},
+  Motor{28, 29, 6},
+  Motor{30, 31, 7},
+  Motor{32, 33, 8}
+};
+#define LED 13
+#define volt A3
 #define X A5
 #define Y A6
 
@@ -59,13 +55,16 @@ const int bufferSize = 10;
 const char cmd_sep = '|';
 
 //Variables for bt
-JohnsSpecialEasyTransfer bluetooth_conn;
-int MotorXas;
-int MotorYas;
-int ArmXas;
-int ArmYas;
-int CurArmY = 825;
-int CurArmX = 0;
+btLib bluetooth_conn;
+int stickOneXas;
+int stickOneYas;
+int stickTwoXas;
+int stickTwoYas;
+int CurArmY = 512;
+int CurArmX1 = 512;
+int CurArmX2 = 512;
+int Hand = 0;
+bool driveBool = true;
 const int loc_default = 0;
 int loc_update;
 
@@ -93,10 +92,10 @@ DynamixelMotor motor6(interface, 6);
 //DynamixelMotor motor15(interface, 15);
 //DynamixelMotor motor16(interface, 16);
 DynamixelMotor motors(interface, BROADCAST_ID);
-float A = 17;
+float A = 29;
 float B = 0;
-float C = 14;
-float D = 6.7;
+float C = 18;
+float D = 8;
 float afstand;
 float alpha;
 float beta;
@@ -130,19 +129,20 @@ void setup()
   Serial.println("Arduino MEGA start");
 
   bluetooth_conn.begin(&Serial2);
-  bluetooth_conn.add_recieve_int("Motor_Xas", js_neutral);
-  bluetooth_conn.add_recieve_int("Motor_Yas", js_neutral);
-  bluetooth_conn.add_recieve_int("Arm_Xas", js_neutral);
-  bluetooth_conn.add_recieve_int("Arm_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("StickOne_Xas", js_neutral);
+  bluetooth_conn.add_recieve_int("StickOne_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("StickTwo_Xas", js_neutral);
+  bluetooth_conn.add_recieve_int("StickTwo_Yas", js_neutral);
   bluetooth_conn.add_recieve_int("Hand", js_neutral);
+  bluetooth_conn.add_recieve_int("Drive", js_neutral);
   bluetooth_conn.add_recieve_int("Location", loc_default);
 
   pinMode(LED, OUTPUT);
-  pinMode(vuMeter, INPUT);
+  pinMode(volt, INPUT);
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
 
-  for (byte c = 1; c < 5; c++)
+  for (byte c = 1; c < 7; c++)
   {
     pinMode(dcMotors[c].A, OUTPUT);
     pinMode(dcMotors[c].B, OUTPUT);
@@ -173,8 +173,15 @@ void loop()
 
   voltMeter();
   readJoy();
-  drive();
-  armMovement();
+  getBTValues();
+
+  if (driveBool) {
+    drive();
+  }
+  else {
+    armMovement();
+  }
+
   locationUpdate();
 
   if (Serial.available() && read_buffer.length() < bufferSize)
@@ -203,13 +210,22 @@ void loop()
   }
 }
 
+void getBTValues() {
+  stickOneXas = bluetooth_conn.get_int("StickOne_Yas");
+  stickOneYas = bluetooth_conn.get_int("StickOne_Xas");
+  stickTwoXas = bluetooth_conn.get_int("StickTwo_Yas");
+  stickTwoYas = bluetooth_conn.get_int("StickTwo_Xas");
+  driveBool = bluetooth_conn.get_int("Drive");
+  Hand = bluetooth_conn.get_int("Hand");
+}
+
 void readJoy()
 {
-  MotorXas = analogRead(X);
-  MotorYas = analogRead(Y);
+  stickOneXas = analogRead(X);
+  stickOneYas = analogRead(Y);
 
-  Serial.println(MotorXas);
-  Serial.println(MotorYas);
+  Serial.println(stickOneXas);
+  Serial.println(stickOneYas);
 }
 
 void turnOff()
@@ -224,8 +240,8 @@ void turnOff()
 
 void convertxy() //Deciding the angle of the joystick, converting it to a circle input from a square input and deciding the factor for the speed by calculating the distance from the center of the joystick
 {
-  int x = MotorXas - 512;
-  int y = MotorYas - 512;
+  int x = stickOneXas - 512;
+  int y = stickOneYas - 512;
   angle = -atan2(y, x);
   int halfabigPI = 157;
   int otherthing = abs(int(100 * angle));
@@ -345,64 +361,9 @@ void drive() //Everything from making joystick input usable to sending the right
   }
 }
 
-void armMovement()
-{
-  motors.speed(500);
-
-  ArmXas = bluetooth_conn.get_int("Arm_Xas");
-  ArmYas = bluetooth_conn.get_int("Arm_Yas");
-  int Hand = bluetooth_conn.get_int("Hand");
-
-  if (Hand == 0)
-  {
-    motor6.goalPosition(600);
-  }
-  else
-  {
-    motor6.goalPosition(50);
-  }
-  if (ArmXas < deadzone_min)
-  {
-    CurArmY -= 20;
-  }
-  if (ArmXas > deadzone_max)
-  {
-    CurArmY += 20;
-  }
-  if (ArmYas > deadzone_max)
-  {
-    CurArmX += 2;
-  }
-  if (ArmYas < deadzone_min)
-  {
-    CurArmX -= 2;
-  }
-
-  CurArmX = constrain(CurArmX, 1, 28);
-
-  B = sqrt(CurArmX * CurArmX + D * D);
-  if (B < 26 and B != 0)
-  {
-    alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
-    betar = acos((A * A - B * B + C * C) / (2 * A * C));
-    gammar = acos((A * A + B * B - C * C) / (2 * A * B));
-    alpha = alphar * 180 / M_PI + 60;
-    beta = betar * 180 / M_PI - 20;
-    gamma = gammar * 180 / M_PI;
-    float servohoek1 = map(alpha, 0, 360, 100, 1023);
-    float servohoek2 = map(beta, 0, 360, 50, 1023);
-    motor2.goalPosition(servohoek1);
-    motor4.goalPosition(servohoek2);
-  }
-
-  CurArmY = constrain(CurArmY, 0, 1023);
-
-  motor1.goalPosition(CurArmY);
-}
-
 void voltMeter()
 {
-  int analogvalue = analogRead(vuMeter);
+  int analogvalue = analogRead(volt);
   temp = (analogvalue * 5.0) / 1024.0;
   input_volt = temp / factor;
   som = som - voltages[voltagesIndex];
@@ -437,7 +398,7 @@ void voltMeter()
   Serial.println();
 }
 
-void locationUpdate(){
+void locationUpdate() {
   loc_update = bluetooth_conn.get_int("Location");
   Serial.print("Loc:");
   Serial.println(loc_update);
@@ -492,4 +453,3 @@ double dmap(double input, double fromlow, double fromhigh, double tolow, double 
 {
   return (input - fromlow) / (fromhigh - fromlow) * (tohigh - tolow) + tolow;
 }
-

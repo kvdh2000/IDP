@@ -21,5 +21,17 @@ class BlueVision:
                         cx = int(center['m10']/center['m00'])
                         cy = int(center['m01']/center['m00'])
                         print(cx, " ", cy)
+                        if cx < ((len(frame[1]) / 2) - (len(frame[1]) * maxoffcenter * 0.005)):
+                            print("Go left")
+                        elif cx > ((len(frame[1]) / 2) + (len(frame[1]) * maxoffcenter * 0.005)):
+                            print("Go right")
+                        else:
+                            print("Good enough")
+                            print('area: ' + str(area))
+                            if (area > 20000):
+                                centimeter = self.dist.getDistance(frame, currentcontour, 2045.45, 4.2)
+                                if(centimeter < 25):
+                                    print("found stuff")
+                                    return True, centimeter
                         frame = cv.circle(frame,(cx,cy),4,(255,0,0),-1)
         cv.imshow('cam',frame)
