@@ -31,20 +31,15 @@ struct Motor {
 #define vuMeter A3
 #define X A5
 #define Y A6
-
-struct Motor {
-  int A;
-  int B;
-  int PWM;
-};
-
-const Motor dcMotors[5] =
+const Motor dcMotors[7] =
 {
   Motor{0, 0, 0},
   Motor{22, 23, 3},
   Motor{24, 25, 4},
   Motor{26, 27, 5},
-  Motor{28, 29, 6}
+  Motor{28, 29, 6},
+  Motor{30, 31, 7},
+  Motor{32, 33, 8}
 };
 #define LED 13
 #define volt A3
@@ -148,7 +143,7 @@ void setup()
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
 
-  for (byte c = 1; c < 5; c++)
+  for (byte c = 1; c < 7; c++)
   {
     pinMode(dcMotors[c].A, OUTPUT);
     pinMode(dcMotors[c].B, OUTPUT);
