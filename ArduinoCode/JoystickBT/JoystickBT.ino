@@ -81,20 +81,26 @@ void loop() {
   }
 }
 
-void rupsIn(void *ptr){
+void rupsIn(void *ptr) {
   rupsInt++;
-  if (rupsInt > 2) rupsInt = 0;
+  Serial.println(rupsInt);
+  if (rupsInt == 3)
+  {
+    rupsInt = 0;
+  }
   switch (rupsInt) {
     case 0:
-      rups.setText("Low");
+      rups.setText("Tracks");
+      bluetooth_send.send_int("Legs", rupsInt);
       break;
     case 1:
-      rups.setText("High");
+      rups.setText("Low");
+      bluetooth_send.send_int("Legs", rupsInt);
       break;
     case 2:
-      rups.setText("Caterpillar");
+      rups.setText("High");
+      bluetooth_send.send_int("Legs", rupsInt);
       break;
-  bluetooth_send.send_int("Legs", rupsInt);
   }
 }
 
