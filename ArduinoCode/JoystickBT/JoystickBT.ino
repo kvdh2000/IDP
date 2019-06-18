@@ -16,6 +16,7 @@ unsigned long bt_counter = millis();
 int currentpage = 1;
 bool clawBool = false;
 bool driveBool = true;
+int rupsInt = 0;
 SoftwareSerial HMISerial(7, 8);
 NexButton bewegen = NexButton(1, 3, "bewegen");
 NexButton klauw = NexButton(3, 2, "klauw");
@@ -79,9 +80,24 @@ void loop() {
     }
   }
 }
+
 void rupsIn(void *ptr){
-  Serial.println("jep rupsjes");
+  rupsInt++;
+  if (rupsInt > 2) rupsInt = 0;
+  switch (rupsInt) {
+    case 0:
+      rups.setText("Low");
+      break;
+    case 1:
+      rups.setText("High");
+      break;
+    case 2:
+      rups.setText("Caterpillar");
+      break;
+  bluetooth_send.send_int("Legs", rupsInt);
+  }
 }
+
 void klauwDicht(void *ptr) {
   clawBool = !clawBool;
   if (clawBool) {
@@ -90,6 +106,7 @@ void klauwDicht(void *ptr) {
     klauw.setText("Grab");
   }
 }
+
 void rijdenIn(void *ptr) {
   driveBool = !driveBool;
   if (driveBool) {
@@ -98,24 +115,30 @@ void rijdenIn(void *ptr) {
     rijden.setText("Drive");
   }
 }
+
 void bewegenIn (void *ptr) {
   currentpage = 3;
 }
+
 void terugIn (void *ptr) {
   currentpage = 1;
 }
+
 void duckIn(void *ptr) {
   bluetooth_send.send_int("Location", 0);
   updateLocText(0);
 }
+
 void eiIn(void *ptr) {
   bluetooth_send.send_int("Location", 1);
   updateLocText(1);
 }
+
 void eindIn(void *ptr) {
   bluetooth_send.send_int("Location", 2);
   updateLocText(2);
 }
+
 void barnIn(void *ptr) {
   bluetooth_send.send_int("Location", 3);
   updateLocText(3);
@@ -139,5 +162,4 @@ void updateLocText(int location) {
       setLocText.setText("None");
       break;
   }
-
 }
