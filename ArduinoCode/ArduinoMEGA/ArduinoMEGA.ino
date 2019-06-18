@@ -429,6 +429,7 @@ void executeSerial(String command)
 
   //Command can be max 5 characters long
   String str = "command: ";
+  
   if (command == "forw" || command == "back" || command == "left" || command == "right")
   {
     moveRobot(command);
@@ -445,13 +446,21 @@ void executeSerial(String command)
   {
     blinkLed();
   }
-  else if (command == "marm")
+  else if (command.indexOf("marm") != -1)
   {
-    moveArm();
+    int j = command.indexOf("z");
+    int dist = command.substring(j + 1).toInt();
+    moveArm(dist);
   }
   else if (command == "look")
   {
-    lookAround();
+    turn("left");
+  }
+  else if (command.indexOf("blueLoc") != -1)
+  {
+    int j = command.indexOf("-");
+    String dir = command.substring(j + 1);
+    turn(dir);
   }
   else
   {

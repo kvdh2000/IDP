@@ -90,7 +90,7 @@ void armMovement()
     CurArmX2 += 10;
     Serial.println("gasss");
   }
-  
+
   CurArmX1 = constrain(CurArmX1, 150, 900);
   CurArmX2 = constrain(CurArmX2, 50, 900);
   Serial.print(CurArmX2);
@@ -120,10 +120,10 @@ void armMovement()
   //
   //  CurArmY = constrain(CurArmY, 0, 1023);
 
-//  motor1.goalPosition(CurArmY);
+  //  motor1.goalPosition(CurArmY);
 }
 
-void moveArm() {
+void moveArm(int dist) {
   int i = 0;
   //  put your main code here, to run repeatedly:
   while (i < 5) {
@@ -143,30 +143,46 @@ void moveArm() {
   sendBack("Arm moved");
 }
 
-void lookAround() { // de robot omhoog en naar beneden laten bewegen
-  int i = 0;
-  //  checking left and right 2 times
-  // Eerst kijken voordat je oversteekt
-  //  motor2.goalPosition(512);
-  //  motor3.goalPosition(getMotor3Value(512));
-  //  motor4.goalPosition(512);
-  //  motor5.goalPosition(512);
-  //  motor6.goalPosition(350);
-  //
-  //  while(i < 2){
-  //    motor1.goalPosition(1023);
-  //    delay(1000);
-  //
-  //    motor1.goalPosition(627);
-  //    delay(1000);
-  //    i++;
-  //  }
-  //
-  //  motor1.goalPosition(825);
-  sendBack("ff spieken");
+void turn(String dir) 
+{
+  if (dir == "left")
+  {
+    digitalWrite(dcMotors[1].A, HIGH);
+    digitalWrite(dcMotors[1].B, LOW);
+    digitalWrite(dcMotors[2].A, HIGH);
+    digitalWrite(dcMotors[2].B, LOW);
+    digitalWrite(dcMotors[3].A, LOW);
+    digitalWrite(dcMotors[3].B, HIGH);
+    digitalWrite(dcMotors[4].A, LOW);
+    digitalWrite(dcMotors[4].B, HIGH);
+    analogWrite(dcMotors[1].PWM, 255);
+    analogWrite(dcMotors[2].PWM, 255);
+    analogWrite(dcMotors[3].PWM, 255);
+    analogWrite(dcMotors[4].PWM, 255);
+  }
+
+  if (dir == "right")
+  {
+    digitalWrite(dcMotors[1].A, LOW);
+    digitalWrite(dcMotors[1].B, HIGH);
+    digitalWrite(dcMotors[2].A, LOW);
+    digitalWrite(dcMotors[2].B, HIGH);
+    digitalWrite(dcMotors[3].A, HIGH);
+    digitalWrite(dcMotors[3].B, LOW);
+    digitalWrite(dcMotors[4].A, HIGH);
+    digitalWrite(dcMotors[4].B, LOW);
+    analogWrite(dcMotors[1].PWM, 255);
+    analogWrite(dcMotors[2].PWM, 255);
+    analogWrite(dcMotors[3].PWM, 255);
+    analogWrite(dcMotors[4].PWM, 255);
+  }
+
+  delay(200);
+  turnOff();
 }
 
 void moveRobot(String direction) {
+
   sendBack("Move robot towards: " + direction);
 }
 
