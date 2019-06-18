@@ -10,6 +10,7 @@ class BlueVision:
         
     def FindCar(self, f):
 
+        maxoffcenter = 10
         frame = f.array
         
         image, contours, hierarchy = cv.findContours(cv.inRange(cv.cvtColor(frame, cv.COLOR_RGB2HSV), np.array([10,115,100]), np.array([40,255,255])),cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
@@ -23,14 +24,12 @@ class BlueVision:
                         print(cx, " ", cy)
                         if cx < ((len(frame[1]) / 2) - (len(frame[1]) * maxoffcenter * 0.005)):
                             print("Go left")
+                            return True, 'left'
                         elif cx > ((len(frame[1]) / 2) + (len(frame[1]) * maxoffcenter * 0.005)):
                             print("Go right")
+                            return True, 'right'
                         else:
                             print("Good enough")
-                            print('area: ' + str(area))
-                            if (area > 20000):
-                                centimeter = self.dist.getDistance(frame, currentcontour, 2045.45, 4.2)
-                                if(centimeter < 25):
-                                    print("found stuff")
                         frame = cv.circle(frame,(cx,cy),4,(255,0,0),-1)
         cv.imshow('cam',frame)
+        return False, None

@@ -12,7 +12,6 @@ from LineVision import LineVision # werkt niet
 from TrackerTest import TrackerTest # werkt maar nog niet autonoom
 from ChickVision import ChickVision # werkt niet
 
-import argparse
 import asyncio
 import cv2
 import imutils
@@ -21,14 +20,6 @@ from picamera.array import PiRGBArray
 import serial
 import time
 import re
-
-# used for grabbing an argument in this case 
-# we use it for grabbing which location we need 
-# to deliver the egg to
-# will be parsed from the controller
-ap = argparse.ArgumentParser()
-ap.add_argument("a")
-argName = ap.parse_args()
 
 # setup the picamera, this way we don't have to 
 # close it between switching scripts
@@ -52,7 +43,7 @@ found =[False, False, False]
 # so we can continue with the vision stuff
 armMoved = False
 boolLook = False 
-setupComplete = True
+setupComplete = False
 locationCon = None # default is None
 locations = ("Duckstad", "Eibergen", "Eindhoven", "Barneveld") # initialize locations
 
@@ -75,6 +66,9 @@ async def GetArduino():
     msg = (ard.read(ard.inWaiting()))
     if msg != None:
         print(msg)
+        # used for grabbing an argument in this case 
+        # we use it for grabbing which location we need 
+        # to deliver the egg to
         loc = re.search('.?(Loc:)(\d).?', str(msg))
         if msg == "b''":
             print(msg)
@@ -132,7 +126,10 @@ def main():
         #track.TrackEgg(frame) # niet autonoom maar werkt wel
         #egg.FindEgg(frame) # niet 100% nauwkeurig maar werkt, distance werkt wanneer het ei goed gevonden word
         #chicken.FindChicken(frame) # werkt niet
-        boolTest, locTest = blue.BlueVision(frame)
+        boolTest, locTest = blue.FindCar(frame)
+        if boolTest is True and locTest is not None:
+            SendMessage('blueLoc-'+locTest)
+            print('location blue: '+locTest)
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
