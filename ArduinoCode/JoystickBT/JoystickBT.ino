@@ -19,6 +19,7 @@ bool driveBool = true;
 SoftwareSerial HMISerial(7, 8);
 NexButton bewegen = NexButton(1, 3, "bewegen");
 NexButton klauw = NexButton(3, 2, "klauw");
+NexButton rups = NexButton(3, 5, "rups");
 NexButton rijden = NexButton(3, 4, "rijden");
 NexButton terug2 = NexButton(2, 1, "terug");
 NexButton terug3 = NexButton(3, 1, "terug");
@@ -32,6 +33,7 @@ NexButton setLocText = NexButton(4, 11, "setLocText");
 NexTouch *knoppenlijst[] = {
   &bewegen,
   &klauw,
+  &rups,
   &rijden,
   &terug2,
   &terug3,
@@ -48,6 +50,7 @@ void setup() {
   nexInit();
   Serial.begin(38400);
   bewegen.attachPush(bewegenIn);
+  rups.attachPush(rupsIn);
   klauw.attachPush(klauwDicht);
   rijden.attachPush(rijdenIn);
   terug2.attachPush(terugIn);
@@ -76,7 +79,9 @@ void loop() {
     }
   }
 }
-
+void rupsIn(void *ptr){
+  Serial.println("jep rupsjes");
+}
 void klauwDicht(void *ptr) {
   clawBool = !clawBool;
   if (clawBool) {
