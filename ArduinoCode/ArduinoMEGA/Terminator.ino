@@ -125,7 +125,7 @@ void armMovement()
   //  motor1.goalPosition(CurArmY);
 }
 
-void moveArm(int dist) {
+void moveArm(float dist) {
   int i = 0;
   //  put your main code here, to run repeatedly:
   while (i < 5) {
