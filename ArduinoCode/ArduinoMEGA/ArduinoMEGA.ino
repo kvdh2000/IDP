@@ -504,7 +504,7 @@ void executeSerial(String command)
   else if (command.indexOf("marm") != -1)
   {
     int j = command.indexOf("z");
-    int dist = command.substring(j + 1).toInt();
+    float dist = command.substring(j + 1).toFloat();
     moveArm(dist);
   }
   else if (command == "look")
