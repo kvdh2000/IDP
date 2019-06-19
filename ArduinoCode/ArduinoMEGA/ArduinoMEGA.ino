@@ -34,12 +34,12 @@ struct Motor {
 const Motor dcMotors[7] =
 {
   Motor{0, 0, 0},
-  Motor{22, 23, 3},
-  Motor{24, 25, 4},
-  Motor{26, 27, 5},
-  Motor{28, 29, 6},
-  Motor{30, 31, 7},
-  Motor{32, 33, 8}
+  Motor{25, 27, 4},
+  Motor{29, 33, 8},
+  Motor{31, 28, 5},
+  Motor{32, 30, 7},
+  Motor{24, 36, 3},
+  Motor{22, 23, 6}
 };
 #define LED 13
 #define volt A3
