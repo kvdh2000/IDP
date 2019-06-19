@@ -5,6 +5,7 @@ void initServos() {
   interface.begin(baudrate);
   motors.enableTorque();
   motors.speed(speed2);
+  
 //  motor1.jointMode(0, 1023);
   motor2.jointMode(150, 900);
   motor3.jointMode(150, 900);
@@ -97,7 +98,7 @@ void armMovement()
   CurArmX2 = constrain(CurArmX2, 50, 900);
   Serial.print(CurArmX2);
   CurArmY = constrain(CurArmY, 1, 1023);
-  motor1.goalPosition(CurArmY);
+//  motor1.goalPosition(CurArmY);
   motor2.goalPosition(CurArmX1);
   motor3.goalPosition(getMotor3Value(CurArmX1));
   motor4.goalPosition(CurArmX2);
@@ -129,13 +130,13 @@ void moveArm(float dist) {
   int i = 0;
   //  put your main code here, to run repeatedly:
   while (i < 5) {
-    motor1.goalPosition(900);
+//    motor1.goalPosition(900);
     motor4.goalPosition(50);
     motor5.goalPosition(50);
     motor6.goalPosition(350);
     delay(1000);
 
-    motor1.goalPosition(900);
+//    motor1.goalPosition(900);
     motor4.goalPosition(670);
     motor5.goalPosition(400);
     motor6.goalPosition(700);
