@@ -243,6 +243,24 @@ void changeLegs(int legs)
 {
   switch (legs)
   {
+    case 0:
+//      motor7.goalPosition(640);
+//      motor8.goalPosition(384);
+//      motor9.goalPosition(640);
+//      motor10.goalPosition(384);
+//      motor11.goalPosition(640);
+//      motor12.goalPosition(384);
+//      motor13.goalPosition(640);
+//      motor14.goalPosition(384);
+      motor7.goalPosition(512);
+      motor8.goalPosition(256);
+      motor9.goalPosition(768);
+      motor10.goalPosition(512);
+      motor11.goalPosition(512);
+      motor12.goalPosition(256);
+      motor13.goalPosition(786);
+      motor14.goalPosition(512);
+      break;
     case 1:
       motor7.goalPosition(384);
       motor8.goalPosition(384);
@@ -261,24 +279,6 @@ void changeLegs(int legs)
       motor11.goalPosition(512);
       motor12.goalPosition(512);
       motor13.goalPosition(512);
-      motor14.goalPosition(512);
-      break;
-    case 0:
-//      motor7.goalPosition(640);
-//      motor8.goalPosition(384);
-//      motor9.goalPosition(640);
-//      motor10.goalPosition(384);
-//      motor11.goalPosition(640);
-//      motor12.goalPosition(384);
-//      motor13.goalPosition(640);
-//      motor14.goalPosition(384);
-      motor7.goalPosition(512);
-      motor8.goalPosition(256);
-      motor9.goalPosition(768);
-      motor10.goalPosition(512);
-      motor11.goalPosition(512);
-      motor12.goalPosition(256);
-      motor13.goalPosition(786);
       motor14.goalPosition(512);
       break;
   }
