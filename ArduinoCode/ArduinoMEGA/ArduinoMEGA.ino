@@ -243,7 +243,7 @@ void changeLegs(int legs)
 {
   switch (legs)
   {
-    case 0:
+    case 1:
       motor7.goalPosition(384);
       motor8.goalPosition(384);
       motor9.goalPosition(640);
@@ -253,7 +253,7 @@ void changeLegs(int legs)
       motor13.goalPosition(640);
       motor14.goalPosition(640);
       break;
-    case 1:
+    case 2:
       motor7.goalPosition(512);
       motor8.goalPosition(512);
       motor9.goalPosition(512);
@@ -263,7 +263,7 @@ void changeLegs(int legs)
       motor13.goalPosition(512);
       motor14.goalPosition(512);
       break;
-    case 2:
+    case 0:
 //      motor7.goalPosition(640);
 //      motor8.goalPosition(384);
 //      motor9.goalPosition(640);
