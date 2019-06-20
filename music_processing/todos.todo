@@ -1,0 +1,30 @@
+onderdelen:
+    autonome modus:
+        ✔ geluid opnemen @done(2019-06-20 13:22) @project(onderdelen)
+        ☐ geluid analyseren
+            ✔ bpm detectie @done(2019-06-20 13:22) @project(onderdelen)
+            ☐ equlizers
+            ☐ genre detectie?
+        ☐ analyse omzetten naar gedragingen
+            ☐ arm bewegen
+            ☐ rupsbanden bewegen
+            ☐ neopixel leds aansturen
+                ☐ kleur sturen
+                ☐ kleur richting. van voor naar achterkant strip 
+                ☐ hsv cycle
+                    ☐ cycle hsv range
+                    ☐ cycle speed
+                ☐ aansturing per strip 
+    ingestudeerde modus:
+        ☐ dans editor
+        ☐ bestand opslaan/lezen
+        ☐ loop die die commandos op het juiste moment doorstuurd
+    beide modusen:
+        ☐ continue gedragingen doorsturen
+        ☐ standaard format voor commandos
+    
+    
+    
+ideeen emotie tonen:
+    - deze shit http://www.tigercolor.com/color-lab/color-theory/color-harmonies.htm
+    - snelheid en grootheid van bewegingen

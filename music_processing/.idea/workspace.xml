@@ -2,54 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b723b4a2-2b68-4f33-a0f3-03d7521b6510" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/dance.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/todos.todo" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ArduinoCode/bluetooth/JohnSpecialEasyTransfer" beforeDir="false" afterPath="$PROJECT_DIR$/../ArduinoCode/bluetooth/JohnSpecialEasyTransfer" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bensound-cute.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bensound-goinghigher.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bensound-jazzyfrenchy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bensound-littleidea.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bensound-ukulele.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_alsa.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_bench_yin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_bpm_extract.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_create_test_sounds.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_filter.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_filterbank.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_filterbank_slaney.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_filterbank_triangle_bands.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_keyboard.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_mel-energy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_mfcc.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_miditofreq.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_notes.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_onset.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_onset_plot.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_pitch.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_pitch_sinusoid.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_pyaudio.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_pysoundcard_play.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_pysoundcard_record.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_reading_speed.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_simple_robot_voice.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_simple_spectral_weighting.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_sink.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_sink_create_woodblock.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_sink_multi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_slicing.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_source.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_source_simple.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_specdesc.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_spectrogram.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_tapthebeat.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_tempo.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_tempo_plot.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_timestretch.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_timestretch_online.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_tss.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_wav2midi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_waveform_plot.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/demo_yin_compare.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp.wav" beforeDir="false" afterPath="$PROJECT_DIR$/temp.wav" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,23 +16,48 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/music_processing$scratch2.coverage" NAME="scratch2 Coverage Results" MODIFIED="1561037521807" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/music_processing$demo_sink_create_woodblock.coverage" NAME="demo_sink_create_woodblock Coverage Results" MODIFIED="1561019277861" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/demos" />
     <SUITE FILE_PATH="coverage/music_processing$demo_tapthebeat.coverage" NAME="demo_tapthebeat Coverage Results" MODIFIED="1561025865194" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/demos" />
-    <SUITE FILE_PATH="coverage/music_processing$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1561022697242" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/music_processing$main.coverage" NAME="main Coverage Results" MODIFIED="1561027971571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/music_processing$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1561037329136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/music_processing$main.coverage" NAME="main Coverage Results" MODIFIED="1561037162232" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dance.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+            <state relative-caret-position="195">
+              <caret line="55" column="4" lean-forward="true" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
-                <element signature="e#314#341#0" expanded="true" />
-                <element signature="e#239#2112#0" expanded="true" />
                 <element signature="e#1942#2072#0" expanded="true" />
+                <element signature="e#2228#2244#0" expanded="true" />
+                <element signature="e#2428#2554#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scratch.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="331">
+              <caret line="40" column="8" selection-start-line="40" selection-start-column="8" selection-end-line="40" selection-end-column="8" />
+              <folding>
+                <element signature="e#267#279#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scratch2.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="13" column="28" lean-forward="true" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="34" />
+              <folding>
+                <element signature="e#24#34#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -96,9 +79,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/demos/demo_tapthebeat.py" />
-        <option value="$PROJECT_DIR$/scratch.py" />
         <option value="$PROJECT_DIR$/demos/demo_tempo.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/scratch.py" />
+        <option value="$PROJECT_DIR$/scratch2.py" />
       </list>
     </option>
   </component>
@@ -147,7 +131,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.scratch2">
     <configuration name="demo_sink_create_woodblock" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="music_processing" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -205,7 +189,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/dance.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -236,17 +220,41 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="scratch2" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="music_processing" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scratch2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.demo_sink_create_woodblock" />
       <item itemvalue="Python.demo_tapthebeat" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.scratch" />
+      <item itemvalue="Python.scratch2" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.scratch2" />
+        <item itemvalue="Python.scratch" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.demo_tapthebeat" />
-        <item itemvalue="Python.scratch" />
         <item itemvalue="Python.demo_sink_create_woodblock" />
       </list>
     </recent_temporary>
@@ -261,19 +269,19 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1561018271655</updated>
-      <workItem from="1561018273125" duration="10310000" />
+      <workItem from="1561018273125" duration="15400000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10310000" />
+    <option name="totallyTimeSpent" value="15400000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="-1" width="1602" height="881" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" weight="0.3809524" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.106821105" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" />
@@ -284,13 +292,13 @@
       <window_info anchor="bottom" id="Event Log" sideWeight="0.5006435" side_tool="true" weight="0.39889959" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3287483" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4980695" visible="true" weight="0.3287483" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4980695" weight="0.3287483" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4993565" weight="0.39889959" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" x="0" y="0" width="350" height="681" id="Documentation" type="SLIDING" weight="0.32947233" />
-      <window_info anchor="right" id="SciView" />
+      <window_info anchor="right" id="SciView" weight="0.32947233" />
       <window_info anchor="right" id="Database" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -307,17 +315,6 @@
           <caret line="2" selection-start-line="2" selection-end-line="2" />
           <folding>
             <element signature="e#24#34#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scratch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" selection-start-line="9" selection-end-line="18" />
-          <folding>
-            <element signature="e#190#205#0" expanded="true" />
-            <element signature="e#230#253#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -372,15 +369,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/todos.todo">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dance.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+        <state relative-caret-position="195">
+          <caret line="55" column="4" lean-forward="true" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <element signature="e#314#341#0" expanded="true" />
-            <element signature="e#239#2112#0" expanded="true" />
             <element signature="e#1942#2072#0" expanded="true" />
+            <element signature="e#2228#2244#0" expanded="true" />
+            <element signature="e#2428#2554#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scratch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="40" column="8" selection-start-line="40" selection-start-column="8" selection-end-line="40" selection-end-column="8" />
+          <folding>
+            <element signature="e#267#279#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scratch2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="13" column="28" lean-forward="true" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="34" />
+          <folding>
+            <element signature="e#24#34#0" expanded="true" />
           </folding>
         </state>
       </provider>
