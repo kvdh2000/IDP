@@ -141,7 +141,7 @@ void setup()
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
 
-  for (byte c = 1; c < ; c++)
+  for (byte c = 1; c < 5; c++)
   {
     pinMode(dcMotors[c].A, OUTPUT);
     pinMode(dcMotors[c].B, OUTPUT);
