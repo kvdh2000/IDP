@@ -3,8 +3,6 @@
 #include <Nextion.h>
 #include "btLib.h"
 
-//VEH-Vehicle = joystick2
-//ARM = joystick1
 #define StickOne_X_AS A4
 #define StickOne_Y_AS A3
 #define StickTwo_X_AS A2
@@ -18,6 +16,7 @@ bool clawBool = false;
 bool driveBool = true;
 int rupsInt = 0;
 SoftwareSerial HMISerial(7, 8);
+
 NexButton bewegen = NexButton(1, 3, "bewegen");
 NexButton klauw = NexButton(3, 2, "klauw");
 NexButton rups = NexButton(3, 5, "rups");
