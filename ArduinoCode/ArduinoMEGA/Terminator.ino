@@ -12,16 +12,6 @@ void initServos() {
   motor4.jointMode(20, 1023);
   motor5.jointMode(0, 1023);
   motor6.jointMode(28, 684);
-  motor7.jointMode(0, 1023);
-  motor8.jointMode(0, 1023);
-  motor9.jointMode(0, 1023);
-  motor10.jointMode(0, 1023);
-  motor11.jointMode(0, 1023);
-  motor12.jointMode(0, 1023);
-  motor13.jointMode(0, 1023);
-  motor14.jointMode(0, 1023);
-  motor15.jointMode(0, 1023);
-  motor16.jointMode(0, 1023);
 
 //  digitalWrite(DIR_PIN, HIGH);
 
@@ -31,16 +21,6 @@ void initServos() {
   motor4.goalPosition(512);
   motor5.goalPosition(512);
   motor6.goalPosition(460);
-  motor7.goalPosition(640);
-  motor8.goalPosition(384);
-  motor9.goalPosition(640);
-  motor10.goalPosition(384);
-  motor11.goalPosition(640);
-  motor12.goalPosition(384);
-  motor13.goalPosition(640);
-  motor14.goalPosition(384);
-  motor15.goalPosition(512);
-  motor16.goalPosition(512);
 }
 
 int getMotor3Value(int mtr2Val) {
