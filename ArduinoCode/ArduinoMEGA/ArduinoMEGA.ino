@@ -38,8 +38,6 @@ const Motor dcMotors[7] =
   Motor{29, 33, 8},
   Motor{31, 28, 5},
   Motor{32, 30, 7},
-  Motor{24, 36, 3},
-  Motor{22, 23, 6}
 };
 #define LED 13
 #define volt A3
@@ -143,7 +141,7 @@ void setup()
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
 
-  for (byte c = 1; c < 7; c++)
+  for (byte c = 1; c < ; c++)
   {
     pinMode(dcMotors[c].A, OUTPUT);
     pinMode(dcMotors[c].B, OUTPUT);
