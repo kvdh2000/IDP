@@ -32,13 +32,6 @@ void armMovement()
 {
   motors.speed(300);
 
-  Serial.print("x1  -  ");
-  Serial.println(stickOneXas);
-  Serial.print("y =  ");
-  Serial.println(stickOneYas);
-  Serial.print("x2 =  ");
-  Serial.println(stickTwoXas);
-
   if (Hand == 0)
   {
     motor6.goalPosition(462);
@@ -66,46 +59,47 @@ void armMovement()
   }
   if (stickTwoXas > deadzone_max)
   {
-    CurArmX2 -= 10;
-    Serial.println("minderGAss");
+    CurArmX2 -= 20;
   }
   if (stickTwoXas < deadzone_min)
   {
-    CurArmX2 += 10;
-    Serial.println("gasss");
+    CurArmX2 += 20;
   }
 
-  CurArmX1 = constrain(CurArmX1, 150, 900);
+  CurArmX1 = constrain(CurArmX1, 260, 512);
   CurArmX2 = constrain(CurArmX2, 50, 900);
-  Serial.print(CurArmX2);
-  CurArmY = constrain(CurArmY, 1, 1023);
-
-  motor1.goalPosition(CurArmY);
+  CurArmY = constrain(CurArmY, 300, 750);
+  
+//  motor1.goalPosition(CurArmY);
   motor2.goalPosition(CurArmX1);
   motor3.goalPosition(getMotor3Value(CurArmX1));
   motor4.goalPosition(CurArmX2);
-  //  CurArmX = constrain(CurArmX, 1, 28);
-  //
-  //  B = sqrt(CurArmX * CurArmX + D * D);
-  //  Serial.println("b    =   " + String(B));
-  //  if (B < 24 and B != 0) // 28 normaal
-  //  {
-  //    alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
-  //    betar = acos((A * A - B * B + C * C) / (2 * A * C));
-  //    gammar = acos((A * A + B * B - C * C) / (2 * A * B));
-  //    alpha = alphar * 180 / M_PI + 60;
-  //    beta = betar * 180 / M_PI - 20;
-  //    gamma = gammar * 180 / M_PI;
-  //    float servohoek1 = map(alpha, 0, 360, 100, 1023);
-  //    float servohoek2 = map(beta, 0, 360, 50, 1023);
-  //    motor2.goalPosition(servohoek1);
-  //    motor3.goalPosition(getMotor3Value(servohoek1));
-  //    motor4.goalPosition(servohoek2);
-  //  }
-  //
-  //  CurArmY = constrain(CurArmY, 0, 1023);
 
-  //  motor1.goalPosition(CurArmY);
+    //grond tot 1 = 18cm
+    //1 tot 2 = 18cm
+    //2 tot 3 = 35cm
+//    CurArmX1 = constrain(CurArmX1, 1, 44);
+//  
+//    B = sqrt(CurArmX1 * CurArmX1 + D * D);
+//    Serial.println("b    =   " + String(B));
+//    if (B < 24 and B != 0) // 28 normaal
+//    {
+//      alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
+//      betar = acos((A * A - B * B + C * C) / (2 * A * C));
+//      gammar = acos((A * A + B * B - C * C) / (2 * A * B));
+//      alpha = alphar * 180 / M_PI + 60;
+//      beta = betar * 180 / M_PI - 20;
+//      gamma = gammar * 180 / M_PI;
+//      float servohoek1 = map(alpha, 0, 360, 100, 1023);
+//      float servohoek2 = map(beta, 0, 360, 50, 1023);
+//      motor2.goalPosition(servohoek1);
+//      motor3.goalPosition(getMotor3Value(servohoek1));
+//      motor4.goalPosition(servohoek2);
+//    }
+  
+//    CurArmY = constrain(CurArmY, 300, 750);
+//
+//    motor1.goalPosition(CurArmY);
 }
 
 void moveArm(float dist) {

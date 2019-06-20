@@ -119,10 +119,10 @@ void setup()
   Serial.println("Arduino MEGA start");
 
   bluetooth_conn.begin(&Serial2);
-  bluetooth_conn.add_recieve_int("StickOne_Xas", js_neutral);
-  bluetooth_conn.add_recieve_int("StickOne_Yas", js_neutral);
-  bluetooth_conn.add_recieve_int("StickTwo_Xas", js_neutral);
-  bluetooth_conn.add_recieve_int("StickTwo_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("1_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("1_Xas", js_neutral);
+  bluetooth_conn.add_recieve_int("2_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("2_Xas", js_neutral);
   bluetooth_conn.add_recieve_int("Hand", js_neutral);
   bluetooth_conn.add_recieve_int("Drive", js_neutral);
   bluetooth_conn.add_recieve_int("Location", loc_default);
@@ -149,10 +149,10 @@ void setup()
 
 void loop()
 {
-  Serial.println("-------------------------------------------------");
-  Serial.println();
-  Serial.println("Restart loop");
-  Serial.println();
+//  Serial.println("-------------------------------------------------");
+//  Serial.println();
+//  Serial.println("Restart loop");
+//  Serial.println();
 
   bluetooth_conn.update();
 
@@ -161,21 +161,20 @@ void loop()
   digitalWrite(LED, LOW);
   delay(50);
 
-  voltMeter();
-  readJoy();
+//  voltMeter();
+//  readJoy();
   getBTValues();
 
   if (driveBool)
   {
     drive();
   }
-
   else
   {
     armMovement();
   }
 
-  locationUpdate();
+//  locationUpdate();
 
   if (Serial.available() && read_buffer.length() < bufferSize)
   {
@@ -205,10 +204,10 @@ void loop()
 
 void getBTValues()
 {
-  stickOneXas = bluetooth_conn.get_int("StickOne_Yas");
-  stickOneYas = bluetooth_conn.get_int("StickOne_Xas");
-  stickTwoXas = bluetooth_conn.get_int("StickTwo_Yas");
-  stickTwoYas = bluetooth_conn.get_int("StickTwo_Xas");
+  stickOneXas = bluetooth_conn.get_int("1_Yas");
+  stickOneYas = bluetooth_conn.get_int("1_Xas");
+  stickTwoXas = bluetooth_conn.get_int("2_Yas");
+  stickTwoYas = bluetooth_conn.get_int("2_Xas");
   driveBool = bluetooth_conn.get_int("Drive");
   Hand = bluetooth_conn.get_int("Hand");
 }

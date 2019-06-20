@@ -3,6 +3,8 @@
 #include <Nextion.h>
 #include "btLib.h"
 
+//VEH-Vehicle = joystick2
+//ARM = joystick1
 #define StickOne_X_AS A4
 #define StickOne_Y_AS A3
 #define StickTwo_X_AS A2
@@ -14,8 +16,8 @@ unsigned long bt_counter = millis();
 int currentpage = 1;
 bool clawBool = false;
 bool driveBool = true;
-SoftwareSerial HMISerial(7, 8);
 
+SoftwareSerial HMISerial(7, 8);
 NexButton bewegen = NexButton(1, 3, "bewegen");
 NexButton klauw = NexButton(3, 2, "klauw");
 NexButton rijden = NexButton(3, 4, "rijden");
@@ -66,18 +68,18 @@ void loop() {
     if (millis() - bt_counter > 100)
     {
       bt_counter = millis();
-      bluetooth_send.send_int("StickOne_Xas", analogRead(StickOne_X_AS));
-      bluetooth_send.send_int("StickOne_Yas", analogRead(StickOne_Y_AS));
-      bluetooth_send.send_int("StickTwo_Xas", (analogRead(StickTwo_X_AS) - 1024) * -1);// JS2 moet worden geinvert
-      bluetooth_send.send_int("StickTwo_Yas", (analogRead(StickTwo_Y_AS) - 1024) * -1);
+      bluetooth_send.send_int("1_Xas", analogRead(StickOne_X_AS));
+      bluetooth_send.send_int("1_Yas", analogRead(StickOne_Y_AS));
+      delay(10);
+      bluetooth_send.send_int("2_Xas", (analogRead(StickTwo_X_AS) - 1024) * -1);// JS2 moet worden geinvert
+      bluetooth_send.send_int("2_Yas", (analogRead(StickTwo_Y_AS) - 1024) * -1);
+      delay(10);
       bluetooth_send.send_int("Hand", clawBool);
       bluetooth_send.send_int("Drive", driveBool);
     }
   }
 }
-
-
-
+stickone_Xas
 void klauwDicht(void *ptr) {
   clawBool = !clawBool;
   if (clawBool) {
