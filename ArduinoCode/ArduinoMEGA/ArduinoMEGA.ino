@@ -64,8 +64,6 @@ int stickTwoYas;
 int CurArmY = 512;
 int CurArmX1 = 512;
 int CurArmX2 = 512;
-int lastLegs = 0;
-int legs = 0;
 int Hand = 0;
 bool driveBool = true;
 const int loc_default = 0;
@@ -78,7 +76,7 @@ const int js_neutral = 512;
 
 //Variables for Servos
 HardwareDynamixelInterface interface(Serial1, DIR_PIN);
-//DynamixelMotor motor1(interface, 1);
+DynamixelMotor motor1(interface, 1);
 DynamixelMotor motor2(interface, 2);
 DynamixelMotor motor3(interface, 3);
 DynamixelMotor motor4(interface, 4);
@@ -136,7 +134,6 @@ void setup()
   bluetooth_conn.add_recieve_int("StickOne_Yas", js_neutral);
   bluetooth_conn.add_recieve_int("StickTwo_Xas", js_neutral);
   bluetooth_conn.add_recieve_int("StickTwo_Yas", js_neutral);
-  bluetooth_conn.add_recieve_int("Legs", js_neutral);
   bluetooth_conn.add_recieve_int("Hand", js_neutral);
   bluetooth_conn.add_recieve_int("Drive", js_neutral);
   bluetooth_conn.add_recieve_int("Location", loc_default);
@@ -179,14 +176,8 @@ void loop()
   readJoy();
   getBTValues();
 
-  if (lastLegs != legs)
-  {
-    lastLegs = legs;
-    changeLegs(legs);
-  }
-
   if (driveBool) {
-    drive(true);
+    drive();
   }
   else {
     armMovement();
@@ -225,7 +216,6 @@ void getBTValues() {
   stickOneYas = bluetooth_conn.get_int("StickOne_Xas");
   stickTwoXas = bluetooth_conn.get_int("StickTwo_Yas");
   stickTwoYas = bluetooth_conn.get_int("StickTwo_Xas");
-  legs = bluetooth_conn.get_int("Legs");
   driveBool = bluetooth_conn.get_int("Drive");
   Hand = bluetooth_conn.get_int("Hand");
 }
@@ -239,50 +229,6 @@ void readJoy()
   Serial.println(stickOneYas);
 }
 
-void changeLegs(int legs)
-{
-  switch (legs)
-  {
-    case 0:
-//      motor7.goalPosition(640);
-//      motor8.goalPosition(384);
-//      motor9.goalPosition(640);
-//      motor10.goalPosition(384);
-//      motor11.goalPosition(640);
-//      motor12.goalPosition(384);
-//      motor13.goalPosition(640);
-//      motor14.goalPosition(384);
-      motor7.goalPosition(512);
-      motor8.goalPosition(256);
-      motor9.goalPosition(768);
-      motor10.goalPosition(512);
-      motor11.goalPosition(512);
-      motor12.goalPosition(256);
-      motor13.goalPosition(786);
-      motor14.goalPosition(512);
-      break;
-    case 1:
-      motor7.goalPosition(384);
-      motor8.goalPosition(384);
-      motor9.goalPosition(640);
-      motor10.goalPosition(640);
-      motor11.goalPosition(384);
-      motor12.goalPosition(384);
-      motor13.goalPosition(640);
-      motor14.goalPosition(640);
-      break;
-    case 2:
-      motor7.goalPosition(512);
-      motor8.goalPosition(512);
-      motor9.goalPosition(512);
-      motor10.goalPosition(512);
-      motor11.goalPosition(512);
-      motor12.goalPosition(512);
-      motor13.goalPosition(512);
-      motor14.goalPosition(512);
-      break;
-  }
-}
 void turnOff()
 {
   for (byte c = 1; c < 5; c++)
@@ -308,7 +254,7 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
   intensity = dmap(sqrt(pow(x, 2) + pow(y, 2)), 0, 512 / cos(tmpangle), 0, 512);
 }
 
-void drive(bool type) //Everything from making joystick input usable to sending the right signals to the dc motors
+void drive() //Everything from making joystick input usable to sending the right signals to the dc motors
 {
   convertxy(); //Converting joystick input into usable variables
 
@@ -316,23 +262,6 @@ void drive(bool type) //Everything from making joystick input usable to sending 
   if (intensity < 50)
   {
     turnOff();
-    return;
-  }
-  if (!type) {
-    if (angle <= 0) {
-      digitalWrite(dcMotors[5].A, HIGH);
-      digitalWrite(dcMotors[5].B, LOW);
-      digitalWrite(dcMotors[6].A, HIGH);
-      digitalWrite(dcMotors[6].B, LOW);
-    } else {
-      digitalWrite(dcMotors[5].A, LOW);
-      digitalWrite(dcMotors[5].B, HIGH);
-      digitalWrite(dcMotors[6].A, LOW);
-      digitalWrite(dcMotors[6].B, HIGH);
-    }
-    analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
-    analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
-
     return;
   }
 
