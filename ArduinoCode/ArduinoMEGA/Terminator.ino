@@ -1,3 +1,4 @@
+
 int16_t speed1 = 1023;
 int16_t speed2 = 512;
 
@@ -5,7 +6,7 @@ void initServos() {
   interface.begin(baudrate);
   motors.enableTorque();
   motors.speed(speed2);
-  
+
   motor1.jointMode(0, 1023);
   motor2.jointMode(150, 900);
   motor3.jointMode(150, 900);
@@ -13,7 +14,7 @@ void initServos() {
   motor5.jointMode(0, 1023);
   motor6.jointMode(28, 684);
 
-//  digitalWrite(DIR_PIN, HIGH);
+  //  digitalWrite(DIR_PIN, HIGH);
 
   motor1.goalPosition(512);
   motor2.goalPosition(512);
@@ -78,7 +79,7 @@ void armMovement()
   CurArmX2 = constrain(CurArmX2, 50, 900);
   Serial.print(CurArmX2);
   CurArmY = constrain(CurArmY, 1, 1023);
-  
+
   motor1.goalPosition(CurArmY);
   motor2.goalPosition(CurArmX1);
   motor3.goalPosition(getMotor3Value(CurArmX1));
@@ -127,42 +128,42 @@ void moveArm(float dist) {
   sendBack("Arm moved");
 }
 
-void turn(String dir) 
+void turn(String dir)
 {
-//  if (dir == "left")
-//  {
-//    digitalWrite(dcMotors[1].A, HIGH);
-//    digitalWrite(dcMotors[1].B, LOW);
-//    digitalWrite(dcMotors[2].A, HIGH);
-//    digitalWrite(dcMotors[2].B, LOW);
-//    digitalWrite(dcMotors[3].A, LOW);
-//    digitalWrite(dcMotors[3].B, HIGH);
-//    digitalWrite(dcMotors[4].A, LOW);
-//    digitalWrite(dcMotors[4].B, HIGH);
-//    analogWrite(dcMotors[1].PWM, 255);
-//    analogWrite(dcMotors[2].PWM, 255);
-//    analogWrite(dcMotors[3].PWM, 255);
-//    analogWrite(dcMotors[4].PWM, 255);
-//  }
-//
-//  if (dir == "right")
-//  {
-//    digitalWrite(dcMotors[1].A, LOW);
-//    digitalWrite(dcMotors[1].B, HIGH);
-//    digitalWrite(dcMotors[2].A, LOW);
-//    digitalWrite(dcMotors[2].B, HIGH);
-//    digitalWrite(dcMotors[3].A, HIGH);
-//    digitalWrite(dcMotors[3].B, LOW);
-//    digitalWrite(dcMotors[4].A, HIGH);
-//    digitalWrite(dcMotors[4].B, LOW);
-//    analogWrite(dcMotors[1].PWM, 255);
-//    analogWrite(dcMotors[2].PWM, 255);
-//    analogWrite(dcMotors[3].PWM, 255);
-//    analogWrite(dcMotors[4].PWM, 255);
-//  }
-//
-//  delay(200);
-//  turnOff();
+  //  if (dir == "left")
+  //  {
+  //    digitalWrite(dcMotors[1].A, HIGH);
+  //    digitalWrite(dcMotors[1].B, LOW);
+  //    digitalWrite(dcMotors[2].A, HIGH);
+  //    digitalWrite(dcMotors[2].B, LOW);
+  //    digitalWrite(dcMotors[3].A, LOW);
+  //    digitalWrite(dcMotors[3].B, HIGH);
+  //    digitalWrite(dcMotors[4].A, LOW);
+  //    digitalWrite(dcMotors[4].B, HIGH);
+  //    analogWrite(dcMotors[1].PWM, 255);
+  //    analogWrite(dcMotors[2].PWM, 255);
+  //    analogWrite(dcMotors[3].PWM, 255);
+  //    analogWrite(dcMotors[4].PWM, 255);
+  //  }
+  //
+  //  if (dir == "right")
+  //  {
+  //    digitalWrite(dcMotors[1].A, LOW);
+  //    digitalWrite(dcMotors[1].B, HIGH);
+  //    digitalWrite(dcMotors[2].A, LOW);
+  //    digitalWrite(dcMotors[2].B, HIGH);
+  //    digitalWrite(dcMotors[3].A, HIGH);
+  //    digitalWrite(dcMotors[3].B, LOW);
+  //    digitalWrite(dcMotors[4].A, HIGH);
+  //    digitalWrite(dcMotors[4].B, LOW);
+  //    analogWrite(dcMotors[1].PWM, 255);
+  //    analogWrite(dcMotors[2].PWM, 255);
+  //    analogWrite(dcMotors[3].PWM, 255);
+  //    analogWrite(dcMotors[4].PWM, 255);
+  //  }
+  //
+  //  delay(200);
+  //  turnOff();
 }
 
 void moveRobot(String direction) {
