@@ -14,12 +14,10 @@ unsigned long bt_counter = millis();
 int currentpage = 1;
 bool clawBool = false;
 bool driveBool = true;
-int rupsInt = 0;
 SoftwareSerial HMISerial(7, 8);
 
 NexButton bewegen = NexButton(1, 3, "bewegen");
 NexButton klauw = NexButton(3, 2, "klauw");
-NexButton rups = NexButton(3, 5, "rups");
 NexButton rijden = NexButton(3, 4, "rijden");
 NexButton terug2 = NexButton(2, 1, "terug");
 NexButton terug3 = NexButton(3, 1, "terug");
@@ -33,7 +31,6 @@ NexButton setLocText = NexButton(4, 11, "setLocText");
 NexTouch *knoppenlijst[] = {
   &bewegen,
   &klauw,
-  &rups,
   &rijden,
   &terug2,
   &terug3,
@@ -50,7 +47,6 @@ void setup() {
   nexInit();
   Serial.begin(38400);
   bewegen.attachPush(bewegenIn);
-  rups.attachPush(rupsIn);
   klauw.attachPush(klauwDicht);
   rijden.attachPush(rijdenIn);
   terug2.attachPush(terugIn);
@@ -80,28 +76,7 @@ void loop() {
   }
 }
 
-void rupsIn(void *ptr) {
-  rupsInt++;
-  Serial.println(rupsInt);
-  if (rupsInt == 3)
-  {
-    rupsInt = 0;
-  }
-  switch (rupsInt) {
-    case 0:
-      rups.setText("Tracks");
-      bluetooth_send.send_int("Legs", rupsInt);
-      break;
-    case 1:
-      rups.setText("Low");
-      bluetooth_send.send_int("Legs", rupsInt);
-      break;
-    case 2:
-      rups.setText("High");
-      bluetooth_send.send_int("Legs", rupsInt);
-      break;
-  }
-}
+
 
 void klauwDicht(void *ptr) {
   clawBool = !clawBool;

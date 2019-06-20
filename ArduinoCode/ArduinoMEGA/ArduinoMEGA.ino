@@ -1,3 +1,4 @@
+
 //Functions
 /*
    setup
@@ -174,10 +175,13 @@ void loop()
   readJoy();
   getBTValues();
 
-  if (driveBool) {
+  if (driveBool)
+  {
     drive();
   }
-  else {
+
+  else
+  {
     armMovement();
   }
 
@@ -209,7 +213,8 @@ void loop()
   }
 }
 
-void getBTValues() {
+void getBTValues()
+{
   stickOneXas = bluetooth_conn.get_int("StickOne_Yas");
   stickOneYas = bluetooth_conn.get_int("StickOne_Xas");
   stickTwoXas = bluetooth_conn.get_int("StickTwo_Yas");
@@ -246,7 +251,9 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
   int otherthing = abs(int(100 * angle));
   double itmpangle = (otherthing % halfabigPI);
   double tmpangle = itmpangle / 100;
-  if (tmpangle >= M_PI * 0.25) {
+  
+  if (tmpangle >= M_PI * 0.25) 
+  {
     tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
   }
   intensity = dmap(sqrt(pow(x, 2) + pow(y, 2)), 0, 512 / cos(tmpangle), 0, 512);
