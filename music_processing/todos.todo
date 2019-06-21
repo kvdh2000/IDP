@@ -22,8 +22,33 @@ onderdelen:
     beide modusen:
         ☐ continue gedragingen doorsturen
         ☐ standaard format voor commandos
-    
-    
+
+commandos:
+    hsv cycle:
+        colors:
+            - enkel
+            - Complementary
+            - Analogous 
+            - Triad 
+            - Split-Complementary
+        - range:
+            - lower
+            - upper
+        - speed:
+            - delta per sec
+        - modus:
+            - abrupt
+            - fade
+    rijden:
+        - soort
+            - voor naar achter
+            - links naar rechts
+        - hoeveelheid
+        snelheid staat voorlopig vast
+    arm bewegen:
+        - snelheid
+        rest staat vast
+    alle snelheden zijn zin in seconden per cycle
     
 ideeen emotie tonen:
     - deze shit http://www.tigercolor.com/color-lab/color-theory/color-harmonies.htm

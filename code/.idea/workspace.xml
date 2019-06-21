@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b75f467a-5ac1-4cf3-b056-fb9fab3af01d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../ArduinoCode/ArduinoMEGA/ArduinoMEGA.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../ArduinoCode/ArduinoMEGA/ArduinoMEGA.ino" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mainScript.py" beforeDir="false" afterPath="$PROJECT_DIR$/mainScript.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../music_processing/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../music_processing/studied_dance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ArduinoCode/bluetooth/JohnSpecialEasyTransfer" beforeDir="false" afterPath="$PROJECT_DIR$/../ArduinoCode/bluetooth/JohnSpecialEasyTransfer" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../music_processing/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../music_processing/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../music_processing/dance.py" beforeDir="false" afterPath="$PROJECT_DIR$/../music_processing/dance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../music_processing/debug.wav" beforeDir="false" afterPath="$PROJECT_DIR$/../music_processing/debug.wav" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../music_processing/todos.todo" beforeDir="false" afterPath="$PROJECT_DIR$/../music_processing/todos.todo" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mainScript.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="582">
-              <caret line="96" column="4" selection-start-line="96" selection-start-column="4" selection-end-line="96" selection-end-column="4" />
+            <state relative-caret-position="375">
+              <caret line="46" selection-start-line="46" selection-end-line="46" selection-end-column="40" />
               <folding>
                 <element signature="e#25#66#0" expanded="true" />
               </folding>
@@ -28,8 +33,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SerialReciever.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="36" column="24" selection-start-line="36" selection-start-column="24" selection-end-line="36" selection-end-column="24" />
+            <state relative-caret-position="150">
+              <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
+              <folding>
+                <element signature="e#500#670#0" expanded="true" />
+                <element signature="e#703#1376#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -69,6 +78,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -81,16 +91,10 @@
               <item name="code" type="462c0819:PsiDirectoryNode" />
               <item name=".vscode" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="code" type="b2602c69:ProjectViewProjectNode" />
-              <item name="code" type="462c0819:PsiDirectoryNode" />
-              <item name="venv" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -153,17 +157,18 @@
       <updated>1559813020540</updated>
       <workItem from="1559813022136" duration="3871000" />
       <workItem from="1560239527929" duration="272000" />
+      <workItem from="1561120598501" duration="636000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4143000" />
+    <option name="totallyTimeSpent" value="4779000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-2" y="-2" width="1604" height="872" extended-state="6" />
+    <frame x="-1" y="-1" width="1602" height="881" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18934532" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19176319" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -196,20 +201,24 @@
     <entry file="file://$PROJECT_DIR$/.vscode/settings.json">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/mainScript.py">
+    <entry file="file://$PROJECT_DIR$/SerialReciever.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="582">
-          <caret line="96" column="4" selection-start-line="96" selection-start-column="4" selection-end-line="96" selection-end-column="4" />
+        <state relative-caret-position="150">
+          <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
           <folding>
-            <element signature="e#25#66#0" expanded="true" />
+            <element signature="e#500#670#0" expanded="true" />
+            <element signature="e#703#1376#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SerialReciever.py">
+    <entry file="file://$PROJECT_DIR$/mainScript.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="36" column="24" selection-start-line="36" selection-start-column="24" selection-end-line="36" selection-end-column="24" />
+        <state relative-caret-position="375">
+          <caret line="46" selection-start-line="46" selection-end-line="46" selection-end-column="40" />
+          <folding>
+            <element signature="e#25#66#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

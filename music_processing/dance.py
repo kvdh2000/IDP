@@ -4,6 +4,8 @@ import sys
 from aubio import tempo, source
 from concurrent.futures import ThreadPoolExecutor
 from time import sleep
+from SerialReciever import SerialReciever
+from math import floor
 
 debug_mode = True
 
@@ -17,6 +19,8 @@ pool = ThreadPoolExecutor(1)
 
 win_s = 512  # fft size
 hop_s = win_s // 2  # hop size
+
+serial = SerialReciever("/dev/ttyACM0", 115200)
 
 #138
 def get_bpm():
@@ -86,26 +90,30 @@ def get_bpm():
             beats_delta_sum += delta
         return beats_delta_sum / len(deltas)
 
-    print(60 / avrg_bps(beats_delta))
+    return 60 / avrg_bps(beats_delta)
 
 def dance(sound_stats):
     """
-    stuurt de rupsbanden en de arm aan
+    stuurt de rupsbanden, de arm en de ledjes aan
     """
-    print("dancing")
+    print(sound_stats)
+    serial.send_command(str(floor(sound_stats/10)))
 
+
+
+def run():
+    recording = pool.submit(get_bpm)
+    while not recording.done():
+        sleep(0.05)
+    dance(recording.result())
 
 
 if __name__ == '__main__':
-    def run():
-        recording = pool.submit(get_bpm)
-        while not recording.done():
-            sleep(0.05)
-        dance(recording.result())
 
     if debug_mode:
         run()
     else:
         while True:
             run()
+
 
