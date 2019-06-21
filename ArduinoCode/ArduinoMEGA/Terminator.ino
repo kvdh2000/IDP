@@ -103,27 +103,27 @@ void armMovement()
 }
 
 void moveArm(float dist) {
-  int i = 0;
   //  put your main code here, to run repeatedly:
-  while (i < 5) {
-    motor1.goalPosition(900);
-    motor4.goalPosition(50);
-    motor5.goalPosition(50);
-    motor6.goalPosition(350);
-    delay(1000);
-
-    motor1.goalPosition(900);
-    motor4.goalPosition(670);
-    motor5.goalPosition(400);
-    motor6.goalPosition(700);
-    delay(1000);
-    i++;
+  B = sqrt(dist * dist + D * D);
+  Serial.println("b    =   " + String(B));
+  if (B < 24 and B != 0) // 28 normaal
+  {
+    alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
+    betar = acos((A * A - B * B + C * C) / (2 * A * C));
+    gammar = acos((A * A + B * B - C * C) / (2 * A * B));
+    alpha = alphar * 180 / M_PI + 60;
+    beta = betar * 180 / M_PI - 20;
+    gamma = gammar * 180 / M_PI;
+    float servohoek1 = map(alpha, 0, 360, 100, 1023);
+    float servohoek2 = map(beta, 0, 360, 50, 1023);
+    motor2.goalPosition(servohoek1);
+    motor3.goalPosition(getMotor3Value(servohoek1));
+    motor4.goalPosition(servohoek2);
   }
   sendBack("Arm moved");
 }
 
-void turn(String dir)
-{
+void turn(String dir) {
   //  if (dir == "left")
   //  {
   //    digitalWrite(dcMotors[1].A, HIGH);
