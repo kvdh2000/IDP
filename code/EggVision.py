@@ -46,20 +46,21 @@ class EggVision:
             cy = int(center['m01']/center['m00'])
             if cx < ((len(frame[1]) / 2) - (len(frame[1]) * maxoffcenter * 0.005)):
                 print("Go left")
+                return False, None, 'left'
             elif cx > ((len(frame[1]) / 2) + (len(frame[1]) * maxoffcenter * 0.005)):
                 print("Go right")
+                return False, None, 'right'
             else:
                 print("Good enough")
                 print('area: ' + str(area))
-                if (area > 20000):
+                if area > 15000:
                     centimeter = self.dist.getDistance(frame, currentcontour, 2045.45, 4.2)
-                    if(centimeter < 25):
-                        print("found stuff")
-                        return True, centimeter
+                    if centimeter < 25:
+                        return True, centimeter, None
 
         elif self.threshold < 15:
             self.threshold = 255
         else:
             self.threshold -= 10
         cv.imshow('cam', frame)
-        return False, None
+        return False, None, None
