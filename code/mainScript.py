@@ -25,7 +25,7 @@ import re
 # close it between switching scripts
 cam = PiCamera()
 cam.resolution = (640, 480)
-cam.framerate = 90
+cam.framerate = 60
 rawCapture = PiRGBArray(cam, size=(640, 480))
 
 # initialize variable to request 
@@ -43,14 +43,15 @@ found =[False, False, False]
 # so we can continue with the vision stuff
 armMoved = False
 boolLook = False 
-setupComplete = False
+setupComplete = True
+arduinoDisc = False
 locationCon = None # default is None
 locations = ("Duckstad", "Eibergen", "Eindhoven", "Barneveld") # initialize locations
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
 baud = 38400 # set arduino baudrate
-ard = serial.Serial(port,baud,timeout=5)
+ard = None
 msg = ''
 time.sleep(.5) # wait for Arduino and camera to start up
 
@@ -65,15 +66,13 @@ async def GetArduino():
 
     msg = (ard.read(ard.inWaiting()))
     if msg != None:
-        print(msg)
         # used for grabbing an argument in this case 
         # we use it for grabbing which location we need 
         # to deliver the egg to
         loc = re.search('.?(Loc:)(\d).?', str(msg))
         if msg == "b''":
-            print(msg)
+            print()
         if re.search('.(Arm mov).', str(msg)): # check if the arm stopped moving
-            print("found")
             armMoved = True
             boolLook = False
         elif re.search('.(MEGA start).', str(msg)): # check if the arduino booted
@@ -86,7 +85,8 @@ async def GetArduino():
 # Method for sending commands to the arduino
 # Command can be max 5 characters long
 def SendMessage(command):
-    if command != None:
+    global arduinoDisc
+    if command != None and not arduinoDisc:
         print("Python value sent: ")
         print(command)
         ard.write(command.encode())
@@ -94,10 +94,20 @@ def SendMessage(command):
 def main():
     loop = asyncio.get_event_loop()
     global boolLook
+    global ard
+    global arduinoDisc
+
+    try:
+        ard = serial.Serial(port,baud,timeout=5)
+    except serial.serialutil.SerialException:
+        arduinoDisc = True
+        print('Arduino is not connected')
+
     # drive around and use the camera to search for objects
     for frame in cam.capture_continuous(rawCapture, format='bgr', use_video_port=True):
 
-        loop.run_until_complete(GetArduino())
+        if not arduinoDisc:
+            loop.run_until_complete(GetArduino())
         if not boolLook:
             SendMessage('look|')
             boolLook = True
@@ -106,9 +116,15 @@ def main():
         # wait till the arduino is ready to receive commands
         if setupComplete: 
             if not found[0]:
-                found[0], location = egg.FindEgg(frame) # find the egg
-                if found[0] and location is not None:
+                found[0], location, direction = egg.FindEgg(frame) # find the egg
+                if found[0] and location is not None and direction is None:
                     SendMessage('marm-z'+str(round(location, 1))+'|') # send a command to the arduino over Serial
+                elif not found[0] and location is None and direction is not None:
+                    if direction is 'left':
+                        SendMessage('move-x'+str(direction)+'|')
+                        #SendMessage('marm-z40|')
+                    elif direction is 'right':
+                        SendMessage('move-x'+str(direction)+'|')
         if armMoved:        
             if not found[1] and locationCon is not None:
                 found[1] = scan.SearchQR(locationCon, frame) # scans for the QRCode
@@ -126,10 +142,10 @@ def main():
         #track.TrackEgg(frame) # niet autonoom maar werkt wel
         #egg.FindEgg(frame) # niet 100% nauwkeurig maar werkt, distance werkt wanneer het ei goed gevonden word
         #chicken.FindChicken(frame) # werkt niet
-        locTest = blue.FindCar(frame)
-        if locTest is not None:
-            SendMessage('blueLoc-'+locTest)
-            print('location blue: '+locTest)
+        # locTest = blue.FindCar(frame)
+        # if locTest is not None:
+        #     SendMessage('blueLoc-'+locTest)
+        #     print('location blue: '+locTest)
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
