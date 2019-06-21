@@ -126,8 +126,8 @@ def main():
         #track.TrackEgg(frame) # niet autonoom maar werkt wel
         #egg.FindEgg(frame) # niet 100% nauwkeurig maar werkt, distance werkt wanneer het ei goed gevonden word
         #chicken.FindChicken(frame) # werkt niet
-        boolTest, locTest = blue.FindCar(frame)
-        if boolTest is True and locTest is not None:
+        locTest = blue.FindCar(frame)
+        if locTest is not None:
             SendMessage('blueLoc-'+locTest)
             print('location blue: '+locTest)
 

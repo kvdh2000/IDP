@@ -1,8 +1,10 @@
+
 //Functions
 /*
    setup
    loop
    readJoy
+   getBTValues
    turnOff
    convertxy
    drive
@@ -33,12 +35,10 @@ struct Motor {
 const Motor dcMotors[7] =
 {
   Motor{0, 0, 0},
-  Motor{22, 23, 3},
-  Motor{24, 25, 4},
-  Motor{26, 27, 5},
-  Motor{28, 29, 6},
-  Motor{30, 31, 7},
-  Motor{32, 33, 8}
+  Motor{25, 27, 4},
+  Motor{29, 33, 8},
+  Motor{31, 28, 5},
+  Motor{32, 30, 7},
 };
 #define LED 13
 #define volt A3
@@ -81,16 +81,6 @@ DynamixelMotor motor3(interface, 3);
 DynamixelMotor motor4(interface, 4);
 DynamixelMotor motor5(interface, 5);
 DynamixelMotor motor6(interface, 6);
-//DynamixelMotor motor7(interface, 7);
-//DynamixelMotor motor8(interface, 8);
-//DynamixelMotor motor9(interface, 9);
-//DynamixelMotor motor10(interface, 10);
-//DynamixelMotor motor11(interface, 11);
-//DynamixelMotor motor12(interface, 12);
-//DynamixelMotor motor13(interface, 13);
-//DynamixelMotor motor14(interface, 14);
-//DynamixelMotor motor15(interface, 15);
-//DynamixelMotor motor16(interface, 16);
 DynamixelMotor motors(interface, BROADCAST_ID);
 float A = 29;
 float B = 0;
@@ -129,10 +119,10 @@ void setup()
   Serial.println("Arduino MEGA start");
 
   bluetooth_conn.begin(&Serial2);
-  bluetooth_conn.add_recieve_int("StickOne_Xas", js_neutral);
-  bluetooth_conn.add_recieve_int("StickOne_Yas", js_neutral);
-  bluetooth_conn.add_recieve_int("StickTwo_Xas", js_neutral);
-  bluetooth_conn.add_recieve_int("StickTwo_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("1_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("1_Xas", js_neutral);
+  bluetooth_conn.add_recieve_int("2_Yas", js_neutral);
+  bluetooth_conn.add_recieve_int("2_Xas", js_neutral);
   bluetooth_conn.add_recieve_int("Hand", js_neutral);
   bluetooth_conn.add_recieve_int("Drive", js_neutral);
   bluetooth_conn.add_recieve_int("Location", loc_default);
@@ -142,7 +132,7 @@ void setup()
   pinMode(X, INPUT);
   pinMode(Y, INPUT);
 
-  for (byte c = 1; c < 7; c++)
+  for (byte c = 1; c < 5; c++)
   {
     pinMode(dcMotors[c].A, OUTPUT);
     pinMode(dcMotors[c].B, OUTPUT);
@@ -159,10 +149,10 @@ void setup()
 
 void loop()
 {
-  Serial.println("-------------------------------------------------");
-  Serial.println();
-  Serial.println("Restart loop");
-  Serial.println();
+//  Serial.println("-------------------------------------------------");
+//  Serial.println();
+//  Serial.println("Restart loop");
+//  Serial.println();
 
   bluetooth_conn.update();
 
@@ -171,18 +161,20 @@ void loop()
   digitalWrite(LED, LOW);
   delay(50);
 
-  voltMeter();
-  readJoy();
+//  voltMeter();
+//  readJoy();
   getBTValues();
 
-  if (driveBool) {
-    drive(true);
+  if (driveBool)
+  {
+    drive();
   }
-  else {
+  else
+  {
     armMovement();
   }
 
-  locationUpdate();
+//  locationUpdate();
 
   if (Serial.available() && read_buffer.length() < bufferSize)
   {
@@ -210,11 +202,12 @@ void loop()
   }
 }
 
-void getBTValues() {
-  stickOneXas = bluetooth_conn.get_int("StickOne_Yas");
-  stickOneYas = bluetooth_conn.get_int("StickOne_Xas");
-  stickTwoXas = bluetooth_conn.get_int("StickTwo_Yas");
-  stickTwoYas = bluetooth_conn.get_int("StickTwo_Xas");
+void getBTValues()
+{
+  stickOneXas = bluetooth_conn.get_int("1_Yas");
+  stickOneYas = bluetooth_conn.get_int("1_Xas");
+  stickTwoXas = bluetooth_conn.get_int("2_Yas");
+  stickTwoYas = bluetooth_conn.get_int("2_Xas");
   driveBool = bluetooth_conn.get_int("Drive");
   Hand = bluetooth_conn.get_int("Hand");
 }
@@ -247,13 +240,15 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
   int otherthing = abs(int(100 * angle));
   double itmpangle = (otherthing % halfabigPI);
   double tmpangle = itmpangle / 100;
-  if (tmpangle >= M_PI * 0.25) {
+  
+  if (tmpangle >= M_PI * 0.25) 
+  {
     tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
   }
   intensity = dmap(sqrt(pow(x, 2) + pow(y, 2)), 0, 512 / cos(tmpangle), 0, 512);
 }
 
-void drive(bool type) //Everything from making joystick input usable to sending the right signals to the dc motors
+void drive() //Everything from making joystick input usable to sending the right signals to the dc motors
 {
   convertxy(); //Converting joystick input into usable variables
 
@@ -261,23 +256,6 @@ void drive(bool type) //Everything from making joystick input usable to sending 
   if (intensity < 50)
   {
     turnOff();
-    return;
-  }
-  if(!type){
-    if(angle <= 0){
-      digitalWrite(dcMotors[5].A, HIGH);
-      digitalWrite(dcMotors[5].B, LOW);
-      digitalWrite(dcMotors[6].A, HIGH);
-      digitalWrite(dcMotors[6].B, LOW);  
-    }else{
-      digitalWrite(dcMotors[5].A, LOW);
-      digitalWrite(dcMotors[5].B, HIGH);
-      digitalWrite(dcMotors[6].A, LOW);
-      digitalWrite(dcMotors[6].B, HIGH);
-    }
-    analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
-    analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
-
     return;
   }
 
@@ -429,7 +407,7 @@ void executeSerial(String command)
 
   //Command can be max 5 characters long
   String str = "command: ";
-  
+
   if (command == "forw" || command == "back" || command == "left" || command == "right")
   {
     moveRobot(command);
