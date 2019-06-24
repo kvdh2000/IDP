@@ -31,10 +31,10 @@ struct Motor {
 const Motor dcMotors[7] =
 {
   Motor{0, 0, 0},
-  Motor{25, 27, 4},
-  Motor{29, 33, 8},
-  Motor{31, 28, 5},
-  Motor{32, 30, 7},
+  Motor{29, 33, 8}, //Motor 1 L voor
+  Motor{24, 26, 3}, //Motor 2 L achter
+  Motor{32, 30, 7}, //Motor 3 R voor
+  Motor{25, 27, 4}, //Motor 4 R achter
 };
 
 #define volt A3
@@ -155,8 +155,12 @@ void loop()
   digitalWrite(LED, LOW);
   delay(50);
 
-  voltMeter();
+  //voltMeter();
   getBTValues();
+
+  //Debugging drive method withoud bt
+  //stickOneXas = 0;
+  //stickOneYas = 512;
 
   if (driveBool)
   {
@@ -220,6 +224,11 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
   int x = stickOneXas - 512;
   int y = stickOneYas - 512;
   angle = -atan2(y, x);
+  if(angle >= (-M_PI) * 0.5){
+    angle = angle - M_PI * 0.5;
+  }else{
+    angle = angle + (M_PI * 1.5);
+  }
   int halfabigPI = 157;
   int otherthing = abs(int(100 * angle));
   double itmpangle = (otherthing % halfabigPI);
@@ -230,6 +239,8 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
     tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
   }
   intensity = dmap(sqrt(pow(x, 2) + pow(y, 2)), 0, 512 / cos(tmpangle), 0, 512);
+
+  Serial.println(angle);
 }
 
 void drive() //Everything from making joystick input usable to sending the right signals to the dc motors
@@ -247,15 +258,19 @@ void drive() //Everything from making joystick input usable to sending the right
   //Deciding on which signals to send to both left motors as well as sending them based on both the angle and the required speed
   if (angle <= M_PI * 0.75 && angle >= M_PI * -0.25)
   {
-    digitalWrite(dcMotors[1].A, HIGH);
-    digitalWrite(dcMotors[1].B, LOW);
-    digitalWrite(dcMotors[2].A, HIGH);
-    digitalWrite(dcMotors[2].B, LOW);
+    digitalWrite(dcMotors[1].A, LOW);
+    digitalWrite(dcMotors[1].B, HIGH);
+    digitalWrite(dcMotors[2].A, LOW);
+    digitalWrite(dcMotors[2].B, HIGH);
 
     if (angle <= M_PI * 0.5 && angle >= 0)
     {
       analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
       analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
+      digitalWrite(dcMotors[2].A, LOW);
+      digitalWrite(dcMotors[2].B, HIGH);
+      analogWrite(dcMotors[2].PWM, 255);
+      Serial.println("tering");
     }
     else if (angle >= M_PI * 0.5)
     {
@@ -270,10 +285,10 @@ void drive() //Everything from making joystick input usable to sending the right
   }
   else
   {
-    digitalWrite(dcMotors[1].A, LOW);
-    digitalWrite(dcMotors[1].B, HIGH);
-    digitalWrite(dcMotors[2].A, LOW);
-    digitalWrite(dcMotors[2].B, HIGH);
+    digitalWrite(dcMotors[1].A, HIGH);
+    digitalWrite(dcMotors[1].B, LOW);
+    digitalWrite(dcMotors[2].A, HIGH);
+    digitalWrite(dcMotors[2].B, LOW);
 
     if (angle <= M_PI * -0.5)
     {
@@ -295,10 +310,10 @@ void drive() //Everything from making joystick input usable to sending the right
   //Deciding on which signals to send to both right motors as well as sending them based on both the angle and the required speed
   if (angle <= 0.25 * M_PI && angle >= M_PI * -0.75)
   {
-    digitalWrite(dcMotors[3].A, LOW);
-    digitalWrite(dcMotors[3].B, HIGH);
-    digitalWrite(dcMotors[4].A, LOW);
-    digitalWrite(dcMotors[4].B, HIGH);
+    digitalWrite(dcMotors[3].A, HIGH);
+    digitalWrite(dcMotors[3].B, LOW);
+    digitalWrite(dcMotors[4].A, HIGH);
+    digitalWrite(dcMotors[4].B, LOW);
 
     if (angle >= M_PI * -0.5 && angle <= 0)
     {
@@ -318,10 +333,10 @@ void drive() //Everything from making joystick input usable to sending the right
   }
   else
   {
-    digitalWrite(dcMotors[3].A, HIGH);
-    digitalWrite(dcMotors[3].B, LOW);
-    digitalWrite(dcMotors[4].A, HIGH);
-    digitalWrite(dcMotors[4].B, LOW);
+    digitalWrite(dcMotors[3].A, LOW);
+    digitalWrite(dcMotors[3].B, HIGH);
+    digitalWrite(dcMotors[4].A, LOW);
+    digitalWrite(dcMotors[4].B, HIGH);
 
     if (angle >= M_PI * 0.5)
     {
