@@ -3,7 +3,6 @@
 /*
    setup
    loop
-   readJoy
    getBTValues
    turnOff
    convertxy
@@ -29,9 +28,6 @@ struct Motor {
 //Pin definitions
 #define DIR_PIN 2
 #define LED 13
-#define vuMeter A3
-#define X A5
-#define Y A6
 const Motor dcMotors[7] =
 {
   Motor{0, 0, 0},
@@ -40,7 +36,7 @@ const Motor dcMotors[7] =
   Motor{31, 28, 5},
   Motor{32, 30, 7},
 };
-#define LED 13
+
 #define volt A3
 #define X A5
 #define Y A6
@@ -161,8 +157,7 @@ void loop()
   digitalWrite(LED, LOW);
   delay(50);
 
-//  voltMeter();
-//  readJoy();
+  voltMeter();
   getBTValues();
 
   if (driveBool)
@@ -174,7 +169,7 @@ void loop()
     armMovement();
   }
 
-//  locationUpdate();
+  locationUpdate();
 
   if (Serial.available() && read_buffer.length() < bufferSize)
   {
@@ -210,15 +205,6 @@ void getBTValues()
   stickTwoYas = bluetooth_conn.get_int("2_Xas");
   driveBool = bluetooth_conn.get_int("Drive");
   Hand = bluetooth_conn.get_int("Hand");
-}
-
-void readJoy()
-{
-  stickOneXas = analogRead(X);
-  stickOneYas = analogRead(Y);
-
-  Serial.println(stickOneXas);
-  Serial.println(stickOneYas);
 }
 
 void turnOff()
