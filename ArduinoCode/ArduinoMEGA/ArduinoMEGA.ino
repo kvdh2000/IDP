@@ -97,11 +97,9 @@ int jX = 512;
 int jY = 512;
 
 //Variables for Volt Meter
-#define AANTAL_METINGEN 10
-float voltages[AANTAL_METINGEN];
+float voltages[10];
 float input_volt = 0.0;
 float temp = 0.0;
-float factor = 1.165;
 uint8_t voltagesIndex = 0;
 float som = 0;
 boolean arrayGevuld = false;
@@ -345,7 +343,9 @@ void drive() //Everything from making joystick input usable to sending the right
 
 void voltMeter()
 {
+  float factor = 1.165;
   int analogvalue = analogRead(volt);
+  
   temp = (analogvalue * 5.0) / 1024.0;
   input_volt = temp / factor;
   som = som - voltages[voltagesIndex];
@@ -355,7 +355,7 @@ void voltMeter()
 
   if (arrayGevuld)
   {
-    gemiddeldeVoltage = som / AANTAL_METINGEN;
+    gemiddeldeVoltage = som / 10;
   }
 
   else
@@ -365,7 +365,7 @@ void voltMeter()
 
   voltagesIndex = voltagesIndex + 1;
 
-  if (voltagesIndex == AANTAL_METINGEN)
+  if (voltagesIndex == 10)
   {
     voltagesIndex = 0;
     arrayGevuld = true;
@@ -378,9 +378,12 @@ void voltMeter()
   Serial.print(gemiddeldeVoltage);
   Serial.println("V");
   Serial.println();
+
+  
 }
 
-void locationUpdate() {
+void locationUpdate() 
+{
   loc_update = bluetooth_conn.get_int("Location");
   Serial.print("Loc:");
   Serial.println(loc_update);
