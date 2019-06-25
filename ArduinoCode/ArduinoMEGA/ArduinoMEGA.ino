@@ -41,7 +41,7 @@ const Motor dcMotors[7] =
 #define volt A3
 #define X A5
 #define Y A6
-#define equalPin 53
+#define EqualPin 53
 
 //Variables for Serial
 const long unsigned int baudrate = 1000000;
@@ -163,24 +163,14 @@ void loop()
   //voltMeter();
   getBTValues();
 
-  if (equalOn == 1) {
-    digitalWrite(EqualPin, HIGH);
-  } else {
-    digitalWrite(EqualPin, LOW);
+  if (driveBool)
+  {
+    convertxy();
+    drive();
   }
-
-  if (trackerOn) {
-    Serial.println("Start Tracking");
-  }
-  else {
-    if (driveBool)
-    {
-      drive();
-    }
-    else
-    {
-      armMovement();
-    }
+  else
+  {
+    armMovement();
   }
 
   locationUpdate();
@@ -221,7 +211,22 @@ void getBTValues()
   Hand = bluetooth_conn.get_int("Hand");
   equalOn = bluetooth_conn.get_int("Equal");
   trackerOn = bluetooth_conn.get_int("Tracker");
+//  bluetooth_conn.send_int("vu", (int)(gemiddeldeVoltage * 100))
+
+  Serial.println(stickOneXas);
+  if (equalOn) {
+    digitalWrite(EqualPin, HIGH);
+  } else {
+    digitalWrite(EqualPin, LOW);
+  }
+  if (trackerOn) {
+    Serial.println("Start Tracking");
+  }
+  else {
+    Serial.println("Stop Tracking");
+  }
 }
+
 
 void turnOff()
 {
@@ -259,8 +264,6 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
 
 void drive() //Everything from making joystick input usable to sending the right signals to the dc motors
 {
-  convertxy(); //Converting joystick input into usable variables
-
   //Deadzone
   if (intensity < 50)
   {
@@ -284,7 +287,6 @@ void drive() //Everything from making joystick input usable to sending the right
       digitalWrite(dcMotors[2].A, LOW);
       digitalWrite(dcMotors[2].B, HIGH);
       analogWrite(dcMotors[2].PWM, 255);
-      Serial.println("tering");
     }
     else if (angle >= M_PI * 0.5)
     {
@@ -316,8 +318,8 @@ void drive() //Everything from making joystick input usable to sending the right
     }
     else
     {
-      analogWrite(dcMotors[1].PWM, intensity / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
-      analogWrite(dcMotors[2].PWM, intensity / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+      analogWrite(dcMotors[1].PWM, intensity / 515 * dmap((0 - angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+      analogWrite(dcMotors[2].PWM, intensity / 515 * dmap((0 - angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
     }
   }
 
@@ -336,13 +338,13 @@ void drive() //Everything from making joystick input usable to sending the right
     }
     else if (angle <= M_PI * -0.5)
     {
-      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
-      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap((0 - ((M_PI * -0.75) - angle)), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap((0 - ((M_PI * -0.75) - angle)), 0, 0.25 * M_PI, 0, 255));
     }
     else
     {
-      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
-      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(0 - (angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(0 - (angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
     }
   }
   else
@@ -407,7 +409,6 @@ void voltMeter()
   Serial.print(gemiddeldeVoltage);
   Serial.println("V");
   Serial.println();
-  bluetooth_conn.send_int("vu", (int)(gemiddeldeVoltage * 100));
 }
 
 void locationUpdate()
