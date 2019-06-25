@@ -30,6 +30,9 @@ def color_command(color_mode, fade_mode, lower_bound,
     """
     send_command("color cmd")
 
+def set_colors(hsvs):
+    print(hsvs)
+
 
 def marm_command(amount, cycles_per_second):
     send_command("cycle cmd")

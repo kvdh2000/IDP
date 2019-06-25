@@ -20,9 +20,10 @@ class SerialReciever:
     def send_command(self, command):
         if (command != None):
             command += "|"
-            print("Python value sent: ")
-            print(command)
+            #print("Python value sent: ")
+            #print(command)
             self._serial_port.write(command.encode())
+        self._serial_port.reset_input_buffer()
 
     def recieve(self):
         # dumps this into buffer

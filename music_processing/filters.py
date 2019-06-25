@@ -42,26 +42,11 @@ def get_spectrogram(filename, samplerate=0):
 
     print("done calc now plotting")
 
-    def compact(spec1, spec2):
-        ret = []
-        for i in range(len(spec1)):
-            ret.append(spec1[i] + spec2[i])
-        return ret
-
-    #cumulative_spec = reduce((lambda spec1, spec2: compact(spec1, spec2)), specgram)
-
-    def get_bass(row, index):
-        ret = 0
-        for i in range(mid_band_start -1):
-            row[i].item()
-        return ret
-
-
     chart = leather.Chart('Line')
     #chart.add_line(cumulative_spec, x=(lambda row, index: index), y=(lambda row, index: row.item()))
-    chart.add_line(_bands, x=(lambda row, index: index), y=(lambda row, index: row[0]))
-    chart.add_line(_bands, x=(lambda row, index: index), y=(lambda row, index: row[1]))
-    chart.add_line(_bands, x=(lambda row, index: index), y=(lambda row, index: row[2]))
+    chart.add_line(_bands, x=(lambda row, index: index), y=(lambda row, index: row[0]), name="bass")
+    chart.add_line(_bands, x=(lambda row, index: index), y=(lambda row, index: row[1]), name="mid")
+    chart.add_line(_bands, x=(lambda row, index: index), y=(lambda row, index: row[2]), name="treble")
     chart.to_svg('charts/custom_data2.svg')
 
 
