@@ -27,7 +27,7 @@ String cmd = "";
 uint8 anim_steps = 10;
 uint8 hsvs[3] = {0,0,0};
 uint8 hsvs_new[3] = {0,0,0};
-
+uint8 hsv_offset = 0;
 
 const int bufferSize = 10;
 const char cmd_sep = '|';
@@ -85,19 +85,19 @@ void led_write_hsvs(uint8 saturation=255, uint8 value=255)
 {
     for (int i = 0; i < TOP_IDX_0; i++)
     {
-        leds[i] = CHSV(hsvs[0], saturation, value);
+        leds[i] = CHSV(hsvs[0]+hsv_offset, saturation, value);
 
     }
 
     for (int i = TOP_IDX_0; i < TOP_IDX_1; i++)
     {
-        leds[i] = CHSV(hsvs[1], saturation, value);
+        leds[i] = CHSV(hsvs[1]+hsv_offset, saturation, value);
 
     }
 
     for (int i = TOP_IDX_1; i < TOP_IDX_2; i++)
     {
-        leds[i] = CHSV( hsvs[2], saturation, value);
+        leds[i] = CHSV( hsvs[2]+hsv_offset, saturation, value);
 
     }
     FastLED.show();
@@ -185,13 +185,13 @@ bool update_serial()
             read_buffer = read_buffer.substring(cmd_sep_idx + 1);
             char _sep = '/';
             int prev_idx = cmd.indexOf(_sep);
-            hsvs_new[0] = cmd.substring(0, prev_idx).toInt();
+            hsvs_new[0] = (int)((float)cmd.substring(0, prev_idx).toInt() * 1.3);
             cmd = cmd.substring(prev_idx +1);
             prev_idx = cmd.indexOf(_sep);
-            hsvs_new[1] = cmd.substring(0, prev_idx).toInt();
+            hsvs_new[1] = (int)((float)cmd.substring(0, prev_idx).toInt() * 1.3);
             cmd = cmd.substring(prev_idx +1);
             hsvs_new[2] = cmd.toInt();
-            int bpm = cmd.toInt();
+            int bpm = (int)((float)cmd.toInt() * 1.3);
             test_code_speed = bpm;
             //test_code_speed = map(bpm, 120, 200, 5, 80);
             return true;
@@ -222,10 +222,11 @@ void loop()
             hsvs[0] = (uint8)((int)hsvs[0] + d0);
             hsvs[1] = (uint8)((int)hsvs[1] + d1);
             hsvs[2] = (uint8)((int)hsvs[2] + d2);
-            delay(5);
+            delay(3);
         }
         memcpy(&hsvs, &hsvs_new, sizeof(hsvs));
         led_write_hsvs();
+        hsv_offset++;
     }
     delay(1);
 }
