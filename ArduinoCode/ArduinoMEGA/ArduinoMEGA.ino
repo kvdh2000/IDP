@@ -151,9 +151,9 @@ void loop()
   bluetooth_conn.update();
 
   digitalWrite(LED, HIGH);
-  delay(50);
+  //delay(50);
   digitalWrite(LED, LOW);
-  delay(50);
+  //delay(50);
 
   //voltMeter();
   getBTValues();
@@ -270,7 +270,6 @@ void drive() //Everything from making joystick input usable to sending the right
       digitalWrite(dcMotors[2].A, LOW);
       digitalWrite(dcMotors[2].B, HIGH);
       analogWrite(dcMotors[2].PWM, 255);
-      Serial.println("tering");
     }
     else if (angle >= M_PI * 0.5)
     {
@@ -302,8 +301,8 @@ void drive() //Everything from making joystick input usable to sending the right
     }
     else
     {
-      analogWrite(dcMotors[1].PWM, intensity / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
-      analogWrite(dcMotors[2].PWM, intensity / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+      analogWrite(dcMotors[1].PWM, intensity / 515 * dmap((0 - angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+      analogWrite(dcMotors[2].PWM, intensity / 515 * dmap((0 - angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
     }
   }
 
@@ -322,13 +321,13 @@ void drive() //Everything from making joystick input usable to sending the right
     }
     else if (angle <= M_PI * -0.5)
     {
-      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
-      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap((0 - ((M_PI * -0.75) - angle)), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap((0 - ((M_PI * -0.75) - angle)), 0, 0.25 * M_PI, 0, 255));
     }
     else
     {
-      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
-      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(0 - (angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(0 - (angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
     }
   }
   else
