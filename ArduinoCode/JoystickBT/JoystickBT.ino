@@ -10,17 +10,22 @@
 #define StickTwo_X_AS A2
 #define StickTwo_Y_AS A1
 
+
 btLib bluetooth_send;
 unsigned long bt_counter = millis();
 
 int currentpage = 1;
+double vuValue = 0;
+bool equalBool = true;
 bool clawBool = false;
 bool driveBool = true;
+bool trackBool = false;
 
 SoftwareSerial HMISerial(7, 8);
 NexButton bewegen = NexButton(1, 3, "bewegen");
 NexButton klauw = NexButton(3, 2, "klauw");
 NexButton rijden = NexButton(3, 4, "rijden");
+NexButton tracker = NexButton(2, 3, "tracker");
 NexButton terug2 = NexButton(2, 1, "terug");
 NexButton terug3 = NexButton(3, 1, "terug");
 NexButton terug4 = NexButton(4, 1, "terug");
@@ -29,6 +34,8 @@ NexButton eibergen = NexButton(4, 3, "eibergen");
 NexButton eindhoven = NexButton(4, 4, "eindhoven");
 NexButton barneveld = NexButton(4, 5, "barneveld");
 NexButton setLocText = NexButton(4, 11, "setLocText");
+NexButton equalizer = NexButton(2, 7, "equal");
+NexButton vuMeter = NexButton(2, 8, "vumeter");
 
 NexTouch *knoppenlijst[] = {
   &bewegen,
@@ -41,6 +48,8 @@ NexTouch *knoppenlijst[] = {
   &eibergen,
   &eindhoven,
   &barneveld,
+  &equalizer,
+  &tracker,
   NULL
 
 };
@@ -58,11 +67,16 @@ void setup() {
   eibergen.attachPush(eiIn);
   eindhoven.attachPush(eindIn);
   barneveld.attachPush(barnIn);
+  equalizer.attachPush(equalIn);
+  tracker.attachPush(trackerIn);
   bluetooth_send.begin(&Serial);
+  bluetooth_send.add_recieve_int("vu", vuValue);
 }
 
 void loop() {
   nexLoop(knoppenlijst);
+  
+  vuMeter.setText(bluetooth_send.get_int("vu")/100);
 
   if (currentpage == 3) {
     if (millis() - bt_counter > 100)
@@ -73,13 +87,10 @@ void loop() {
       delay(10);
       bluetooth_send.send_int("2_Xas", (analogRead(StickTwo_X_AS) - 1024) * -1);// JS2 moet worden geinvert
       bluetooth_send.send_int("2_Yas", (analogRead(StickTwo_Y_AS) - 1024) * -1);
-      delay(10);
-      bluetooth_send.send_int("Hand", clawBool);
-      bluetooth_send.send_int("Drive", driveBool);
     }
   }
 }
-stickone_Xas
+
 void klauwDicht(void *ptr) {
   clawBool = !clawBool;
   if (clawBool) {
@@ -87,6 +98,7 @@ void klauwDicht(void *ptr) {
   } else {
     klauw.setText("Grab");
   }
+  bluetooth_send.send_int("Hand", clawBool);
 }
 
 void rijdenIn(void *ptr) {
@@ -96,10 +108,15 @@ void rijdenIn(void *ptr) {
   } else {
     rijden.setText("Drive");
   }
+  bluetooth_send.send_int("Drive", driveBool);
 }
 
 void bewegenIn (void *ptr) {
   currentpage = 3;
+}
+void trackerIn (void *ptr) {  
+  trackBool = !trackBool;
+  bluetooth_send.send_int("Tracker", trackBool);
 }
 
 void terugIn (void *ptr) {
@@ -124,6 +141,17 @@ void eindIn(void *ptr) {
 void barnIn(void *ptr) {
   bluetooth_send.send_int("Location", 3);
   updateLocText(3);
+}
+
+void equalIn(void *ptr) {
+  equalBool = !equalBool;
+  if (equalBool) {
+    equalizer.setText("EQ-ON");
+  } else {
+    equalizer.setText("EQ-OFF");
+  }
+
+  bluetooth_send.send_int("Equal", equalBool);
 }
 
 void updateLocText(int location) {

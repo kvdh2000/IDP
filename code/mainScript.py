@@ -1,6 +1,5 @@
 __author__ = "Daan Eekhof, Keanu Attema, and Elon Gielink"
 __version__ = "0.8.0"
-__maintainer__ = "Daan Eekhof"
 __status__ = "Development"
 
 # import our own scripts
@@ -47,6 +46,7 @@ setupComplete = True
 arduinoDisc = False
 locationCon = None # default is None
 locations = ("Duckstad", "Eibergen", "Eindhoven", "Barneveld") # initialize locations
+tracking = False
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
@@ -63,6 +63,7 @@ async def GetArduino():
     global boolLook
     global armMoved 
     global setupComplete
+    global tracking
 
     msg = (ard.read(ard.inWaiting()))
     if msg != None:
@@ -79,7 +80,13 @@ async def GetArduino():
             setupComplete = True
         elif loc is not None:
             locationCon = locations[int(loc.group(2))]
-            print("Location python: "+locationCon)
+            print("Location python: "+locationCon)        
+        elif re.search('.(Start Tracking).', str(msg)):
+            tracking = True
+            print("tracking python: "+ tracking)        
+        elif re.search('.(Stop Tracking).', str(msg)):
+            tracking = False
+            print("tracking python: "+ tracking)
 
     
 # Method for sending commands to the arduino
@@ -94,6 +101,7 @@ def SendMessage(command):
 def main():
     loop = asyncio.get_event_loop()
     global boolLook
+    global tracking
     global ard
     global arduinoDisc
 
@@ -111,11 +119,19 @@ def main():
         if not boolLook:
             SendMessage('look|')
             boolLook = True
-
+        
         # follow these steps in order
         # wait till the arduino is ready to receive commands
         if setupComplete: 
-            if not found[0]:
+            if tracking:
+                direction = BlueVision.FindCar(frame)                 
+                if direction is 'left':
+                    SendMessage('move-x'+str(direction)+'|')
+                    #SendMessage('marm-z40|')
+                elif direction is 'right':
+                    SendMessage('move-x'+str(direction)+'|')
+
+            elif not found[0]:
                 found[0], location, direction = egg.FindEgg(frame) # find the egg
                 if found[0] and location is not None and direction is None:
                     SendMessage('marm-z'+str(round(location, 1))+'|') # send a command to the arduino over Serial

@@ -18,6 +18,7 @@
 #include "DynamixelMotor.h"
 #include "Arduino.h"
 #include "btLib.h"
+#include "Math.h"
 
 struct Motor {
   int A;
@@ -40,6 +41,7 @@ const Motor dcMotors[7] =
 #define volt A3
 #define X A5
 #define Y A6
+#define equalPin 53
 
 //Variables for Serial
 const long unsigned int baudrate = 1000000;
@@ -63,7 +65,8 @@ int Hand = 0;
 bool driveBool = true;
 const int loc_default = 0;
 int loc_update;
-
+bool equalOn = true;
+bool trackerOn = false;
 //General Variables
 const int deadzone_min = 485;
 const int deadzone_max = 535;
@@ -120,6 +123,8 @@ void setup()
   bluetooth_conn.add_recieve_int("Hand", js_neutral);
   bluetooth_conn.add_recieve_int("Drive", js_neutral);
   bluetooth_conn.add_recieve_int("Location", loc_default);
+  bluetooth_conn.add_recieve_int("Equal", equalOn);
+  bluetooth_conn.add_recieve_int("Tracker", trackerOn);
 
   pinMode(LED, OUTPUT);
   pinMode(volt, INPUT);
@@ -143,32 +148,39 @@ void setup()
 
 void loop()
 {
-//  Serial.println("-------------------------------------------------");
-//  Serial.println();
-//  Serial.println("Restart loop");
-//  Serial.println();
+  //  Serial.println("-------------------------------------------------");
+  //  Serial.println();
+  //  Serial.println("Restart loop");
+  //  Serial.println();
 
   bluetooth_conn.update();
 
   digitalWrite(LED, HIGH);
-  //delay(50);
+  delay(50);
   digitalWrite(LED, LOW);
-  //delay(50);
+  delay(50);
 
   //voltMeter();
   getBTValues();
 
-  //Debugging drive method withoud bt
-  //stickOneXas = 0;
-  //stickOneYas = 512;
-
-  if (driveBool)
-  {
-    drive();
+  if (equalOn == 1) {
+    digitalWrite(EqualPin, HIGH);
+  } else {
+    digitalWrite(EqualPin, LOW);
   }
-  else
-  {
-    armMovement();
+
+  if (trackerOn) {
+    Serial.println("Start Tracking");
+  }
+  else {
+    if (driveBool)
+    {
+      drive();
+    }
+    else
+    {
+      armMovement();
+    }
   }
 
   locationUpdate();
@@ -207,6 +219,8 @@ void getBTValues()
   stickTwoYas = bluetooth_conn.get_int("2_Xas");
   driveBool = bluetooth_conn.get_int("Drive");
   Hand = bluetooth_conn.get_int("Hand");
+  equalOn = bluetooth_conn.get_int("Equal");
+  trackerOn = bluetooth_conn.get_int("Tracker");
 }
 
 void turnOff()
@@ -224,17 +238,17 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
   int x = stickOneXas - 512;
   int y = stickOneYas - 512;
   angle = -atan2(y, x);
-  if(angle >= (-M_PI) * 0.5){
+  if (angle >= (-M_PI) * 0.5) {
     angle = angle - M_PI * 0.5;
-  }else{
+  } else {
     angle = angle + (M_PI * 1.5);
   }
   int halfabigPI = 157;
   int otherthing = abs(int(100 * angle));
   double itmpangle = (otherthing % halfabigPI);
   double tmpangle = itmpangle / 100;
-  
-  if (tmpangle >= M_PI * 0.25) 
+
+  if (tmpangle >= M_PI * 0.25)
   {
     tmpangle = (M_PI * 0.25) - (tmpangle - (M_PI * 0.25));
   }
@@ -270,6 +284,7 @@ void drive() //Everything from making joystick input usable to sending the right
       digitalWrite(dcMotors[2].A, LOW);
       digitalWrite(dcMotors[2].B, HIGH);
       analogWrite(dcMotors[2].PWM, 255);
+      Serial.println("tering");
     }
     else if (angle >= M_PI * 0.5)
     {
@@ -301,8 +316,8 @@ void drive() //Everything from making joystick input usable to sending the right
     }
     else
     {
-      analogWrite(dcMotors[1].PWM, intensity / 515 * dmap((0 - angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
-      analogWrite(dcMotors[2].PWM, intensity / 515 * dmap((0 - angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+      analogWrite(dcMotors[1].PWM, intensity / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
+      analogWrite(dcMotors[2].PWM, intensity / 515 * dmap(abs(angle), 0.25 * M_PI, 0.5 * M_PI, 0, 255));
     }
   }
 
@@ -321,13 +336,13 @@ void drive() //Everything from making joystick input usable to sending the right
     }
     else if (angle <= M_PI * -0.5)
     {
-      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap((0 - ((M_PI * -0.75) - angle)), 0, 0.25 * M_PI, 0, 255));
-      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap((0 - ((M_PI * -0.75) - angle)), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(abs((M_PI * -0.75) - angle), 0, 0.25 * M_PI, 0, 255));
     }
     else
     {
-      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(0 - (angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
-      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(0 - (angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[3].PWM, intensity / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
+      analogWrite(dcMotors[4].PWM, intensity / 515 * dmap(abs(angle - 0.25 * M_PI), 0, 0.25 * M_PI, 0, 255));
     }
   }
   else
@@ -359,7 +374,7 @@ void voltMeter()
 {
   float factor = 1.165;
   int analogvalue = analogRead(volt);
-  
+
   temp = (analogvalue * 5.0) / 1024.0;
   input_volt = temp / factor;
   som = som - voltages[voltagesIndex];
@@ -392,11 +407,10 @@ void voltMeter()
   Serial.print(gemiddeldeVoltage);
   Serial.println("V");
   Serial.println();
-
-  
+  bluetooth_conn.send_int("vu", (int)(gemiddeldeVoltage * 100));
 }
 
-void locationUpdate() 
+void locationUpdate()
 {
   loc_update = bluetooth_conn.get_int("Location");
   Serial.print("Loc:");
@@ -433,9 +447,11 @@ void executeSerial(String command)
     float dist = command.substring(j + 1).toFloat();
     moveArm(dist);
   }
-  else if (command == "look")
+  else if (command.indexOf("move") != -1)
   {
-    turn("left");
+    int j = command.indexOf("-");
+    String dist = command.substring(j + 1);
+    turn(dist);
   }
   else if (command.indexOf("blueLoc") != -1)
   {
