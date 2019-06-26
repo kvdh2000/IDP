@@ -126,22 +126,22 @@ void moveArm(float dist) {
 void turn(String dir) {
   if (dir == "left")
   {
+    intensity = 275;
     angle = M_PI;
   }
   if (dir == "right")
   {
-    angle = 0;
+    intensity = 275;
+    angle = 0.01 * M_PI;
+  }
+  if (dir.indexOf("good") != -1) {
+    intensity = 0;
   }
 
-  intensity = 512;
-  drive();
-  delay(500);
-  intensity = 0;
-  drive();
+//  drive();
 }
 
 void moveRobot(String direction) {
-
   sendBack("Move robot towards: " + direction);
 }
 

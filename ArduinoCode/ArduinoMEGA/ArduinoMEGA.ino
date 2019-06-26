@@ -49,7 +49,7 @@ int reg = 0;
 String readString;
 String read_buffer = "";
 String cmd = "";
-const int bufferSize = 10;
+const int bufferSize = 20;
 const char cmd_sep = '|';
 
 //Variables for bt
@@ -162,14 +162,18 @@ void loop()
 
   //voltMeter();
   getBTValues();
-
-  if (driveBool)
+ 
+  if(trackerOn){
+     drive();
+  }
+  else if (driveBool)
   {
     convertxy();
     drive();
   }
   else
   {
+    intensity = 0;
     armMovement();
   }
 
@@ -273,6 +277,7 @@ void drive() //Everything from making joystick input usable to sending the right
 
   //pim's if else labyrint
   //Deciding on which signals to send to both left motors as well as sending them based on both the angle and the required speed
+  //links
   if (angle <= M_PI * 0.75 && angle >= M_PI * -0.25)
   {
     digitalWrite(dcMotors[1].A, LOW);
@@ -284,6 +289,9 @@ void drive() //Everything from making joystick input usable to sending the right
     {
       analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
       analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
+      digitalWrite(dcMotors[2].A, LOW);
+      digitalWrite(dcMotors[2].B, HIGH);
+      //analogWrite(dcMotors[2].PWM, 255);
     }
     else if (angle >= M_PI * 0.5)
     {
@@ -321,6 +329,7 @@ void drive() //Everything from making joystick input usable to sending the right
   }
 
   //Deciding on which signals to send to both right motors as well as sending them based on both the angle and the required speed
+  //rechts
   if (angle <= 0.25 * M_PI && angle >= M_PI * -0.75)
   {
     digitalWrite(dcMotors[3].A, HIGH);
@@ -447,16 +456,10 @@ void executeSerial(String command)
   }
   else if (command.indexOf("move") != -1)
   {
-    int j = command.indexOf("-");
-    String dist = command.substring(j + 1);
-    turn(dist);
-  }
-  else if (command.indexOf("blueLoc") != -1)
-  {
-    int j = command.indexOf("-");
+    int j = command.indexOf("x");
     String dir = command.substring(j + 1);
     turn(dir);
-  }
+  }  
   else
   {
     Serial.println(str + "unknown " + command);
