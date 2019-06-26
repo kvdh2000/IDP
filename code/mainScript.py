@@ -6,6 +6,7 @@ __status__ = "Development"
 from ConVision import FindCon # vind het bakje 80% van de keren
 from QRVision import QRScanner # werkt
 from BlueVision import BlueVision # werkt misschien
+from Blue2_0 import BlueDetection
 from EggVision import EggVision # ongeveer 80% nauwkeurig, distance is goed mits het ei goed gevonden word
 from LineVision import LineVision # werkt niet
 from TrackerTest import TrackerTest # werkt maar nog niet autonoom
@@ -26,6 +27,8 @@ import os
 cam = PiCamera()
 cam.resolution = (640, 480)
 cam.framerate = 60
+# not sure what it does we can test it out
+#cam.zoom = (0.1, 0.25, 0.8, 0.5)
 rawCapture = PiRGBArray(cam, size=(640, 480))
 
 # initialize variable to request 
@@ -34,6 +37,7 @@ scan = QRScanner()
 find = FindCon()
 egg = EggVision()
 blue = BlueVision()
+blue2 = BlueDetection()
 line = LineVision()
 track = TrackerTest()
 chicken = ChickVision()
@@ -47,7 +51,7 @@ setupComplete = True
 arduinoDisc = False
 locationCon = None # default is None
 locations = ("Duckstad", "Eibergen", "Eindhoven", "Barneveld") # initialize locations
-tracking = True
+tracking = False
 moveDir = "Nope"
 vuValue = None
 
@@ -170,6 +174,7 @@ def main():
         # if locTest is not None:
         #     SendMessage('blueLoc-'+locTest)
         #     print('location blue: '+locTest)
+        blue2.run(frame)
 
         rawCapture.truncate(0) # ready the camera for a new frame to be analysed
         cv2.waitKey(10)
