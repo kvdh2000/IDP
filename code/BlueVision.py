@@ -11,7 +11,7 @@ class BlueVision:
 
     def FindCar(self, f):
 
-        maxoffcenter = 10
+        maxoffcenter = 20
         frame = f.array
 
         image, contours, hierarchy = cv.findContours(cv.inRange(cv.cvtColor(frame, cv.COLOR_RGB2HSV), np.array(
@@ -31,7 +31,8 @@ class BlueVision:
                     print("Go right")
                     return 'right'
                 else:
-                    print("Good enough")
+                    print("good enough")
+                    return 'good enough'
                 frame = cv.circle(frame, (cx, cy), 4, (255, 0, 0), -1)
         cv.imshow('cam', frame)
         return None

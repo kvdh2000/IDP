@@ -19,6 +19,7 @@ from picamera.array import PiRGBArray
 import serial
 import time
 import re
+import os
 
 # setup the picamera, this way we don't have to 
 # close it between switching scripts
@@ -46,7 +47,9 @@ setupComplete = True
 arduinoDisc = False
 locationCon = None # default is None
 locations = ("Duckstad", "Eibergen", "Eindhoven", "Barneveld") # initialize locations
-tracking = False
+tracking = True
+moveDir = "Nope"
+vuValue = None
 
 # initialize variable for serial communication
 port = '/dev/ttyACM0' # Raspberry port which connects to the arduino
@@ -64,6 +67,7 @@ async def GetArduino():
     global armMoved 
     global setupComplete
     global tracking
+    global vuValue
 
     msg = (ard.read(ard.inWaiting()))
     if msg != None:
@@ -71,32 +75,43 @@ async def GetArduino():
         # we use it for grabbing which location we need 
         # to deliver the egg to
         loc = re.search('.?(Loc:)(\d).?', str(msg))
+        vuValue = re.search('.?(VU:)(\d).?', str(msg))
+
         if msg == "b''":
             print()
         if re.search('.(Arm mov).', str(msg)): # check if the arm stopped moving
             armMoved = True
             boolLook = False
         elif re.search('.(MEGA start).', str(msg)): # check if the arduino booted
-            setupComplete = True
+            setupComplete = True        
+        elif re.search('.(Start Tracking).', str(msg)):
+            tracking = True
+            print("tracking python: "+ str(tracking))      
+        elif re.search('.(Stop Tracking).', str(msg)):
+            tracking = False
+            print("tracking python: "+ str(tracking)) 
+        elif vuValue is not None and int(vuValue.group(2)) < 10.25:
+            os.system('sudo shutdown now')
         elif loc is not None:
             locationCon = locations[int(loc.group(2))]
             print("Location python: "+locationCon)        
-        elif re.search('.(Start Tracking).', str(msg)):
-            tracking = True
-            print("tracking python: "+ tracking)        
-        elif re.search('.(Stop Tracking).', str(msg)):
-            tracking = False
-            print("tracking python: "+ tracking)
+
 
     
 # Method for sending commands to the arduino
 # Command can be max 5 characters long
 def SendMessage(command):
     global arduinoDisc
-    if command != None and not arduinoDisc:
+    if command is not None and not arduinoDisc:
         print("Python value sent: ")
         print(command)
         ard.write(command.encode())
+def Move(dir):
+    global moveDir
+
+    if(moveDir is not dir):
+        SendMessage("move-x"+str(dir) + "|")
+        moveDir = dir
 
 def main():
     loop = asyncio.get_event_loop()
@@ -124,23 +139,16 @@ def main():
         # wait till the arduino is ready to receive commands
         if setupComplete: 
             if tracking:
-                direction = BlueVision.FindCar(frame)                 
-                if direction is 'left':
-                    SendMessage('move-x'+str(direction)+'|')
-                    #SendMessage('marm-z40|')
-                elif direction is 'right':
-                    SendMessage('move-x'+str(direction)+'|')
+                direction = blue.FindCar(frame)                 
+                if direction is not None:
+                    Move(direction)              
 
             elif not found[0]:
                 found[0], location, direction = egg.FindEgg(frame) # find the egg
                 if found[0] and location is not None and direction is None:
                     SendMessage('marm-z'+str(round(location, 1))+'|') # send a command to the arduino over Serial
-                elif not found[0] and location is None and direction is not None:
-                    if direction is 'left':
-                        SendMessage('move-x'+str(direction)+'|')
-                        #SendMessage('marm-z40|')
-                    elif direction is 'right':
-                        SendMessage('move-x'+str(direction)+'|')
+                # elif not found[0] and location is None and direction is not None:
+                #     Move(direction)
         if armMoved:        
             if not found[1] and locationCon is not None:
                 found[1] = scan.SearchQR(locationCon, frame) # scans for the QRCode
