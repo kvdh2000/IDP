@@ -11,7 +11,7 @@ from time import sleep
 from SerialReciever import SerialReciever
 from math import floor
 
-debug_mode = False
+debug_mode = True
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
@@ -38,7 +38,7 @@ stream = audio.open(format=FORMAT, channels=CHANNELS,
                     rate=RATE, input=True,
                     frames_per_buffer=CHUNK)
 
-def analyze_sound(detect_bpm=False):
+def analyze_sound(detect_bpm=True):
 
     RECORD_SECONDS = 0.13
     if detect_bpm:
@@ -127,13 +127,18 @@ def dance(sound_stats):
     """
     stuurt de rupsbanden, de arm en de ledjes aan
     """
-    #print(sound_stats)
+    print(sound_stats)
     # als de serial traag is kan dat zijn omdat de inputbuffer vol zit
+    """
     serial.send_command("{0}/{1}/{2}".format(
         math.floor(sound_stats["bands"][0] * 512),
         math.floor(sound_stats["bands"][1] * 255),
         math.floor(sound_stats["bands"][2] * 255)
     ))
+    
+    """
+
+
     #serial.send_command(str(floor(sound_stats/10)))
 
 def analyze():

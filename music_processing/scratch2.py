@@ -32,9 +32,9 @@ serial = SerialReciever("/dev/ttyACM0", 115200)
 audio = pyaudio.PyAudio()
 
 
-def analyze_sound(detect_bpm=False):
+def analyze_sound(detect_bpm=True):
 
-    RECORD_SECONDS = 0.05
+    RECORD_SECONDS = 5
     if detect_bpm:
         RECORD_SECONDS = 5
     if not debug_mode:
@@ -126,7 +126,7 @@ def analyze_sound(detect_bpm=False):
     for band in bands:
         bands_total += band
     for i in range(len(bands)):
-        bands[i] = (bands[i] / bands_total) 
+        bands[i] = (bands[i] / bands_total)
 
     ret = {"bands": bands}
 
@@ -145,13 +145,10 @@ def dance(sound_stats):
     """
     stuurt de rupsbanden, de arm en de ledjes aan
     """
-    #print(sound_stats)
+    print(sound_stats)
     # als de serial traag is kan dat zijn omdat de inputbuffer vol zit
-    serial.send_command("{0}/{1}/{2}".format(
-        math.floor(sound_stats["bands"][0] * 255),
-        math.floor(sound_stats["bands"][1] * 255),
-        math.floor(sound_stats["bands"][2] * 255)
-    ))
+
+    serial.send_command(str(math.floor((sound_stats["bpm"]) )))
     #serial.send_command(str(floor(sound_stats/10)))
 
 def analyze():

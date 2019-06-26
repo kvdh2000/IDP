@@ -21,7 +21,7 @@ class SerialReciever:
         if (command != None):
             command += "|"
             #print("Python value sent: ")
-            #print(command)
+            print(command)
             self._serial_port.write(command.encode())
         self._serial_port.reset_input_buffer()
 
