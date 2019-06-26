@@ -75,7 +75,7 @@ async def GetArduino():
         # we use it for grabbing which location we need 
         # to deliver the egg to
         loc = re.search('.?(Loc:)(\d).?', str(msg))
-        vuValue = re.search('.?(VU:)(\d{2}.\d{2}).?', str(msg))
+        vuValue = re.search('.?(VU:)(\d{0,2}.\d{0,2}).?', str(msg))
 
         if msg == "b''":
             print()
