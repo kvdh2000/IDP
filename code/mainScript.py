@@ -75,7 +75,7 @@ async def GetArduino():
         # we use it for grabbing which location we need 
         # to deliver the egg to
         loc = re.search('.?(Loc:)(\d).?', str(msg))
-        vuValue = re.search('.?(VU:)(\d).?', str(msg))
+        vuValue = re.search('.?(VU:)(\d{2}.\d{2}).?', str(msg))
 
         if msg == "b''":
             print()
@@ -90,7 +90,7 @@ async def GetArduino():
         elif re.search('.(Stop Tracking).', str(msg)):
             tracking = False
             print("tracking python: "+ str(tracking)) 
-        elif vuValue is not None and int(vuValue.group(2)) < 10.25:
+        elif vuValue is not None and float(vuValue.group(2)) < 10.25:
             os.system('sudo shutdown now')
         elif loc is not None:
             locationCon = locations[int(loc.group(2))]
