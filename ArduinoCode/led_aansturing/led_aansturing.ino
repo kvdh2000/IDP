@@ -2,20 +2,7 @@
 
 typedef uint8_t uint8;
 
-
-
-
 const uint8 NUM_LEDS = 70;
-
-
-
-
-#define pwmpin1 7
-#define pwmpin2 6
-#define in_a1 2
-#define in_a2 4
-#define in_b1 3
-#define in_b2 5
 
 struct
 {
@@ -57,21 +44,6 @@ const char cmd_sep = '|';
 CRGB leds[NUM_LEDS];
 
 
-void m1 (uint8 pwm, bool dir)
-{
-	analogWrite(pwmpin1, pwm);
-	if (dir)
-	{
-		digitalWrite(in_a1, 0);
-		digitalWrite(in_b1, 1);
-	}
-	else
-	{
-		digitalWrite(in_a1, 1);
-		digitalWrite(in_b1, 0);
-	}
-}
-
 
 void setup()
 {
@@ -83,13 +55,7 @@ void setup()
         leds[i] = CRGB::Black;
     }
     FastLED.show();
-    pinMode(pwmpin1, OUTPUT);
-    pinMode(pwmpin2, OUTPUT);
-    pinMode(in_a1, OUTPUT);
-    pinMode(in_b1, OUTPUT);
-    pinMode(in_a2, OUTPUT);
-    pinMode(in_b2, OUTPUT);
-    m1(100, true);
+
 }
 
 
@@ -143,76 +109,30 @@ void led_write_hsvs(uint8 saturation=255, uint8 value=255)
     FastLED.show();
 }
 
-void led_write_split_complementary (uint8 hue, uint8 saturation=255, uint8 value=255)
+
+void up_beat()
 {
-    for (int i = 0; i < led_vars.THIRD_0; i++)
-    {
-        uint8 _hue = hue - led_vars.hsv_one_twelfth;
-        leds[i] = CHSV(_hue, saturation, value);
-    }
+            led_write_hsvs(128);
+            FastLED.show();
 
-    for (int i = led_vars.THIRD_0; i < led_vars.THIRD_1; i++)
-    {
-        uint8 _hue = hue + led_vars.hsv_half;
-        leds[i] = CHSV(_hue, saturation, value);
-
-    }
-
-    for (int i = led_vars.THIRD_1; i < led_vars.THIRD_2; i++)
-    {
-        uint8 _hue = hue + led_vars.hsv_one_twelfth;
-        leds[i] = CHSV( _hue, saturation, value);
-
-    }
-    FastLED.show();
 }
 
-void led_write_analogous(uint8 hue, uint8 saturation=255, uint8 value=255)
+void down_beat()
 {
-    for (int i = 0; i < led_vars.THIRD_0; i++)
-    {
-        uint8 _hue = hue - led_vars.hsv_one_twelfth;
-        leds[i] = CHSV(_hue, saturation, value);
+		for (int i = 0; i < NUM_LEDS; i++)
+        {
+            leds[i] = CRGB::Black;
+        }        
+        FastLED.show();
 
-    }
-
-    for (int i = led_vars.THIRD_0; i < led_vars.THIRD_1; i++)
-    {
-        leds[i] = CHSV(hue, saturation, value);
-
-    }
-
-    for (int i = led_vars.THIRD_1; i < led_vars.THIRD_2; i++)
-    {
-        uint8 _hue = hue + led_vars.hsv_one_twelfth;
-        leds[i] = CHSV( _hue, saturation, value);
-
-    }
-    FastLED.show();
 }
 
-void led_write_complementary(uint8 hue, uint8 saturation=255, uint8 value=255)
-{
-    for (int i = 0; i < led_vars.HALF_LEDS; i++)
-    {
-        leds[i] = CHSV(hue, saturation, value);
 
-    }
-    for (int i = led_vars.HALF_LEDS; i < led_vars.USED_LEDS; i++)
-    {
-        uint8 _hue = hue + led_vars.hsv_half;
-        leds[i] = CHSV( _hue, saturation, value);
-
-    }
-    FastLED.show();
-}
-
-void emotie_boos(int ms)
+void bpm_aansturing(int ms)
 {
     if (led_vars.step == 0)
     {
-        led_write_analogous(0);
-        FastLED.show();
+        up_beat();
         led_vars.step++;
         led_vars.timer_start = millis();
     }
@@ -220,23 +140,13 @@ void emotie_boos(int ms)
     {
         if (millis() - led_vars.timer_start  > ms)
         {
-            for (int i = 0; i < NUM_LEDS; i++)
-            {
-                leds[i] = CRGB::Black;
-            }
-            FastLED.show();
             led_vars.timer_start = millis();
             led_vars.step++;
         }        
     }
     else if (led_vars.step == 2)
     {
-		for (int i = 0; i < NUM_LEDS; i++)
-        {
-            leds[i] = CRGB::Black;
-        }        
-        FastLED.show();
-        
+		down_beat();     
         led_vars.timer_start = millis();
         led_vars.step++;
 
@@ -298,25 +208,6 @@ bool update_serial()
     return false;
 }
 
-
-
-
-
-void m2 (uint8 pwm, bool dir)
-{
-	analogWrite(pwmpin1, pwm);
-	if (dir)
-	{
-		digitalWrite(in_a1, 0);
-		digitalWrite(in_a2, 1);
-	}
-	else
-	{
-		digitalWrite(in_a1, 1);
-		digitalWrite(in_a2, 2);
-	}
-}
-
 void loop()
 {
     update_serial();
@@ -324,10 +215,9 @@ void loop()
     if (led_vars.beat_delta_ms > 0)
     {
 
-        emotie_boos(led_vars.beat_delta_ms);
+        bpm_aansturing(led_vars.beat_delta_ms);
     }
 
-    //emotie_boos();
 
 }
 

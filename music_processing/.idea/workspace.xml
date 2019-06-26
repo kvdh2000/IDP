@@ -4,11 +4,6 @@
     <list default="true" id="b723b4a2-2b68-4f33-a0f3-03d7521b6510" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../ArduinoCode/bluetooth/JohnSpecialEasyTransfer" beforeDir="false" afterPath="$PROJECT_DIR$/../ArduinoCode/bluetooth/JohnSpecialEasyTransfer" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ArduinoCode/led_aansturing/led_aansturing.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../ArduinoCode/led_aansturing/led_aansturing.ino" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SerialReciever.py" beforeDir="false" afterPath="$PROJECT_DIR$/SerialReciever.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dance.py" beforeDir="false" afterPath="$PROJECT_DIR$/dance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/debug.wav" beforeDir="false" afterPath="$PROJECT_DIR$/debug.wav" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scratch2.py" beforeDir="false" afterPath="$PROJECT_DIR$/scratch2.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
