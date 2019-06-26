@@ -69,37 +69,37 @@ void armMovement()
   CurArmX1 = constrain(CurArmX1, 260, 512);
   CurArmX2 = constrain(CurArmX2, 50, 900);
   CurArmY = constrain(CurArmY, 300, 750);
-  
-//  motor1.goalPosition(CurArmY);
+
+  //  motor1.goalPosition(CurArmY);
   motor2.goalPosition(CurArmX1);
   motor3.goalPosition(getMotor3Value(CurArmX1));
   motor4.goalPosition(CurArmX2);
 
-    //grond tot 1 = 18cm
-    //1 tot 2 = 18cm
-    //2 tot 3 = 35cm
-//    CurArmX1 = constrain(CurArmX1, 1, 44);
-//  
-//    B = sqrt(CurArmX1 * CurArmX1 + D * D);
-//    Serial.println("b    =   " + String(B));
-//    if (B < 24 and B != 0) // 28 normaal
-//    {
-//      alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
-//      betar = acos((A * A - B * B + C * C) / (2 * A * C));
-//      gammar = acos((A * A + B * B - C * C) / (2 * A * B));
-//      alpha = alphar * 180 / M_PI + 60;
-//      beta = betar * 180 / M_PI - 20;
-//      gamma = gammar * 180 / M_PI;
-//      float servohoek1 = map(alpha, 0, 360, 100, 1023);
-//      float servohoek2 = map(beta, 0, 360, 50, 1023);
-//      motor2.goalPosition(servohoek1);
-//      motor3.goalPosition(getMotor3Value(servohoek1));
-//      motor4.goalPosition(servohoek2);
-//    }
-  
-//    CurArmY = constrain(CurArmY, 300, 750);
-//
-//    motor1.goalPosition(CurArmY);
+  //grond tot 1 = 18cm
+  //1 tot 2 = 18cm
+  //2 tot 3 = 35cm
+  //    CurArmX1 = constrain(CurArmX1, 1, 44);
+  //
+  //    B = sqrt(CurArmX1 * CurArmX1 + D * D);
+  //    Serial.println("b    =   " + String(B));
+  //    if (B < 24 and B != 0) // 28 normaal
+  //    {
+  //      alphar = acos((-A * A + B * B + C * C) / (2 * B * C));
+  //      betar = acos((A * A - B * B + C * C) / (2 * A * C));
+  //      gammar = acos((A * A + B * B - C * C) / (2 * A * B));
+  //      alpha = alphar * 180 / M_PI + 60;
+  //      beta = betar * 180 / M_PI - 20;
+  //      gamma = gammar * 180 / M_PI;
+  //      float servohoek1 = map(alpha, 0, 360, 100, 1023);
+  //      float servohoek2 = map(beta, 0, 360, 50, 1023);
+  //      motor2.goalPosition(servohoek1);
+  //      motor3.goalPosition(getMotor3Value(servohoek1));
+  //      motor4.goalPosition(servohoek2);
+  //    }
+
+  //    CurArmY = constrain(CurArmY, 300, 750);
+  //
+  //    motor1.goalPosition(CurArmY);
 }
 
 void moveArm(float dist) {
@@ -124,40 +124,20 @@ void moveArm(float dist) {
 }
 
 void turn(String dir) {
-  //  if (dir == "left")
-  //  {
-  //    digitalWrite(dcMotors[1].A, HIGH);
-  //    digitalWrite(dcMotors[1].B, LOW);
-  //    digitalWrite(dcMotors[2].A, HIGH);
-  //    digitalWrite(dcMotors[2].B, LOW);
-  //    digitalWrite(dcMotors[3].A, LOW);
-  //    digitalWrite(dcMotors[3].B, HIGH);
-  //    digitalWrite(dcMotors[4].A, LOW);
-  //    digitalWrite(dcMotors[4].B, HIGH);
-  //    analogWrite(dcMotors[1].PWM, 255);
-  //    analogWrite(dcMotors[2].PWM, 255);
-  //    analogWrite(dcMotors[3].PWM, 255);
-  //    analogWrite(dcMotors[4].PWM, 255);
-  //  }
-  //
-  //  if (dir == "right")
-  //  {
-  //    digitalWrite(dcMotors[1].A, LOW);
-  //    digitalWrite(dcMotors[1].B, HIGH);
-  //    digitalWrite(dcMotors[2].A, LOW);
-  //    digitalWrite(dcMotors[2].B, HIGH);
-  //    digitalWrite(dcMotors[3].A, HIGH);
-  //    digitalWrite(dcMotors[3].B, LOW);
-  //    digitalWrite(dcMotors[4].A, HIGH);
-  //    digitalWrite(dcMotors[4].B, LOW);
-  //    analogWrite(dcMotors[1].PWM, 255);
-  //    analogWrite(dcMotors[2].PWM, 255);
-  //    analogWrite(dcMotors[3].PWM, 255);
-  //    analogWrite(dcMotors[4].PWM, 255);
-  //  }
-  //
-  //  delay(200);
-  //  turnOff();
+  if (dir == "left")
+  {
+    angle = M_PI;
+  }
+  if (dir == "right")
+  {
+    angle = 0;
+  }
+
+  intensity = 512;
+  drive();
+  delay(500);
+  intensity = 0;
+  drive();
 }
 
 void moveRobot(String direction) {
