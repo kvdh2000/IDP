@@ -284,9 +284,6 @@ void drive() //Everything from making joystick input usable to sending the right
     {
       analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
       analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
-      digitalWrite(dcMotors[2].A, LOW);
-      digitalWrite(dcMotors[2].B, HIGH);
-      analogWrite(dcMotors[2].PWM, 255);
     }
     else if (angle >= M_PI * 0.5)
     {
