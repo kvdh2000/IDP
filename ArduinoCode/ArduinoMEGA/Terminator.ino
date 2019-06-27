@@ -2,6 +2,18 @@
 int16_t speed1 = 1023;
 int16_t speed2 = 512;
 
+typedef uint8_t uint8;
+
+const uint8 NUM_LEDS = 70;
+
+struct
+{
+  int beat_delta_ms = 0;
+  int bpm = 0;
+  unsigned long timer_start = millis();
+  int step = 0;
+} led_vars;
+
 void initServos() {
   interface.begin(baudrate);
   motors.enableTorque();
@@ -74,6 +86,7 @@ void armMovement()
   motor2.goalPosition(CurArmX1);
   motor3.goalPosition(getMotor3Value(CurArmX1));
   motor4.goalPosition(CurArmX2);
+  motor1.goalPosition(512);
 
   //grond tot 1 = 18cm
   //1 tot 2 = 18cm
@@ -126,19 +139,19 @@ void moveArm(float dist) {
 void turn(String dir) {
   if (dir == "left")
   {
-    intensity = 275;
+    intensity = 200;
     angle = M_PI;
   }
   if (dir == "right")
   {
-    intensity = 275;
+    intensity = 200;
     angle = 0.01 * M_PI;
   }
   if (dir.indexOf("good") != -1) {
     intensity = 0;
   }
 
-//  drive();
+  //  drive();
 }
 
 void moveRobot(String direction) {
@@ -146,7 +159,64 @@ void moveRobot(String direction) {
 }
 
 void dance() {
-  sendBack("Dance");
+  if (ms > 0 ) {
+    if (led_vars.step == 0)
+    {
+      up_beat();
+      led_vars.step++;
+      led_vars.timer_start = millis();
+    }
+    else if (led_vars.step == 1)
+    {
+      if (millis() - led_vars.timer_start  > ms * 4 )
+      {
+        led_vars.timer_start = millis();
+        led_vars.step++;
+      }
+    }
+    else if (led_vars.step == 2)
+    {
+      down_beat();
+      led_vars.timer_start = millis();
+      led_vars.step++;
+
+    }
+    else if (led_vars.step == 3)
+    {
+      if (millis() - led_vars.timer_start  > ms * 4 )
+      {
+        led_vars.step = 0;
+      }
+    }
+  }
+}
+
+void randArmMove() {
+  motors.speed(300);
+  int x1 = random(384, 640);
+  int x2 = random(384, 640);
+  int y1 = random(300, 750);
+
+  motor2.goalPosition(x1);
+  motor3.goalPosition(getMotor3Value(x1));
+  motor4.goalPosition(x2);
+  motor1.goalPosition(y1);
+}
+
+void up_beat()
+{
+  angle = 0.5 * M_PI;
+  intensity = 200;
+  drive();
+  randArmMove();
+}
+
+void down_beat()
+{
+  angle = -0.5 * M_PI;
+  intensity = 200;
+  drive();
+  randArmMove();
 }
 
 void danceLine() {

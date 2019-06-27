@@ -38,10 +38,10 @@ const Motor dcMotors[7] =
   Motor{25, 27, 4}, //Motor 4 R achter
 };
 
-#define volt A4
+#define volt A3
 #define X A5
 #define Y A6
-#define EqualPin 53
+#define VUMeter 53
 
 //Variables for Serial
 const long unsigned int baudrate = 1000000;
@@ -67,6 +67,8 @@ const int loc_default = 0;
 int loc_update;
 bool equalOn = true;
 bool trackerOn = false;
+bool danceOn = false;
+int ms =500;
 //General Variables
 const int deadzone_min = 485;
 const int deadzone_max = 535;
@@ -113,8 +115,10 @@ void setup()
   Serial.begin(38400);
   Serial1.begin(38400);
   Serial2.begin(38400);
+  randomSeed(analogRead(0));
   Serial.println("Arduino MEGA start");
-
+  digitalWrite(VUMeter, HIGH);
+  pinMode(VUMeter, OUTPUT);
   bluetooth_conn.begin(&Serial2);
   bluetooth_conn.add_recieve_int("1_Yas", js_neutral);
   bluetooth_conn.add_recieve_int("1_Xas", js_neutral);
@@ -122,9 +126,9 @@ void setup()
   bluetooth_conn.add_recieve_int("2_Xas", js_neutral);
   bluetooth_conn.add_recieve_int("Hand", js_neutral);
   bluetooth_conn.add_recieve_int("Drive", js_neutral);
-  bluetooth_conn.add_recieve_int("Location", loc_default);
-  bluetooth_conn.add_recieve_int("Equal", equalOn);
-  bluetooth_conn.add_recieve_int("Tracker", trackerOn);
+  bluetooth_conn.add_recieve_int("Location", js_neutral);
+  bluetooth_conn.add_recieve_int("Dance", js_neutral);
+  bluetooth_conn.add_recieve_int("Tracker", js_neutral);
 
   pinMode(LED, OUTPUT);
   pinMode(volt, INPUT);
@@ -154,22 +158,20 @@ void loop()
   //  Serial.println();
 
   bluetooth_conn.update();
-
-  digitalWrite(LED, HIGH);
-  delay(50);
-  digitalWrite(LED, LOW);
-  delay(50);
-
+  
   voltMeter();
   getBTValues();
- 
-  if(trackerOn){
+  
+  if(danceOn){
+    dance();
+  } 
+  else if(trackerOn){
      drive();
   }
   else if (driveBool)
   {
     convertxy();
-    drive();
+    drive();    
   }
   else
   {
@@ -215,22 +217,8 @@ void getBTValues()
   Hand = bluetooth_conn.get_int("Hand");
   equalOn = bluetooth_conn.get_int("Equal");
   trackerOn = bluetooth_conn.get_int("Tracker");
-//  bluetooth_conn.send_int("vu", (int)(gemiddeldeVoltage * 100))
-
-  Serial.println(stickOneXas);
-  if (equalOn) {
-    digitalWrite(EqualPin, HIGH);
-  } else {
-    digitalWrite(EqualPin, LOW);
-  }
-  if (trackerOn) {
-    Serial.println("Start Tracking");
-  }
-  else {
-    Serial.println("Stop Tracking");
-  }
+  danceOn = bluetooth_conn.get_int("Dance");
 }
-
 
 void turnOff()
 {
@@ -263,7 +251,7 @@ void convertxy() //Deciding the angle of the joystick, converting it to a circle
   }
   intensity = dmap(sqrt(pow(x, 2) + pow(y, 2)), 0, 512 / cos(tmpangle), 0, 512);
 
-  Serial.println(angle);
+ // Serial.println(angle);
 }
 
 void drive() //Everything from making joystick input usable to sending the right signals to the dc motors
@@ -289,9 +277,6 @@ void drive() //Everything from making joystick input usable to sending the right
     {
       analogWrite(dcMotors[1].PWM, dmap(intensity, 0, 515, 0, 255));
       analogWrite(dcMotors[2].PWM, dmap(intensity, 0, 515, 0, 255));
-      digitalWrite(dcMotors[2].A, LOW);
-      digitalWrite(dcMotors[2].B, HIGH);
-      //analogWrite(dcMotors[2].PWM, 255);
     }
     else if (angle >= M_PI * 0.5)
     {
@@ -407,7 +392,9 @@ void voltMeter()
     voltagesIndex = 0;
     arrayGevuld = true;
   }
-
+if (gemiddeldeVoltage <= 4.08){
+  Serial.println("VU:10.25");
+}
 //  Serial.print("U = ");
 //  Serial.print(input_volt);
 //  Serial.println("V");
@@ -415,18 +402,13 @@ void voltMeter()
 //  Serial.print(gemiddeldeVoltage);
 //  Serial.println("V");
 //  Serial.println();
-
-  if(gemiddeldeVoltage <= 4.08)
-  {
-    Serial.println("VU:10.25")
-  }
 }
 
 void locationUpdate()
 {
   loc_update = bluetooth_conn.get_int("Location");
-  Serial.print("Loc:");
-  Serial.println(loc_update);
+//  Serial.print("Loc:");
+//  Serial.println(loc_update);
 }
 
 void executeSerial(String command)
@@ -441,10 +423,6 @@ void executeSerial(String command)
   {
     moveRobot(command);
   }
-  else if (command == "dance")
-  {
-    dance();
-  }
   else if (command == "dancl")
   {
     danceLine();
@@ -452,6 +430,10 @@ void executeSerial(String command)
   else if (command == "blink")
   {
     blinkLed();
+  }
+  else if (command.indexOf("bpm") != -1){    
+    int j = command.indexOf("m");
+    ms = command.substring(j + 1).toInt();
   }
   else if (command.indexOf("marm") != -1)
   {
