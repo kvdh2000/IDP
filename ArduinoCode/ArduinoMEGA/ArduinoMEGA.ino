@@ -38,7 +38,7 @@ const Motor dcMotors[7] =
   Motor{25, 27, 4}, //Motor 4 R achter
 };
 
-#define volt A3
+#define volt A4
 #define X A5
 #define Y A6
 #define EqualPin 53
@@ -160,7 +160,7 @@ void loop()
   digitalWrite(LED, LOW);
   delay(50);
 
-  //voltMeter();
+  voltMeter();
   getBTValues();
  
   if(trackerOn){
@@ -408,13 +408,18 @@ void voltMeter()
     arrayGevuld = true;
   }
 
-  Serial.print("U = ");
-  Serial.print(input_volt);
-  Serial.println("V");
-  Serial.print("Average U = ");
-  Serial.print(gemiddeldeVoltage);
-  Serial.println("V");
-  Serial.println();
+//  Serial.print("U = ");
+//  Serial.print(input_volt);
+//  Serial.println("V");
+//  Serial.print("Average U = ");
+//  Serial.print(gemiddeldeVoltage);
+//  Serial.println("V");
+//  Serial.println();
+
+  if(gemiddeldeVoltage <= 4.08)
+  {
+    Serial.println("VU:10.25")
+  }
 }
 
 void locationUpdate()
