@@ -1,6 +1,0 @@
-[submodule "ArduinoCode/bluetooth/JohnSpecialEasyTransfer"]
-	path = ArduinoCode/bluetooth/JohnSpecialEasyTransfer
-	url = https://github.com/johnvanderholt/JohnSpecialEasyTransfer
-[submodule "ElektraFiles"]
-	path = ElektraFiles
-	url = https://github.com/CrEaTiiOn187/RoboticaElectro
