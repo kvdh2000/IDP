@@ -123,6 +123,7 @@ void bewegenIn(void *ptr)
 {
 	currentpage = 3;
 }
+
 void trackerIn(void *ptr)
 {
 	trackBool = !trackBool;

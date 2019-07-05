@@ -7,7 +7,6 @@
    turnOff
    convertxy
    drive
-   armMovement
    voltMeter
    locationUpdate
    executeSerial
