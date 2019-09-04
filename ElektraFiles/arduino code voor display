@@ -1,0 +1,82 @@
+#include <doxygen.h>
+#include <NexButton.h>
+#include <NexCheckbox.h>
+#include <NexConfig.h>
+#include <NexCrop.h>
+#include <NexDualStateButton.h>
+#include <NexGauge.h>
+#include <NexGpio.h>
+#include <NexHardware.h>
+#include <NexHotspot.h>
+#include <NexNumber.h>
+#include <NexObject.h>
+#include <NexPage.h>
+#include <NexPicture.h>
+#include <NexProgressBar.h>
+#include <NexRadio.h>
+#include <NexRtc.h>
+#include <NexScrolltext.h>
+#include <NexSlider.h>
+#include <NexText.h>
+#include <NexTimer.h>
+#include <Nextion.h>
+#include <NexTouch.h>
+#include <NexUpload.h>
+#include <NexVariable.h>
+#include <NexWaveform.h>
+
+#define switch1   5
+#define xas       A4
+#define yas       A5
+
+SoftwareSerial HMISerial(10, 11);
+
+NexButton b0 = NexButton(0, 1, "b0");
+NexButton b1 = NexButton(0, 3, "b1");
+NexProgressBar j0 = NexProgressBar(0, 2, "j0");
+NexPage page0 = NexPage(0, 0, "page0");
+
+NexTouch *nex_listen_list[] = {
+  &b1,
+  &b0,
+  NULL
+};
+
+int hight = 0;
+uint8_t val;
+
+
+
+void b0PushCallback(void *ptr) {
+  Serial.println("op");
+  if (hight < 99) {
+    hight = hight + 10;
+  }
+}
+
+void b1PushCallback(void *ptr) {
+  Serial.println("down");
+  if (hight > 1) {
+    hight = hight - 10;
+  }
+}
+
+void setup() {
+  nexInit();
+  Serial.begin(9600);
+  b1.attachPush(b1PushCallback); //button press
+  b0.attachPush(b0PushCallback); //button press
+}
+
+
+void loop() {
+  nexLoop(nex_listen_list);
+  val = analogRead(xas);
+  HMISerial.print("j0.val=");
+  HMISerial.print(hight);
+  HMISerial.write(0xff);
+  HMISerial.write(0xff);
+  HMISerial.write(0xff);
+
+  delay(100);
+}
